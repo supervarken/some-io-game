@@ -1,3 +1,4 @@
+
 var gameloop = require('node-gameloop');
 
 var express = require('express');
@@ -8,30 +9,37 @@ var path = require('path');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+var intersections = 0;
 var playerIndex = 0;
 var players = [];
 
-io.on('connection', function (socket) {
-    socket.playerName = "Player" + playerIndex;
+io.on('connection', function(socket) {
+
+
+
+   socket.on('chat message', function(msg, name){
+    io.emit('chat message', msg, socket.playerName);
+  });
+
+   socket.playerSize = 30; //verander om groter/kleiner te maken.
+   socket.playerName = "Player" + playerIndex;
+
     playerIndex++;
     respawn(socket);
     socket.speed = 5;
+
     socket.direction = {
         x: 0,
         y: 0
     }
 
-    socket.emit('playerJoin', players.map(function (item) {
-        return {
-            playerName: item.playerName,
-            x: item.x,
-            y: item.y
-        }
-    }));
+    socket.emit('playerJoin', players.map(function (item) { return {playerName: item.playerName, x: item.x, y: item.y, playerSize: item.playerSize}}));
 
     players.push(socket);
 
     io.sockets.emit('playerJoin', [{
+        playerSize: socket.playerSize,
         playerName: socket.playerName,
         x: socket.x,
         y: socket.y
@@ -39,7 +47,7 @@ io.on('connection', function (socket) {
 
     console.log(socket.playerName + ' connected');
 
-    socket.on('disconnect', function () {
+    socket.on('disconnect', function() {
         var index = players.indexOf(socket);
         players.splice(index, 1);
         console.log(socket.playerName + ' disconnected');
@@ -48,37 +56,38 @@ io.on('connection', function (socket) {
         });
     });
 
-    socket.on('changeDirection', function (direction) {
+    socket.on('changeDirection', function(direction) {
         socket.direction = direction;
     });
 });
 
 
-var id = gameloop.setGameLoop(function (delta) {
+var id = gameloop.setGameLoop(function(delta) {
     movePlayers();
-}, 1000 / 60);
+}, 1000/60);
 
 function movePlayers() {
-    for (i in players) {
+    for(i in players) {
         movePlayer(players[i]);
     }
 }
 
 function movePlayer(player) {
-    if (player.direction.x == 0 && player.direction.y == 0) {
+    if(player.direction.x == 0 && player.direction.y == 0) {
         return;
     }
 
     intersectAny(player);
 
     movePlayerTo(player,
-        player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)),
-        player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
+                 player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)),
+                 player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
 }
 
 function movePlayerTo(player, x, y) {
-    player.x = Math.min(Math.max(0, x), 1500);
-    player.y = Math.min(Math.max(0, y), 1000);
+
+    player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize
+    player.y = Math.min(Math.max(player.playerSize, y), (1000 - player.playerSize));
     io.sockets.emit('playerMove', {
         playerName: player.playerName,
         x: player.x,
@@ -87,27 +96,35 @@ function movePlayerTo(player, x, y) {
 }
 
 function intersectAny(player) {
-    for (var i in players) {
+    for(var i in players) {
         var p = players[i];
-        if (player == p) {
+        if(player == p){
             continue;
         }
-        if (intersect(player, p)) {
+        if(intersect(player, p)) {
+
             respawn(player);
             respawn(p);
+            intersection(player, p);
         }
     }
 }
 
+function intersection(player1, player2){
+    intersections += 1;
+    var messaged = "Total intersections: " + intersections + ", last one by: " + player1.playerName + " and " + player2.playerName;
+    console.log(messaged);
+     io.emit('chat message', messaged, "Server");
+}
 function intersect(player1, player2) {
-    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < 50 * 50;
-    //    return false;
+    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < (player1.playerSize * 2) * (player2.playerSize * 2); //diameter of the size of
+//    return false;
 }
 
 function respawn(player) {
-    movePlayerTo(player, Math.round(Math.random() * 1000), Math.round(Math.random() * 1000));
+    movePlayerTo(player, Math.round(Math.random() * (1500 - player.playerSize)), Math.round(Math.random() * (1000 - player.playerSize)));
 }
 
-http.listen(3000, function () {
+http.listen(3000, function(){
     console.log('listening on *:3000');
 });

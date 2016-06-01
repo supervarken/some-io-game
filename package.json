@@ -1,6 +1,6 @@
 {
   "name": "plong.io",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An amazing game! Still in development.",
   "dependencies": {
     "express": "^4.13.4",
