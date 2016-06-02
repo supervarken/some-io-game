@@ -5,7 +5,7 @@ ctx.fillStyle = "rgb(200, 200, 200)";
 back = new Image()
 back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
 var players = [];
-
+var foods [];
 var direction = {
     x: 0,
     y: 0
