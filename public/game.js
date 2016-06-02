@@ -5,7 +5,7 @@ ctx.fillStyle = "rgb(200, 200, 200)";
 back = new Image()
 back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
 var players = [];
-var foods = [];
+
 var direction = {
     x: 0,
     y: 0
@@ -48,9 +48,9 @@ socket.on('playerMove', function(player) {
 var render = function () {
     ctx.drawImage(back, 0, 0, 1500, 1000);
     for(i in players) {
-
+        
         player = players[i];
-
+        
         ctx.beginPath();
         ctx.arc(player.x, player.y, player.playerSize, 0, 2 * Math.PI, false);
         ctx.fill();
