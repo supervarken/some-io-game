@@ -1,4 +1,5 @@
 var socket = io();
+var connected = false;
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 ctx.fillStyle = "rgb(200, 200, 200)";
@@ -11,6 +12,11 @@ var direction = {
     y: 0
 };
 
+function nameChoose(){
+    var name = document.getElementById("nameInput").value;
+    socket.emit('username', name);
+}
+
 socket.on('playerJoin', function (joinedPlayers) {
 
     for(i in joinedPlayers) {
@@ -20,6 +26,14 @@ socket.on('playerJoin', function (joinedPlayers) {
         console.log(player.playerName + ' joined, ' + players.length + ' players.' + player.playerSize);
     }
 });
+
+socket.on('login', function (player) {
+   document.getElementById("jj").style.display = "block";
+    document.getElementById("gameCanvas").style.display = "block";
+    document.getElementById("startScreen").style.display = "none";
+    connected = true;
+
+  });
 
 socket.on('playerLeave', function(player) {
     var index = -1;
@@ -42,6 +56,7 @@ socket.on('playerMove', function(player) {
         if(player.playerName == p.playerName) {
             p.x = player.x;
             p.y = player.y;
+            p.playerSize = player.playerSize;
         }
     }
 });

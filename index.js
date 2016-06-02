@@ -14,17 +14,17 @@ var playerIndex = 0;
 var players = [];
 
 io.on('connection', function(socket) {
-
+ var nameChoose = false;
    
+socket.on('username', function (username) {
+    if (nameChoose) return;
 
-   socket.on('chat message', function(msg, name){
-    io.emit('chat message', msg, socket.playerName);
-  });
-  
-   socket.playerSize = 30; //verander om groter/kleiner te maken.
-   socket.playerName = "Player" + playerIndex;
-   
     playerIndex++;
+    nameChoose = true;
+   // socket.playerSize = 30; //verander om groter/kleiner te maken.
+   socket.playerName = username;
+   socket.playerSize = 50;
+
     respawn(socket);
     socket.speed = 5; 
  
@@ -46,6 +46,16 @@ io.on('connection', function(socket) {
 
     console.log(socket.playerName + ' connected');
 
+
+    socket.emit('login', "test value");
+
+   socket.on('chat message', function(msg, name){
+    io.emit('chat message', msg, socket.playerName);
+
+  });
+
+
+
     socket.on('disconnect', function() {
         var index = players.indexOf(socket);
         players.splice(index, 1);
@@ -58,6 +68,7 @@ io.on('connection', function(socket) {
     socket.on('changeDirection', function(direction) {
         socket.direction = direction;
     });
+});
 });
 
 
@@ -88,6 +99,7 @@ function movePlayerTo(player, x, y) {
     player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize
     player.y = Math.min(Math.max(player.playerSize, y), (1000 - player.playerSize));
     io.sockets.emit('playerMove', {
+        playerSize: player.playerSize,
         playerName: player.playerName,
         x: player.x,
         y: player.y
@@ -101,7 +113,7 @@ function intersectAny(player) {
             continue;
         }
         if(intersect(player, p)) {
-            
+            player.playerSize += 10;
             respawn(player);
             respawn(p);
             intersection(player, p);
@@ -118,10 +130,11 @@ function intersection(player1, player2){
 function intersect(player1, player2) {
     return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2);//diameter of the size of
 //    return false;
-console.log
+
 }
 
 function respawn(player) {
+
     movePlayerTo(player, Math.round(Math.random() * (1500 - player.playerSize)), Math.round(Math.random() * (1000 - player.playerSize)));
 }
 

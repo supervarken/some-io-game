@@ -4,7 +4,10 @@
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
-    PLONG.IO
+     <div id="startScreen">
+        <h3 class="title">Username:</h3>
+        <input id="nameInput" type="text" maxlength="20" /><br><button onclick="nameChoose()">Start Game</button>
+      </div>
         <canvas id="gameCanvas"></canvas>
         <script src="/socket.io/socket.io.js"></script>
         <script src="game.js"></script>
@@ -13,5 +16,6 @@
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
      <script src="chat.js"></script>
+
     </body>
 </html>
