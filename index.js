@@ -1,4 +1,3 @@
-
 var gameloop = require('node-gameloop');
 
 var express = require('express');
@@ -16,19 +15,19 @@ var players = [];
 
 io.on('connection', function(socket) {
 
-
+   
 
    socket.on('chat message', function(msg, name){
     io.emit('chat message', msg, socket.playerName);
   });
-
+  
    socket.playerSize = 30; //verander om groter/kleiner te maken.
    socket.playerName = "Player" + playerIndex;
-
+   
     playerIndex++;
     respawn(socket);
-    socket.speed = 5;
-
+    socket.speed = 5; 
+ 
     socket.direction = {
         x: 0,
         y: 0
@@ -79,13 +78,13 @@ function movePlayer(player) {
 
     intersectAny(player);
 
-    movePlayerTo(player,
-                 player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)),
+    movePlayerTo(player, 
+                 player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)), 
                  player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
 }
 
 function movePlayerTo(player, x, y) {
-
+    
     player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize
     player.y = Math.min(Math.max(player.playerSize, y), (1000 - player.playerSize));
     io.sockets.emit('playerMove', {
@@ -102,7 +101,7 @@ function intersectAny(player) {
             continue;
         }
         if(intersect(player, p)) {
-
+            
             respawn(player);
             respawn(p);
             intersection(player, p);
@@ -117,8 +116,9 @@ function intersection(player1, player2){
      io.emit('chat message', messaged, "Server");
 }
 function intersect(player1, player2) {
-    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < (player1.playerSize * 2) * (player2.playerSize * 2); //diameter of the size of
+    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2);//diameter of the size of
 //    return false;
+console.log
 }
 
 function respawn(player) {
