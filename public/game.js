@@ -2,16 +2,17 @@ var socket = io();
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 ctx.fillStyle = "rgb(200, 200, 200)";
-back = new Image()
+var back = new Image();
 back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
 var players = [];
-var foods [];
+var foods = [];
 var direction = {
     x: 0,
     y: 0
-}
+};
 
-socket.on('playerJoin', function(joinedPlayers) {
+socket.on('playerJoin', function (joinedPlayers) {
+
     for(i in joinedPlayers) {
         var player = joinedPlayers[i];
 
