@@ -102,6 +102,8 @@ window.onkeydown = function(e) {keys[e.keyCode]=true; changeDirection();}
 function changeDirection() {
     var x = 0;
     var y = 0;
+
+    if(document.activeElement.tagName != "INPUT"){
     if(keys[87] || keys[38]){ y = -1;}
     else if(keys[83] || keys[40]){ y= 1;}
     if(keys[68] || keys[39]){ x = 1;}
@@ -113,6 +115,7 @@ function changeDirection() {
             y: y
         };
         socket.emit('changeDirection', direction);
+    }
     }
 }
 
