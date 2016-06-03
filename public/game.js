@@ -71,6 +71,7 @@ var render = function () {
       //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
+ctx.fillStyle = "black";
 
     for(i in players) {
         
