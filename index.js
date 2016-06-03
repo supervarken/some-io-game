@@ -115,7 +115,8 @@ setInterval(function(){
 
 var id = gameloop.setGameLoop(function(delta) {
     if(Math.random() < 0.02){
-    foods.push({x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 30});
+    foods.push({x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 10, foodcolor:'#'+Math.floor(Math.random()*16777215).toString(16)
+});
     io.emit('massChange', foods);
     }
     movePlayers();
@@ -146,12 +147,8 @@ function movePlayerTo(player, x, y) {
     
     player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize
     player.y = Math.min(Math.max(player.playerSize, y), (1000 - player.playerSize));
-    io.sockets.emit('playerMove', {
-        playerSize: player.playerSize,
-        playerName: player.playerName,
-        x: player.x,
-        y: player.y
-    });
+    emitPlayer(player);
+
 }
 
 function resetPlayer(player) {

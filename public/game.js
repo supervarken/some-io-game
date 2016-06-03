@@ -71,12 +71,17 @@ var render = function () {
         ctx.font = "15px Arial";
         ctx.fillText(player.playerName, player.x - 25, player.y - player.playerSize - 5);
     }
-    for(i in foods) {
+    for(i = 0; i < foods.length; i++) {
         food = foods[i];
 
-        ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
+        ctx.fillStyle = food.foodcolor;
+        ctx.beginPath();
+        ctx.arc(food.x, food.y, food.playerSize, 0, 2 * Math.PI, false);
+        ctx.fill();
+      //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
+
 };
 
 var main = function () {
