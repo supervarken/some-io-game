@@ -12,6 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var intersections = 0;
 var playerIndex = 0;
 var players = [];
+var foods = [];
 
 io.on('connection', function(socket) {
  var nameChoose = false;
@@ -93,7 +94,10 @@ function movePlayer(player) {
                  player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)), 
                  player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
 }
-
+function spawnMass(){
+    player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize
+    player.y = Math.min(Math.max(player.playerSize, y), (1000 - player.playerSize));
+}
 function movePlayerTo(player, x, y) {
     
     player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize

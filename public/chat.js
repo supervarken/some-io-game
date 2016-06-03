@@ -1,3 +1,4 @@
+
 document.getElementById('jj').addEventListener('submit', function(jj){
     jj.preventDefault();
        socket.emit('chat message', document.getElementById('m').value);
