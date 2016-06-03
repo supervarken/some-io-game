@@ -64,7 +64,7 @@ socket.on('username', function (username) {
   });
 
    socket.on('reset', function(player){
-    resetPlayer(player);
+    resetPlayer(socket);
   });
 
     socket.on('disconnect', function() {
