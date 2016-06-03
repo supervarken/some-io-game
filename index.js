@@ -42,7 +42,7 @@ socket.on('username', function (username) {
     }
 
    socket.playerName = username;
-   socket.playerSize = 50;
+   socket.playerSize = 20;
 
     respawn(socket);
     socket.speed = 5; 
@@ -97,10 +97,25 @@ setInterval(function(){
     io.emit('massChange', foods);
 }, 500);
 setInterval(function(){
-   foods = [];
+    var win = 0;
+    for(i = 0; i < players.length; i++){
+        if (players[i].playerSize > win){
+            var winner = players[i];
+            win = players[i].playerSize;
+        }
+    }
+
+    io.emit('chat message', "Winner is: " + winner.playerName, "Server");
+    foods = [];
+    for(i = 0; i < players.length; i++){
+        resetPlayer(players[i]);
+
+        }
+
+    io.emit('chat message', "Game resetted!", "Server");
     io.emit('massChange', foods);
-    io.emit('chat message', "food resetted", "Server");
-}, 60000);
+
+}, 300000);
 
 var id = gameloop.setGameLoop(function(delta) {
     movePlayers();
@@ -140,9 +155,8 @@ function movePlayerTo(player, x, y) {
 }
 
 function resetPlayer(player) {
-    player.playerSize = 50;
+    player.playerSize = 20;
     respawn(player);
-    console.log(player.playerName + "resetted");
 }
 function intersectAny(player) {
 
