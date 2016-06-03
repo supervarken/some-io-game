@@ -31,6 +31,16 @@ socket.on('username', function (username) {
     playerIndex++;
     nameChoose = true;
    // socket.playerSize = 30; //verander om groter/kleiner te maken.
+    if(username == ""){
+        username = "Player " + playerIndex;
+    }
+    for(var i = 0; i < players.length; i++){
+        if(players[i].playerName == username){
+            username = username + 2;
+        }
+
+    }
+
    socket.playerName = username;
    socket.playerSize = 50;
 
