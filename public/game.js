@@ -62,7 +62,7 @@ socket.on('playerMove', function(player) {
 });
 
 var render = function () {
-    ctx.drawImage(back, 0, 0, 1500, 1000);
+    //ctx.drawImage(back, 0, 0, 1500, 1000);
     for(i in players) {
         
         player = players[i];
