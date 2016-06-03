@@ -121,7 +121,7 @@ function nameChoose(){
 }
 
 function resetClient(){
-    socket.emit('reset', " ");
+    socket.emit('reset', "code");
 }
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
