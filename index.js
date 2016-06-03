@@ -92,6 +92,15 @@ socket.on('username', function (username) {
 });
 });
 
+setInterval(function(){
+   foods.push({x: Math.random() * 1000, y: Math.random() * 1000});
+    io.emit('massChange', foods);
+}, 500);
+setInterval(function(){
+   foods = [];
+    io.emit('massChange', foods);
+    io.emit('chat message', "food resetted", "Server");
+}, 60000);
 
 var id = gameloop.setGameLoop(function(delta) {
     movePlayers();
@@ -136,18 +145,45 @@ function resetPlayer(player) {
     console.log(player.playerName + "resetted");
 }
 function intersectAny(player) {
+
     for(var i in players) {
         var p = players[i];
         if(player == p){
             continue;
         }
         if(intersect(player, p)) {
-            player.playerSize += 10;
-            respawn(player);
-            respawn(p);
+            if (player.playerSize > p.playerSize){
+                player.playerSize += 0.2 * p.playerSize;
+                resetPlayer(p);
+                emitPlayer(player);
+            }
+            else {
+                p.playerSize += 0.2 * player.playerSize;
+                resetPlayer(player)
+                emitPlayer(p);
+            }
+
+
             intersection(player, p);
         }
     }
+    for(var i in foods){
+        var food = foods[i];
+        food.playerSize = 10;
+         if(intersect(player, food)) {
+            player.playerSize += 1;
+            foods.splice(i, 1);
+        }
+    }
+}
+
+function emitPlayer(player){
+    io.sockets.emit('playerMove', {
+                 playerSize: player.playerSize,
+                 playerName: player.playerName,
+                 x: player.x,
+                 y: player.y
+             });
 }
 
 function intersection(player1, player2){

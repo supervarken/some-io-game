@@ -6,13 +6,15 @@ ctx.fillStyle = "rgb(200, 200, 200)";
 var back = new Image();
 back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
 var players = [];
-var foods = [];
+var foods = [{x:10, y:10},{x:50, y:80},{x:50, y:90}];
 var direction = {
     x: 0,
     y: 0
 };
 
-
+socket.on('massChange', function(eat) {
+    foods = eat;
+});
 socket.on('playerJoin', function (joinedPlayers) {
 
     for(i in joinedPlayers) {
