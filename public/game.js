@@ -61,6 +61,17 @@ socket.on('playerMove', function(player) {
 
 var render = function () {
     //ctx.drawImage(back, 0, 0, 1500, 1000);
+     for(i = 0; i < foods.length; i++) {
+        food = foods[i];
+
+        ctx.fillStyle = food.foodcolor;
+        ctx.beginPath();
+        ctx.arc(food.x, food.y, food.playerSize, 0, 2 * Math.PI, false);
+        ctx.fill();
+      //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
+
+    }
+
     for(i in players) {
         
         player = players[i];
@@ -71,16 +82,7 @@ var render = function () {
         ctx.font = "15px Arial";
         ctx.fillText(player.playerName, player.x - 25, player.y - player.playerSize - 5);
     }
-    for(i = 0; i < foods.length; i++) {
-        food = foods[i];
 
-        ctx.fillStyle = food.foodcolor;
-        ctx.beginPath();
-        ctx.arc(food.x, food.y, food.playerSize, 0, 2 * Math.PI, false);
-        ctx.fill();
-      //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
-
-    }
 
 };
 
