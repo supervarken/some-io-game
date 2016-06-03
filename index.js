@@ -8,6 +8,14 @@ var path = require('path');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+/* Alright, listen here. This is really bad and I know that.
+ *  It's just a test server and I don't want to explain to my friends how to use Putty and all that to update the server and restart it when they're playing around with the code.
+ *  So, don't put me on /r/ProgrammingHumor okay? Thanks.
+ */
+app.get('/restart', function (req, res) {
+    res.send('Restaring... please be patient');
+    process.exit();
+});
 
 var intersections = 0;
 var playerIndex = 0;
