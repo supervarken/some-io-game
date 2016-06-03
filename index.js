@@ -63,7 +63,9 @@ socket.on('username', function (username) {
 
   });
 
-
+   socket.on('reset', function(player){
+    resetPlayer(player);
+  });
 
     socket.on('disconnect', function() {
         var index = players.indexOf(socket);
@@ -118,6 +120,11 @@ function movePlayerTo(player, x, y) {
     });
 }
 
+function resetPlayer(player) {
+    player.playerSize = 50;
+    respawn(player);
+    console.log(player.playerName + "resetted");
+}
 function intersectAny(player) {
     for(var i in players) {
         var p = players[i];

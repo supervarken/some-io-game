@@ -12,10 +12,6 @@ var direction = {
     y: 0
 };
 
-function nameChoose(){
-    var name = document.getElementById("nameInput").value;
-    socket.emit('username', name);
-}
 
 socket.on('playerJoin', function (joinedPlayers) {
 
@@ -23,7 +19,7 @@ socket.on('playerJoin', function (joinedPlayers) {
         var player = joinedPlayers[i];
 
         players.push(player);
-        console.log(player.playerName + ' joined, ' + players.length + ' players.' + player.playerSize);
+        console.log(player.playerName + ' joined, ' + players.length + ' players.');
     }
 });
 
@@ -119,6 +115,14 @@ function changeDirection() {
     }
 }
 
+function nameChoose(){
+    var name = document.getElementById("nameInput").value;
+    socket.emit('username', name);
+}
+
+function resetClient(){
+    socket.emit('reset', " ");
+}
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
