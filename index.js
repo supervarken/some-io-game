@@ -93,10 +93,6 @@ socket.on('username', function (username) {
 });
 
 setInterval(function(){
-   foods.push({x: Math.random() * 1000, y: Math.random() * 1000});
-    io.emit('massChange', foods);
-}, 500);
-setInterval(function(){
     var win = 0;
     for(i = 0; i < players.length; i++){
         if (players[i].playerSize > win){
@@ -118,6 +114,10 @@ setInterval(function(){
 }, 300000);
 
 var id = gameloop.setGameLoop(function(delta) {
+    if(Math.random() < 0.02){
+    foods.push({x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 30});
+    io.emit('massChange', foods);
+    }
     movePlayers();
 }, 1000/60);
 
@@ -133,7 +133,7 @@ function movePlayer(player) {
     }
 
     intersectAny(player);
-
+    player.speed = 100 / player.playerSize + 2;
     movePlayerTo(player, 
                  player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)), 
                  player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
@@ -183,10 +183,10 @@ function intersectAny(player) {
     }
     for(var i in foods){
         var food = foods[i];
-        food.playerSize = 10;
          if(intersect(player, food)) {
             player.playerSize += 1;
             foods.splice(i, 1);
+             io.emit('massChange', foods);
         }
     }
 }
