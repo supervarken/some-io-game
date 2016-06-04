@@ -178,14 +178,14 @@ function intersectAny(player) {
             intersection(player, p);
         }
     }
-    for(var i in foods){
+    /* for(var i in foods){
         var food = foods[i];
          if(intersect(player, food)) {
             player.playerSize += 1;
             foods.splice(i, 1);
              io.emit('massChange', foods);
         }
-    }
+    } */
 }
 
 function emitPlayer(player){
