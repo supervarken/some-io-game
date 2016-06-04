@@ -12,9 +12,7 @@ var direction = {
     y: 0
 };
 
-socket.on('massChange', function(eat) {
-    foods = eat;
-});
+
 socket.on('playerJoin', function (joinedPlayers) {
 
     for(i in joinedPlayers) {
@@ -32,9 +30,14 @@ socket.on('login', function (player) {
     connected = true;
 
   });
-
+socket.on('massChange', function(eat) {
+    foods = eat;
+});
 socket.on('addMass', function(food){
  foods.push(food);
+});
+socket.on('removeMass', function(i){
+ foods.splice(i, 1);
 });
 socket.on('playerLeave', function(player) {
     var index = -1;

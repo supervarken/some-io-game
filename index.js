@@ -51,7 +51,7 @@ socket.on('username', function (username) {
         x: 0,
         y: 0
     }
-
+    io.emit('massChange', foods);
     socket.emit('playerJoin', players.map(function (item) { return {playerName: item.playerName, x: item.x, y: item.y, playerSize: item.playerSize}}));
 
     players.push(socket);
@@ -119,13 +119,9 @@ var id = gameloop.setGameLoop(function(delta) {
     if(Math.random() < 0.02){
     food = {x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 10, foodcolor:'#'+Math.floor(Math.random()*16777215).toString(16)};
     foods.push(food);
+      io.emit('addMass', food);
     }
     movePlayers();
-
- //  console.log(foodNow.length + "        " + foods.length);
-    if(foodNow !== foods){
-         io.emit('massChange', foods);
-    }
 }, 1000/60);
 
 function movePlayers() {
@@ -191,8 +187,10 @@ function intersectAny(player) {
         var food = foods[i];
          if(intersect(player, food)) {
             player.playerSize += 1;
+
             foods.splice(i, 1);
 
+            io.emit('removeMass', i);
         }
     }
 }
