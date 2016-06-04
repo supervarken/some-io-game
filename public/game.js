@@ -2,7 +2,6 @@ var socket = io();
 var connected = false;
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
-ctx.fillStyle = "rgb(200, 200, 200)";
 var back = new Image();
 back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
 var players = [];

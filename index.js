@@ -5,7 +5,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
-
+var width = 2000;
+var height = 2000;
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* Alright, listen here. This is really bad and I know that.
@@ -91,7 +92,6 @@ socket.on('username', function (username) {
     });
 });
 });
-
 setInterval(function(){
     var win = 0;
     for(i = 0; i < players.length; i++){
@@ -100,8 +100,11 @@ setInterval(function(){
             win = players[i].playerSize;
         }
     }
-
+    if(winner == null){
+    io.emit('chat message', "No players participated ", "Server");}
+    else{
     io.emit('chat message', "Winner is: " + winner.playerName, "Server");
+    }
     foods = [];
     for(i = 0; i < players.length; i++){
         resetPlayer(players[i]);
@@ -117,7 +120,7 @@ var id = gameloop.setGameLoop(function(delta) {
 
     var foodNow = foods.splice();
     if(Math.random() < 0.02){
-    food = {x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 10, foodcolor:'#'+Math.floor(Math.random()*16777215).toString(16)};
+    food = {x: Math.random() * height, y: Math.random() * width, playerSize: 10, foodcolor:'#'+Math.floor(Math.random()*16777215).toString(16)};
     foods.push(food);
       io.emit('addMass', food);
     }
@@ -144,14 +147,11 @@ function movePlayer(player) {
                  player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)), 
                  player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
 }
-function spawnMass(){
-    player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize
-    player.y = Math.min(Math.max(player.playerSize, y), (1000 - player.playerSize));
-}
+
 function movePlayerTo(player, x, y) {
     
-    player.x = Math.min(Math.max(player.playerSize, x), (1500 - player.playerSize)); //add player.playersize
-    player.y = Math.min(Math.max(player.playerSize, y), (1000 - player.playerSize));
+    player.x = Math.min(Math.max(player.playerSize, x), (width - player.playerSize)); //add player.playersize
+    player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
     emitPlayer(player);
 
 }
@@ -218,7 +218,7 @@ function intersect(player1, player2) {
 
 function respawn(player) {
 
-    movePlayerTo(player, Math.round(Math.random() * (1500 - player.playerSize)), Math.round(Math.random() * (1000 - player.playerSize)));
+    movePlayerTo(player, Math.round(Math.random() * (width - player.playerSize)), Math.round(Math.random() * (height - player.playerSize)));
 }
 
 http.listen(3000, function(){
