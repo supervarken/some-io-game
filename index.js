@@ -117,16 +117,18 @@ var id = gameloop.setGameLoop(function(delta) {
     if(Math.random() < 0.02){
     food = {x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 10, foodcolor:'#'+Math.floor(Math.random()*16777215).toString(16)};
     foods.push(food);
-    //io.emit('massChange', foods);
     }
     movePlayers();
 }, 1000/60);
 
 function movePlayers() {
+    var foodNow = foods;
     for(i in players) {
         movePlayer(players[i]);
     }
+    if(foodNow != foods){
     io.emit('massChange', foods);
+    }
 }
 
 function movePlayer(player) {
@@ -179,12 +181,12 @@ function intersectAny(player) {
             intersection(player, p);
         }
     }
-    for(var i in foods){
+    for(var i = 0; i < foods.length; i++){
         var food = foods[i];
          if(intersect(player, food)) {
             player.playerSize += 1;
             foods.splice(i, 1);
-            // io.emit('massChange', foods);
+
         }
     }
 }
