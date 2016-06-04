@@ -33,6 +33,9 @@ socket.on('login', function (player) {
 
   });
 
+socket.on('addMass', function(food){
+ foods.push(food);
+});
 socket.on('playerLeave', function(player) {
     var index = -1;
     for(i in players) {
