@@ -114,22 +114,27 @@ setInterval(function(){
 }, 300000);
 
 var id = gameloop.setGameLoop(function(delta) {
+
+    var foodNow = foods.splice();
     if(Math.random() < 0.02){
     food = {x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 10, foodcolor:'#'+Math.floor(Math.random()*16777215).toString(16)};
     foods.push(food);
     }
     movePlayers();
+
+ //  console.log(foodNow.length + "        " + foods.length);
+    if(foodNow !== foods){
+         io.emit('massChange', foods);
+    }
 }, 1000/60);
 
 function movePlayers() {
-    var foodNow = foods;
+
     for(i in players) {
         movePlayer(players[i]);
     }
-    console.log(foodNow.length + foods.length);
 
-    io.emit('massChange', foods);
-    }
+
 }
 
 function movePlayer(player) {
