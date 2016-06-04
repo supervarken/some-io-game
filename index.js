@@ -126,7 +126,8 @@ function movePlayers() {
     for(i in players) {
         movePlayer(players[i]);
     }
-    if(foodNow != foods){
+    console.log(foodNow.length + foods.length);
+
     io.emit('massChange', foods);
     }
 }
