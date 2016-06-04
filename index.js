@@ -114,7 +114,7 @@ setInterval(function(){
 }, 300000);
 
 var id = gameloop.setGameLoop(function(delta) {
-    if(Math.random() < 0.0002){
+    if(Math.random() < 0.02){
     foods.push({x: Math.random() * 1000, y: Math.random() * 1000, playerSize: 10, foodcolor:'#'+Math.floor(Math.random()*16777215).toString(16)
 });
     io.emit('massChange', foods);
