@@ -27,7 +27,8 @@ socket.on('login', function (player) {
     document.getElementById("gameCanvas").style.display = "block";
     document.getElementById("startScreen").style.display = "none";
     connected = true;
-
+    playerNumber = player;
+    main();
   });
 socket.on('massChange', function(eat) {
     foods = eat;
@@ -93,6 +94,7 @@ ctx.fillStyle = "black";
 };
 
 var main = function () {
+
     var now = Date.now();
     var delta = now - then;
 
@@ -142,4 +144,4 @@ var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 
 var then = Date.now();
-main();
+

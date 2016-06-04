@@ -67,7 +67,7 @@ socket.on('username', function (username) {
     console.log(socket.playerName + ' connected');
 
 
-    socket.emit('login', "test value");
+    socket.emit('login', playerIndex);
 
    socket.on('chat message', function(msg, name){
     io.emit('chat message', msg, socket.playerName);
