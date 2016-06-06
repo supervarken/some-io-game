@@ -43,7 +43,8 @@ io.on('connection', function (socket) {
     io.sockets.emit('playerJoin', [{
         playerName: socket.playerName,
         x: socket.x,
-        y: socket.y
+        y: socket.y,
+        me: true
     }]);
 
     console.log(socket.playerName + ' connected');
