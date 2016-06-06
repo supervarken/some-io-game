@@ -10,7 +10,7 @@ var direction = {
     x: 0,
     y: 0
 };
-var width = 2000, height = 2000;
+var width, height;
 
 var camera = {
     zoom: 1,
@@ -78,7 +78,7 @@ socket.on('playerMove', function(player) {
     }
 });
 
-var render = function() {
+function render() {
 
     var player;
     for(i in players) {
@@ -87,6 +87,10 @@ var render = function() {
             player = p;
             break;
         }
+    }
+
+    if(!player) {
+        return;
     }
 
     ctx.setTransform(1,0,0,1,0,0);
