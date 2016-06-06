@@ -13,4 +13,7 @@ document.getElementById('jj').addEventListener('submit', function(jj){
         gameMsg.appendChild(node);
 
         document.getElementById('messages').appendChild(gameMsg);
+              var chat = document.getElementById("messages");
+chat.scrollTop = chat.scrollHeight;
+
       });
