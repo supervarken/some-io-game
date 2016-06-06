@@ -9,7 +9,7 @@ html, body {
 
       #gameCanvas{display: none;}
 
-      #chat {position: fixed; bottom: 0; margin-left: 80%;  width: 20%;}
+      #chat {position: fixed; bottom: 0; margin-left: 80%;  width: 20%; display: none;}
        #jj {background: #000; position: fixed;bottom: 0;height: 10%; width: 100%;}
       form input { border: 2%; padding: 10px; width: 80%; max-height: 50%;}
       form button { width: 20%; background: rgb(130, 224, 255); border: none; padding: 10px; height: 50%; min-height: 50%;}

@@ -23,7 +23,7 @@ socket.on('playerJoin', function (joinedPlayers) {
 });
 
 socket.on('login', function (player) {
-   document.getElementById("jj").style.display = "block";
+   document.getElementById("chat").style.display = "block";
     document.getElementById("gameCanvas").style.display = "block";
     document.getElementById("startScreen").style.display = "none";
     connected = true;
