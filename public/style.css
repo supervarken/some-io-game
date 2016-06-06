@@ -1,24 +1,77 @@
-html, body {
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-
+html,
+body {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
 }
-#startScreen{margin-left: 30%; background: rgba(50,18,128, 1); border-radius: 25px; width: 40%; height: 50%; position: absolute; z-index: 2;}
-
-#gameCanvas{position: absolute; z-index: -1; opacity: 0.5;}
-
-#chat {position: fixed; bottom: 0; margin-left: 80%;  width: 20%; display: none;}
-
-    #jj {background: #000; position: fixed;bottom: 0;height: 10%; width: 100%;}
-
-        form input { border: 2%; padding: 10px; width: 80%; max-height: 50%;}
-
-        form button { width: 20%; background: rgb(130, 224, 255); border: none; padding: 10px; height: 50%; min-height: 50%;}
-
-    #messages{position: fixed;font-size: 100%; bottom: 10%;  list-style-type:none; max-height: 30%; overflow-y: scroll; padding: 0; width: 100%;  background: rgba(255,255,255,0.4);word-break: break-all;}
-
-#leaders{position: fixed; top: 0; margin-left: 80%; max-height: 30%; width: 20%;  background: rgba(255,255,255,0.4); opacity: 0.5;}
-
-    #lead{font-size: 100%;  list-style-type: decimal;  padding: 0; width: 100%; margin-left: 10%;}
+#startScreen {
+    margin-left: 30%;
+    background: rgba(50, 18, 128, 1);
+    border-radius: 25px;
+    width: 40%;
+    height: 50%;
+    position: absolute;
+    z-index: 2;
+}
+#gameCanvas {
+    position: absolute;
+    z-index: -1;
+    opacity: 0.5;
+}
+#chat {
+    position: fixed;
+    bottom: 0;
+    margin-left: 80%;
+    width: 20%;
+    display: none;
+}
+    #jj {
+        background: #000;
+        position: fixed;
+        bottom: 0;
+        height: 10%;
+        width: 100%;
+    }
+        form input {
+            border: 2%;
+            padding: 10px;
+            width: 80%;
+            max-height: 50%;
+        }
+        form button {
+            width: 20%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+            height: 50%;
+            min-height: 50%;
+        }
+    #messages {
+        position: fixed;
+        font-size: 100%;
+        bottom: 10%;
+        list-style-type: none;
+        max-height: 30%;
+        overflow-y: scroll;
+        padding: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.4);
+        word-break: break-all;
+}
+#leaders {
+    position: fixed;
+    top: 0;
+    margin-left: 80%;
+    max-height: 30%;
+    width: 20%;
+    background: rgba(255, 255, 255, 0.4);
+    opacity: 0.5;
+}
+    #lead {
+        font-size: 100%;
+        list-style-type: decimal;
+        padding: 0;
+        width: 100%;
+        margin-left: 10%;
+    }
