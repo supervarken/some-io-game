@@ -25,7 +25,9 @@ var foods = [];
 
 io.on('connection', function(socket) {
  var nameChoose = false;
-   
+    io.emit('massChange', foods);
+   socket.emit('playerJoin', players.map(function (item) { return {playerName: item.playerName, x: item.x, y: item.y, playerSize: item.playerSize}}));
+
 socket.on('username', function (username) {
     if (nameChoose) return;
 
@@ -52,9 +54,6 @@ socket.on('username', function (username) {
         x: 0,
         y: 0
     }
-    io.emit('massChange', foods);
-    socket.emit('playerJoin', players.map(function (item) { return {playerName: item.playerName, x: item.x, y: item.y, playerSize: item.playerSize}}));
-
     players.push(socket);
 
     io.sockets.emit('playerJoin', [{

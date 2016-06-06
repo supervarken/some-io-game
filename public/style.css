@@ -5,9 +5,10 @@ html, body {
   margin: 0;
 
 }
-      #startScreen{margin-left: 30%; background-color: cornsilk; border-radius: 25px; width: 40%; height: 50%}
+      #startScreen{margin-left: 30%; background: rgba(50,18,128, 1); border-radius: 25px; width: 40%; height: 50%; position: absolute; z-index: 2;
+}
 
-      #gameCanvas{display: none;}
+      #gameCanvas{position: absolute; z-index: -1; opacity: 0.5;}
 
       #chat {position: fixed; bottom: 0; margin-left: 80%;  width: 20%; display: none;}
        #jj {background: #000; position: fixed;bottom: 0;height: 10%; width: 100%;}

@@ -24,11 +24,11 @@ socket.on('playerJoin', function (joinedPlayers) {
 
 socket.on('login', function (player) {
    document.getElementById("chat").style.display = "block";
-    document.getElementById("gameCanvas").style.display = "block";
+    document.getElementById("gameCanvas").style.opacity = "1";
     document.getElementById("startScreen").style.display = "none";
-    connected = true;
-    playerNumber = player;
-    main();
+   // connected = true;
+   //playerNumber = player;
+
   });
 socket.on('massChange', function(eat) {
     foods = eat;
@@ -145,3 +145,4 @@ requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame
 
 var then = Date.now();
 
+requestAnimationFrame(main);
