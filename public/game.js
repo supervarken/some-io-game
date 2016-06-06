@@ -96,10 +96,8 @@ var render = function() {
     updateCamera(player);
     updateTransform();
 
-    if(width && height) {
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(-player.playerSize*0.5, -player.playerSize*0.5, width+player.playerSize*0.5,width+player.playerSize*0.5);
-    }
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(-player.playerSize*0.5, -player.playerSize*0.5, width+player.playerSize*0.5,width+player.playerSize*0.5);
 
     ctx.font = "15px Arial";
 
