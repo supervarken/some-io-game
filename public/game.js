@@ -10,7 +10,7 @@ var direction = {
     x: 0,
     y: 0
 };
-var width, height;
+var width = 2000, height = 2000;
 
 var camera = {
     zoom: 1,
