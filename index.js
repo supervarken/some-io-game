@@ -26,6 +26,12 @@ var foods = [];
 io.on('connection', function(socket) {
     var nameChoose = false;
     io.emit('massChange', foods);
+
+    socket.emit('roomSize', {
+        width: width,
+        height, height
+    });
+
     socket.emit('playerJoin', players.map(function(item) {
         return {
             playerName: item.playerName,

@@ -10,12 +10,18 @@ var direction = {
     x: 0,
     y: 0
 };
+var width, height;
 
 var camera = {
     zoom: 1,
     x: 0,
     y: 0
 };
+
+socket.on('roomSize', function(size) {
+    width = size.width;
+    height = size.height;
+});
 
 socket.on('playerJoin', function(joinedPlayers) {
 
@@ -73,15 +79,27 @@ socket.on('playerMove', function(player) {
 });
 
 var render = function() {
+
+    var player;
+    for(i in players) {
+        var p = players[i];
+        if(p.me) {
+            player = p;
+            break;
+        }
+    }
+
     ctx.setTransform(1,0,0,1,0,0);
     ctx.fillStyle = "#cccccc";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    updateCamera();
+    updateCamera(player);
     updateTransform();
 
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(-25, -25, 1525,1025);
+    if(width && height) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(-player.playerSize*0.5, -player.playerSize*0.5, width+player.playerSize*0.5,width+player.playerSize*0.5);
+    }
 
     ctx.font = "15px Arial";
 
@@ -115,15 +133,9 @@ function updateTransform() {
     ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -(camera.x - canvas.width * 0.5) * camera.zoom, -(camera.y - canvas.height * 0.5) * camera.zoom);
 }
 
-function updateCamera() {
-    for(i in players) {
-        var player = players[i];
-        if(player.me) {
-            camera.x = player.x;
-            camera.y = player.y;
-            break;
-        }
-    }
+function updateCamera(player) {
+    camera.x = player.x;
+    camera.y = player.y;
 }
 
 var main = function() {
