@@ -29,7 +29,7 @@ io.on('connection', function(socket) {
 
     socket.emit('roomSize', {
         width: width,
-        height, height
+        height: height
     });
 
     socket.emit('playerJoin', players.map(function(item) {
