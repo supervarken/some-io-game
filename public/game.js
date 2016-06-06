@@ -101,7 +101,7 @@ function render() {
     updateTransform();
 
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(-player.playerSize*0.5, -player.playerSize*0.5, width+player.playerSize*0.5,height+player.playerSize*0.5);
+    ctx.fillRect(-player.playerSize, -player.playerSize, width+player.playerSize*0.5,height+player.playerSize*0.5);
 
     ctx.font = "15px Arial";
 
