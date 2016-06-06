@@ -20,15 +20,17 @@ socket.on('playerJoin', function (joinedPlayers) {
         players.push(player);
         console.log(player.playerName + ' joined, ' + players.length + ' players.');
     }
+    checkLeaders();
 });
 
 socket.on('login', function (player) {
    document.getElementById("chat").style.display = "block";
     document.getElementById("gameCanvas").style.opacity = "1";
+    document.getElementById("leaders").style.opacity = "1";
     document.getElementById("startScreen").style.display = "none";
    // connected = true;
    //playerNumber = player;
-  checkLeaders();
+
   });
 socket.on('massChange', function(eat) {
     foods = eat;
@@ -104,7 +106,7 @@ var main = function () {
     render();
 
     then = now;
-    checkLeaders();
+
     requestAnimationFrame(main);
 };
 
@@ -131,7 +133,7 @@ function changeDirection() {
     }
     }
 }
-
+setInterval(function(){checkLeaders();},1000)
 function checkLeaders(){
 
 var lead = players.slice(0);//clone players
