@@ -67,7 +67,8 @@ io.on('connection', function(socket) {
             playerSize: socket.playerSize,
             playerName: socket.playerName,
             x: socket.x,
-            y: socket.y
+            y: socket.y,
+            me: true
         }]);
 
         console.log(socket.playerName + ' connected');
@@ -226,7 +227,8 @@ function intersection(player1, player2) {
 }
 
 function intersect(player1, player2) {
-    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2); //diameter of the size of
+    var biggestSize = Math.max(player1.playerSize, player2.playerSize);
+    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(biggestSize, 2); //diameter of the size of
     //    return false;
 
 }

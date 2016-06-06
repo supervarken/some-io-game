@@ -11,6 +11,11 @@ var direction = {
     y: 0
 };
 
+var camera = {
+    zoom: 1,
+    x: 0,
+    y: 0
+};
 
 socket.on('playerJoin', function(joinedPlayers) {
 
@@ -68,6 +73,18 @@ socket.on('playerMove', function(player) {
 });
 
 var render = function() {
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.fillStyle = "#cccccc";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    updateCamera();
+    updateTransform();
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(-25, -25, 1525,1025);
+
+    ctx.font = "15px Arial";
+
     //ctx.drawImage(back, 0, 0, 1500, 1000);
     for (i = 0; i < foods.length; i++) {
         food = foods[i];
@@ -79,7 +96,7 @@ var render = function() {
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "#000000";
 
     for (i in players) {
 
@@ -88,12 +105,26 @@ var render = function() {
         ctx.beginPath();
         ctx.arc(player.x, player.y, player.playerSize, 0, 2 * Math.PI, false);
         ctx.fill();
-        ctx.font = "15px Arial";
         ctx.fillText(player.playerName, player.x - 25, player.y - player.playerSize - 5);
     }
 
 
 };
+
+function updateTransform() {
+    ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -(camera.x - canvas.width * 0.5) * camera.zoom, -(camera.y - canvas.height * 0.5) * camera.zoom);
+}
+
+function updateCamera() {
+    for(i in players) {
+        var player = players[i];
+        if(player.me) {
+            camera.x = player.x;
+            camera.y = player.y;
+            break;
+        }
+    }
+}
 
 var main = function() {
 
@@ -126,14 +157,16 @@ function changeDirection() {
 
     if (document.activeElement.tagName != "INPUT") {
         if (keys[87] || keys[38]) {
-            y = -1;
-        } else if (keys[83] || keys[40]) {
-            y = 1;
+            y += -1;
+        }
+        if (keys[83] || keys[40]) {
+            y += 1;
         }
         if (keys[68] || keys[39]) {
-            x = 1;
-        } else if (keys[65] || keys[37]) {
-            x = -1;
+            x += 1;
+        }
+        if (keys[65] || keys[37]) {
+            x += -1;
         }
 
         if (direction.x != x || direction.y != y) {
@@ -147,7 +180,7 @@ function changeDirection() {
 }
 setInterval(function() {
     checkLeaders();
-}, 1000)
+}, 1000);
 
 function checkLeaders() {
 
