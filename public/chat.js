@@ -1,4 +1,4 @@
-
+document.addEventListener("DOMContentLoaded", function(event) {
 document.getElementById('jj').addEventListener('submit', function(jj){
     jj.preventDefault();
        socket.emit('chat message', document.getElementById('m').value);
@@ -17,3 +17,4 @@ document.getElementById('jj').addEventListener('submit', function(jj){
 chat.scrollTop = chat.scrollHeight;
 
       });
+    });

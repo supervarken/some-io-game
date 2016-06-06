@@ -69,8 +69,12 @@ socket.on('username', function (username) {
     socket.emit('login', playerIndex);
 
    socket.on('chat message', function(msg, name){
+       if (msg == "/reset"){
+           resetPlayer(socket);
+       }
+       else{
     io.emit('chat message', msg, socket.playerName);
-
+       }
   });
 
    socket.on('reset', function(player){

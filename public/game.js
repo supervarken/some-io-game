@@ -28,7 +28,7 @@ socket.on('login', function (player) {
     document.getElementById("startScreen").style.display = "none";
    // connected = true;
    //playerNumber = player;
-
+  checkLeaders();
   });
 socket.on('massChange', function(eat) {
     foods = eat;
@@ -104,7 +104,7 @@ var main = function () {
     render();
 
     then = now;
-
+    checkLeaders();
     requestAnimationFrame(main);
 };
 
@@ -132,6 +132,25 @@ function changeDirection() {
     }
 }
 
+function checkLeaders(){
+
+var lead = players.slice(0);//clone players
+
+lead.sort(function(a,b) {
+    return b.playerSize - a.playerSize;
+});
+
+document.getElementById('lead').innerHTML = '';
+
+for(i = 0; i < lead.length && i < 5; i++){
+
+ gameBoard = document.createElement("li");
+ var text = document.createTextNode(lead[i].playerName + "  " + lead[i].playerSize);
+ gameBoard.appendChild(text);
+ document.getElementById('lead').appendChild(gameBoard);
+
+}
+}
 function nameChoose(){
     var name = document.getElementById("nameInput").value;
     socket.emit('username', name);
