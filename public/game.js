@@ -12,9 +12,9 @@ var direction = {
 };
 
 
-socket.on('playerJoin', function (joinedPlayers) {
+socket.on('playerJoin', function(joinedPlayers) {
 
-    for(i in joinedPlayers) {
+    for (i in joinedPlayers) {
         var player = joinedPlayers[i];
 
         players.push(player);
@@ -23,33 +23,33 @@ socket.on('playerJoin', function (joinedPlayers) {
     checkLeaders();
 });
 
-socket.on('login', function (player) {
-   document.getElementById("chat").style.display = "block";
+socket.on('login', function(player) {
+    document.getElementById("chat").style.display = "block";
     document.getElementById("gameCanvas").style.opacity = "1";
     document.getElementById("leaders").style.opacity = "1";
     document.getElementById("startScreen").style.display = "none";
-   // connected = true;
-   //playerNumber = player;
+    // connected = true;
+    //playerNumber = player;
 
-  });
+});
 socket.on('massChange', function(eat) {
     foods = eat;
 });
-socket.on('addMass', function(food){
- foods.push(food);
+socket.on('addMass', function(food) {
+    foods.push(food);
 });
-socket.on('removeMass', function(i){
- foods.splice(i, 1);
+socket.on('removeMass', function(i) {
+    foods.splice(i, 1);
 });
 socket.on('playerLeave', function(player) {
     var index = -1;
-    for(i in players) {
+    for (i in players) {
         var p = players[i];
-        if(player.playerName == p.playerName) {
+        if (player.playerName == p.playerName) {
             index = i;
         }
     }
-    if(i == -1) {
+    if (i == -1) {
         return;
     }
     players.splice(index, 1);
@@ -57,9 +57,9 @@ socket.on('playerLeave', function(player) {
 });
 
 socket.on('playerMove', function(player) {
-    for(i in players) {
+    for (i in players) {
         var p = players[i];
-        if(player.playerName == p.playerName) {
+        if (player.playerName == p.playerName) {
             p.x = player.x;
             p.y = player.y;
             p.playerSize = player.playerSize;
@@ -67,24 +67,24 @@ socket.on('playerMove', function(player) {
     }
 });
 
-var render = function () {
+var render = function() {
     //ctx.drawImage(back, 0, 0, 1500, 1000);
-     for(i = 0; i < foods.length; i++) {
+    for (i = 0; i < foods.length; i++) {
         food = foods[i];
 
         ctx.fillStyle = food.foodcolor;
         ctx.beginPath();
         ctx.arc(food.x, food.y, food.playerSize, 0, 2 * Math.PI, false);
         ctx.fill();
-      //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
+        //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
-ctx.fillStyle = "black";
+    ctx.fillStyle = "black";
 
-    for(i in players) {
-        
+    for (i in players) {
+
         player = players[i];
-        
+
         ctx.beginPath();
         ctx.arc(player.x, player.y, player.playerSize, 0, 2 * Math.PI, false);
         ctx.fill();
@@ -95,7 +95,7 @@ ctx.fillStyle = "black";
 
 };
 
-var main = function () {
+var main = function() {
 
     var now = Date.now();
     var delta = now - then;
@@ -111,54 +111,70 @@ var main = function () {
 };
 
 var keys = [];
-window.onkeyup = function(e) {keys[e.keyCode]=false; changeDirection();}
-window.onkeydown = function(e) {keys[e.keyCode]=true; changeDirection();}
+window.onkeyup = function(e) {
+    keys[e.keyCode] = false;
+    changeDirection();
+}
+window.onkeydown = function(e) {
+    keys[e.keyCode] = true;
+    changeDirection();
+}
 
 function changeDirection() {
     var x = 0;
     var y = 0;
 
-    if(document.activeElement.tagName != "INPUT"){
-    if(keys[87] || keys[38]){ y = -1;}
-    else if(keys[83] || keys[40]){ y= 1;}
-    if(keys[68] || keys[39]){ x = 1;}
-    else if(keys[65] || keys[37]){ x = -1;}
+    if (document.activeElement.tagName != "INPUT") {
+        if (keys[87] || keys[38]) {
+            y = -1;
+        } else if (keys[83] || keys[40]) {
+            y = 1;
+        }
+        if (keys[68] || keys[39]) {
+            x = 1;
+        } else if (keys[65] || keys[37]) {
+            x = -1;
+        }
 
-    if(direction.x != x || direction.y != y) {
-        direction = {
-            x: x,
-            y: y
-        };
-        socket.emit('changeDirection', direction);
+        if (direction.x != x || direction.y != y) {
+            direction = {
+                x: x,
+                y: y
+            };
+            socket.emit('changeDirection', direction);
+        }
     }
+}
+setInterval(function() {
+    checkLeaders();
+}, 1000)
+
+function checkLeaders() {
+
+    var lead = players.slice(0); //clone players
+
+    lead.sort(function(a, b) {
+        return b.playerSize - a.playerSize;
+    });
+
+    document.getElementById('lead').innerHTML = '';
+
+    for (i = 0; i < lead.length && i < 5; i++) {
+
+        gameBoard = document.createElement("li");
+        var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize));
+        gameBoard.appendChild(text);
+        document.getElementById('lead').appendChild(gameBoard);
+
     }
 }
-setInterval(function(){checkLeaders();},1000)
-function checkLeaders(){
 
-var lead = players.slice(0);//clone players
-
-lead.sort(function(a,b) {
-    return b.playerSize - a.playerSize;
-});
-
-document.getElementById('lead').innerHTML = '';
-
-for(i = 0; i < lead.length && i < 5; i++){
-
- gameBoard = document.createElement("li");
- var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize));
- gameBoard.appendChild(text);
- document.getElementById('lead').appendChild(gameBoard);
-
-}
-}
-function nameChoose(){
+function nameChoose() {
     var name = document.getElementById("nameInput").value;
     socket.emit('username', name);
 }
 
-function resetClient(){
+function resetClient() {
     socket.emit('reset', "code");
 }
 var w = window;
