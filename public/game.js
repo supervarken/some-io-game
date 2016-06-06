@@ -147,7 +147,7 @@ document.getElementById('lead').innerHTML = '';
 for(i = 0; i < lead.length && i < 5; i++){
 
  gameBoard = document.createElement("li");
- var text = document.createTextNode(lead[i].playerName + "  " + lead[i].playerSize);
+ var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize));
  gameBoard.appendChild(text);
  document.getElementById('lead').appendChild(gameBoard);
 
