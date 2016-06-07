@@ -18,6 +18,18 @@ var camera = {
     y: 0
 };
 
+socket.on('leaderUpdate', function(lead) {
+        document.getElementById('lead').innerHTML = '';
+
+    for (i = 0; i < lead.length; i++) {
+
+        gameBoard = document.createElement("li");
+        var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize));
+        gameBoard.appendChild(text);
+        document.getElementById('lead').appendChild(gameBoard);
+
+    }
+})
 socket.on('roomSize', function(size) {
     width = size.width;
     height = size.height;
@@ -31,7 +43,7 @@ socket.on('playerJoin', function(joinedPlayers) {
         players.push(player);
         console.log(player.playerName + ' joined, ' + players.length + ' players.');
     }
-    checkLeaders();
+    //checkLeaders();
 });
 
 socket.on('login', function(player) {
@@ -80,7 +92,7 @@ socket.on('playerMove', function(player) {
 
 function render() {
 
-    var player;
+    var player = players[0];
     for(i in players) {
         var p = players[i];
         if(p.me) {
@@ -90,10 +102,10 @@ function render() {
     }
 
     if(!player) {
-        return;
+       return;// player = players[0];
     }
 
-    ctx.setTransform(1,0,0,1,0,0);
+    ctx.setTransform(1,0,0,1,0,1);
     ctx.fillStyle = "#cccccc";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -101,7 +113,7 @@ function render() {
     updateTransform();
 
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(-player.playerSize, -player.playerSize, width+player.playerSize*0.5,height+player.playerSize*0.5);
+    ctx.fillRect(0, 0, width, height);
 
     ctx.font = "15px Arial";
 
@@ -193,7 +205,7 @@ function changeDirection() {
     }
 }
 setInterval(function() {
-    checkLeaders();
+  //  checkLeaders();
 }, 1000);
 
 function checkLeaders() {

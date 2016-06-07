@@ -5,8 +5,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
-var width = 2000;
-var height = 2000;
+var width = 5000;
+var height = 5000;
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* Alright, listen here. This is really bad and I know that.
@@ -83,6 +83,7 @@ io.on('connection', function(socket) {
         socket.emit('login', playerIndex);
 
         socket.on('chat message', function(msg, name) {
+            if(msg == ""){}
             if (msg == "/reset") {
                 resetPlayer(socket);
             } else {
@@ -131,11 +132,24 @@ setInterval(function() {
     io.emit('massChange', foods);
 
 }, 300000);
+setInterval(function() {
+    var leadObjs = [];
+    var lead = players.slice(0); //clone players
 
+    lead.sort(function(a, b) {
+        return b.playerSize - a.playerSize;
+    });
+    for (i = 0; i < 5 && i < lead.length; i++){
+        var leadObj = {playerName: lead[i].playerName, playerSize: lead[i].playerSize};
+        leadObjs.push(leadObj);
+
+io.emit('leaderUpdate', leadObjs);
+            }
+}, 1000)
 var id = gameloop.setGameLoop(function(delta) {
 
     var foodNow = foods.splice();
-    if (Math.random() < 0.02) {
+    if (Math.random() < 0.08) {
         food = {
             x: Math.random() * height,
             y: Math.random() * width,
@@ -163,7 +177,7 @@ function movePlayer(player) {
     }
 
     intersectAny(player);
-    player.speed = 100 / player.playerSize + 2;
+    player.speed = 200 / player.playerSize + 1;
     movePlayerTo(player,
         player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)),
         player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
@@ -233,8 +247,8 @@ function intersection(player1, player2) {
 }
 
 function intersect(player1, player2) {
-    var biggestSize = Math.max(player1.playerSize, player2.playerSize);
-    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(biggestSize, 2); //diameter of the size of
+    //var biggestSize = Math.max(player1.playerSize, player2.playerSize);
+    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2); //diameter of the size of
     //    return false;
 
 }

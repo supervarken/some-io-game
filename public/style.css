@@ -7,8 +7,9 @@ body {
 }
 #startScreen {
     margin-left: 30%;
-    background: rgba(50, 18, 128, 1);
+    background: rgba(200, 180, 205, 1);
     border-radius: 25px;
+   text-align: center;
     width: 40%;
     height: 50%;
     position: absolute;
