@@ -145,7 +145,7 @@ setInterval(function() {
 
 io.emit('leaderUpdate', leadObjs);
             }
-}, 100000)
+}, 1000)
 var id = gameloop.setGameLoop(function(delta) {
 
     var foodNow = foods.splice();
@@ -187,8 +187,8 @@ function movePlayerTo(player, x, y) {
 
     player.x = Math.min(Math.max(player.playerSize, x), (width - player.playerSize)); //add player.playersize
     player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
-    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName};
-    emitPlayer(play);
+
+    emitPlayer(player);
 
 }
 
@@ -232,11 +232,12 @@ function intersectAny(player) {
 }
 
 function emitPlayer(player) {
+    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName};
     io.sockets.emit('playerMove', {
-        playerSize: player.playerSize,
-        playerName: player.playerName,
-        x: player.x,
-        y: player.y
+        playerSize: play.playerSize,
+        playerName: play.playerName,
+        x: play.x,
+        y: play.y
     });
 }
 
