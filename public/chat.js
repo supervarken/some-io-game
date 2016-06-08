@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", function(event) {
     document.getElementById('jj').addEventListener('submit', function(jj) {
         jj.preventDefault();
-        socket.emit('chat message', document.getElementById('m').value);
+
+        var mess = document.getElementById('m').value;
+         if(mess.indexOf("/colour ") >= 0) {
+           backColour = mess.substr(8);}
+        if(mess != ""){
+        socket.emit('chat message', mess);
+        }
         document.getElementById('m').value = "";
         return false;
     })

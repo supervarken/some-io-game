@@ -18,6 +18,8 @@ var camera = {
     y: 0
 };
 
+var backColour = "#FFFFFF";
+
 socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').innerHTML = '';
 
@@ -111,8 +113,8 @@ function render() {
 
     updateCamera(player);
     updateTransform();
-
     ctx.fillStyle = "#FFFFFF";
+    ctx.fillStyle = backColour;
     ctx.fillRect(0, 0, width, height);
 
     ctx.font = "15px Arial";
@@ -175,6 +177,10 @@ window.onkeyup = function(e) {
 window.onkeydown = function(e) {
     keys[e.keyCode] = true;
     changeDirection();
+    if (keys[13]){
+
+        document.getElementById("m").focus();
+    }
 }
 
 function changeDirection() {

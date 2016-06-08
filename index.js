@@ -81,6 +81,7 @@ io.on('connection', function(socket) {
 
 
         socket.emit('login', playerIndex);
+         socket.emit('chat message', "Welcome to plong.ga! Commands: /reset to reset your player, /colour [colourname] to change background colour","Server");
 
         socket.on('chat message', function(msg, name) {
             if(msg == ""){}

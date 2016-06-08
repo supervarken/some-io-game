@@ -25,6 +25,7 @@ body {
     bottom: 0;
     margin-left: 80%;
     width: 20%;
+    height: 50%;
     display: none;
 }
     #jj {
@@ -49,16 +50,17 @@ body {
             min-height: 50%;
         }
     #messages {
-        position: fixed;
+        border-color: aquamarine;
+        border: 10px;
         font-size: 100%;
-        bottom: 10%;
         list-style-type: none;
-        max-height: 30%;
+        height: 70%;
         overflow-y: scroll;
-        padding: 0;
+        padding: 5%;
         width: 100%;
         background: rgba(255, 255, 255, 0.4);
-        word-break: break-all;
+        word-wrap:break-word;
+
 }
 #leaders {
     position: fixed;
