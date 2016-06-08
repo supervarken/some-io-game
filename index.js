@@ -22,7 +22,7 @@ var intersections = 0;
 var playerIndex = 0;
 var players = [];
 var foods = [];
-
+var blocks = [];
 io.on('connection', function(socket) {
     var nameChoose = false;
     io.emit('massChange', foods);
@@ -160,7 +160,7 @@ var id = gameloop.setGameLoop(function(delta) {
         io.emit('addMass', food);
     }
     movePlayers();
-}, 1000 / 60);
+}, 1000 / 1000);
 
 function movePlayers() {
 
