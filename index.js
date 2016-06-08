@@ -160,7 +160,7 @@ var id = gameloop.setGameLoop(function(delta) {
         io.emit('addMass', food);
     }
     movePlayers();
-}, 1000 / 1000);
+}, 1000 / 60);
 
 function movePlayers() {
 
@@ -187,7 +187,8 @@ function movePlayerTo(player, x, y) {
 
     player.x = Math.min(Math.max(player.playerSize, x), (width - player.playerSize)); //add player.playersize
     player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
-    emitPlayer(player);
+    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName};
+    emitPlayer(play);
 
 }
 
