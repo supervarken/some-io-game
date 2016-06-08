@@ -18,6 +18,8 @@ var camera = {
     y: 0
 };
 
+var blocks = [];
+
 socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').innerHTML = '';
 
@@ -58,6 +60,11 @@ socket.on('login', function(player) {
 socket.on('massChange', function(eat) {
     foods = eat;
 });
+socket.on('blockChange', function(add){
+
+        blocks = add;
+
+})
 socket.on('addMass', function(food) {
     foods.push(food);
 });
@@ -128,6 +135,16 @@ function render() {
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
+    for (i = 0; i < blocks.length; i++) {
+        block = blocks[i];
+
+        ctx.fillStyle = "black";
+
+
+         ctx.fillRect(block.x,block.y,block.w,block.h);
+
+    }
+
     ctx.fillStyle = "#000000";
 
     for (i in players) {

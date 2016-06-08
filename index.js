@@ -22,11 +22,12 @@ var intersections = 0;
 var playerIndex = 0;
 var players = [];
 var foods = [];
-var blocks = [];
+var blocks = [{x: 100, y: 100, w: 100, h: 200}, {x: 1000, y: 100, w: 300, h: 500}];
+
 io.on('connection', function(socket) {
     var nameChoose = false;
     io.emit('massChange', foods);
-
+io.emit('blockChange', blocks);
     socket.emit('roomSize', {
         width: width,
         height: height
@@ -177,17 +178,32 @@ function movePlayer(player) {
     }
 
     intersectAny(player);
+
     player.speed = 200 / player.playerSize + 1;
-    movePlayerTo(player,
+     movePlayerTo(player,
         player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)),
         player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
+
 }
 
-function movePlayerTo(player, x, y) {
+function wallDetection(player){
+     for (i = 0; i < blocks.length; i++) {
 
+    if (intersectWall(player, blocks[i])){
+        return false;
+    }
+
+    }
+    return true;
+}
+function movePlayerTo(player, x, y) {
+    var demoPlayer = {x: x, y: y, playerSize: player.playerSize};
+
+
+    if(wallDetection(demoPlayer)){
     player.x = Math.min(Math.max(player.playerSize, x), (width - player.playerSize)); //add player.playersize
     player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
-
+    }
     emitPlayer(player);
 
 }
@@ -248,6 +264,28 @@ function intersection(player1, player2) {
     io.emit('chat message', messaged, "Server");
 }
 
+function intersectWall(player, block){
+   var distX = Math.abs(player.x - block.x - block.w / 2);
+    var distY = Math.abs(player.y - block.y - block.h / 2);
+
+    if (distX > (block.w / 2 + player.playerSize)) {
+        return false;
+    }
+    if (distY > (block.h / 2 + player.playerSize)) {
+        return false;
+    }
+
+    if (distX <= (block.w / 2)) { //boven / beneden
+     return true;
+    }
+    if (distY <= (block.h / 2)) { //link / rechts
+        return true;
+    }
+
+    var dx = distX - block.w / 2;
+    var dy = distY - block.h / 2;
+    return (dx * dx + dy * dy <= (player.playerSize * player.playerSize));
+}
 function intersect(player1, player2) {
     //var biggestSize = Math.max(player1.playerSize, player2.playerSize);
     return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2); //diameter of the size of
