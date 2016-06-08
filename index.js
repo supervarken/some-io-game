@@ -145,7 +145,7 @@ setInterval(function() {
 
 io.emit('leaderUpdate', leadObjs);
             }
-}, 1000)
+}, 100000)
 var id = gameloop.setGameLoop(function(delta) {
 
     var foodNow = foods.splice();
@@ -157,7 +157,7 @@ var id = gameloop.setGameLoop(function(delta) {
             foodcolor: '#' + Math.floor(Math.random() * 16777215).toString(16)
         };
         foods.push(food);
-       // io.emit('addMass', food);
+       io.emit('addMass', food);
     }
     movePlayers();
 }, 1000 / 60);
