@@ -23,6 +23,7 @@ var playerIndex = 0;
 var players = [];
 var foods = [];
 var blocks = [];
+var bullets = [];
 io.on('connection', function(socket) {
     var nameChoose = false;
     io.emit('massChange', foods);
@@ -84,10 +85,20 @@ io.on('connection', function(socket) {
          socket.emit('chat message', "Welcome to plong.ga! Commands: /reset to reset your player, /colour [colourname] to change background colour","Server");
 
         socket.on('chat message', function(msg, name) {
-            if(msg == ""){}
-            if (msg == "/reset") {
-                resetPlayer(socket);
-            } else {
+            if (msg == ""){}
+            else if (msg == "/reset") { resetPlayer(socket); }
+            else if (msg == "/resetgame jojo") { resetGame(); }
+
+             else if(msg.indexOf("/resetplayer jojo ") >= 0) {
+           choosenOne = msg.substr(18);
+                 for (i = 0; i < players.length; i++){
+                     if(players[i].playerName == choosenOne){
+                         resetPlayer(players[i]);
+                     }
+                 }
+             }
+             else if (msg == "/resetplayer") { resetGame(); }
+            else {
                 io.emit('chat message', msg, socket.playerName);
             }
         });
@@ -110,8 +121,10 @@ io.on('connection', function(socket) {
         });
     });
 });
-setInterval(function() {
-    var win = 0;
+setInterval(function(){resetGame()}, 300000);
+
+function resetGame(){
+     var win = 0;
     for (i = 0; i < players.length; i++) {
         if (players[i].playerSize > win) {
             var winner = players[i];
@@ -131,8 +144,7 @@ setInterval(function() {
 
     io.emit('chat message', "Game resetted!", "Server");
     io.emit('massChange', foods);
-
-}, 300000);
+}
 setInterval(function() {
     var leadObjs = [];
     var lead = players.slice(0); //clone players

@@ -4,12 +4,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         var mess = document.getElementById('m').value;
          if(mess.indexOf("/colour ") >= 0) {
-           backColour = mess.substr(8);}
+           backColour = mess.substr(8);
+         mess = "";
+         document.getElementById('m').blur();}
         if(mess != ""){
         socket.emit('chat message', mess);
+            document.getElementById('m').blur();
         }
+
         document.getElementById('m').value = "";
-        return false;
+
+       return false;
     })
 
     socket.on('chat message', function(msg, name) {
