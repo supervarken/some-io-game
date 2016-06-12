@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(event) {
+
     document.getElementById('jj').addEventListener('submit', function(jj) {
         jj.preventDefault();
 

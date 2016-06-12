@@ -19,7 +19,6 @@ var camera = {
 };
 
 var backColour = "#FFFFFF";
-
 socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').innerHTML = '';
 
@@ -37,6 +36,7 @@ socket.on('roomSize', function(size) {
     height = size.height;
 });
 
+
 socket.on('playerJoin', function(joinedPlayers) {
 
     for (i in joinedPlayers) {
@@ -49,7 +49,9 @@ socket.on('playerJoin', function(joinedPlayers) {
 });
 
 socket.on('login', function(player) {
+    if(checkbox){
     document.getElementById("chat").style.display = "block";
+    }
     document.getElementById("gameCanvas").style.opacity = "1";
     document.getElementById("leaders").style.opacity = "1";
     document.getElementById("startScreen").style.display = "none";
@@ -57,6 +59,8 @@ socket.on('login', function(player) {
     //playerNumber = player;
 
 });
+
+//mass / bullets
 socket.on('massChange', function(eat) {
     foods = eat;
 });
@@ -66,6 +70,7 @@ socket.on('addMass', function(food) {
 socket.on('removeMass', function(i) {
     foods.splice(i, 1);
 });
+
 socket.on('playerLeave', function(player) {
     var index = -1;
     for (i in players) {
@@ -94,7 +99,8 @@ socket.on('playerMove', function(player) {
 
 function render() {
 
-    var player = players[0];
+    player = {x: width / 2, y: height / 2};
+
     for(i in players) {
         var p = players[i];
         if(p.me) {
@@ -208,6 +214,7 @@ function changeDirection() {
             };
             socket.emit('changeDirection', direction);
         }
+
     }
 }
 setInterval(function() {
@@ -236,7 +243,8 @@ function checkLeaders() {
 
 function nameChoose() {
     var name = document.getElementById("nameInput").value;
-    socket.emit('username', name);
+    checkbox =  document.getElementById("chatChoose").checked;
+    socket.emit('username', name, checkbox);
 }
 
 var w = window;

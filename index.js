@@ -23,10 +23,9 @@ var playerIndex = 0;
 var players = [];
 var foods = [];
 var blocks = [];
-var bullets = [];
 io.on('connection', function(socket) {
     var nameChoose = false;
-    io.emit('massChange', foods);
+    socket.emit('massChange', foods);
 
     socket.emit('roomSize', {
         width: width,
@@ -42,16 +41,17 @@ io.on('connection', function(socket) {
         }
     }));
 
-    socket.on('username', function(username) {
+
+    socket.on('username', function(username, chat) {
         if (nameChoose) return;
 
         playerIndex++;
         nameChoose = true;
         // socket.playerSize = 30; //verander om groter/kleiner te maken.
-        if (username == "") {
+        if (username === "") {
             username = "Player " + playerIndex;
         }
-        for (var i = 0; i < players.length; i++) {
+        for (var i=0;i<players.length;i++) {
             if (players[i].playerName == username) {
                 username = username + 2;
             }
@@ -97,14 +97,10 @@ io.on('connection', function(socket) {
                      }
                  }
              }
-             else if (msg == "/resetplayer") { resetGame(); }
+
             else {
                 io.emit('chat message', msg, socket.playerName);
             }
-        });
-
-        socket.on('reset', function(player) {
-            resetPlayer(socket);
         });
 
         socket.on('disconnect', function() {
@@ -173,8 +169,8 @@ var id = gameloop.setGameLoop(function(delta) {
        io.emit('addMass', food);
     }
     movePlayers();
-}, 1000 / 60);
 
+}, 1000 / 60);
 function movePlayers() {
 
     for (i in players) {
