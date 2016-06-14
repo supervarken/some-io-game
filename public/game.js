@@ -2,8 +2,7 @@ var socket = io();
 var connected = false;
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
-var back = new Image();
-back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
+
 var players = [];
 var foods = [];
 var direction = {
@@ -19,6 +18,25 @@ var camera = {
 };
 
 var backColour = "#FFFFFF";
+
+//skins/images
+var back = new Image();
+back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
+
+var images = new Array();
+function preload() {
+				for (i = 0; i < preload.arguments.length; i++) {
+					images[i] = new Image()
+					images[i].src = preload.arguments[i]
+				}
+			}
+preload(
+"http://cloud.pubble.nl/9ec7a37f/content/2016/3/7c4a1d7c-0264-4e9d-9b3e-347fca793d14.jpg",
+"http://www.lunapic.com/editor/premade/transparent.gif",
+"http://i.imgur.com/9gWLFFH.png",
+"http://i.imgur.com/9gWLFFH.png");
+
+
 socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').innerHTML = '';
 
@@ -143,8 +161,17 @@ function render() {
         player = players[i];
 
         ctx.beginPath();
-        ctx.arc(player.x, player.y, player.playerSize, 0, 2 * Math.PI, false);
-        ctx.fill();
+        ctx.fillStyle = "#FFFFFF";
+        ctx.arc(player.x, player.y, player.playerSize, 0, (2 * Math.PI), false);
+          ctx.fill();
+
+        var line = player.playerSize / 4;
+        ctx.lineWidth = line;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
+
+        ctx.drawImage(images[player.skin], player.x - (0.5 * player.playerSize), player.y - (0.5 * player.playerSize), player.playerSize, player.playerSize);
+      ctx.fillStyle = "#000000";
         ctx.fillText(player.playerName, player.x - 25, player.y - player.playerSize - 5);
     }
 
@@ -244,7 +271,12 @@ function checkLeaders() {
 function nameChoose() {
     var name = document.getElementById("nameInput").value;
     checkbox =  document.getElementById("chatChoose").checked;
-    socket.emit('username', name, checkbox);
+
+    skin = document.getElementById("slect").value;
+    if(skin == 'random'){
+        skin = Math.round(Math.random() * document.querySelectorAll('option').length);
+    }
+    socket.emit('username', name, checkbox, skin);
 }
 
 var w = window;

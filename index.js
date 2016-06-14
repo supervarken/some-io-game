@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
     }));
 
 
-    socket.on('username', function(username, chat) {
+    socket.on('username', function(username, chat, skin) {
         if (nameChoose) return;
 
         playerIndex++;
@@ -57,7 +57,7 @@ io.on('connection', function(socket) {
             }
 
         }
-
+        socket.skin = skin;
         socket.playerName = username;
         socket.playerSize = 20;
 
@@ -75,9 +75,10 @@ io.on('connection', function(socket) {
             playerName: socket.playerName,
             x: socket.x,
             y: socket.y,
-            me: true
+            me: true,
+            skin: socket.skin
         }]);
-
+        console.log(socket.skin);
         console.log(socket.playerName + ' connected');
 
 
