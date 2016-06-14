@@ -37,7 +37,8 @@ io.on('connection', function(socket) {
             playerName: item.playerName,
             x: item.x,
             y: item.y,
-            playerSize: item.playerSize
+            playerSize: item.playerSize,
+            skin: item.skin
         }
     }));
 
