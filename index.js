@@ -22,10 +22,10 @@ var intersections = 0;
 var playerIndex = 0;
 var players = [];
 var foods = [];
-var blocks = [];
+var powers = [];
 io.on('connection', function(socket) {
     var nameChoose = false;
-    socket.emit('massChange', foods);
+    socket.emit('massChange', foods, powers);
 
     socket.emit('roomSize', {
         width: width,
@@ -58,10 +58,11 @@ io.on('connection', function(socket) {
             }
 
         }
+        socket.bomb = false;
         socket.skin = skin;
         socket.playerName = username;
         socket.playerSize = 20;
-
+        socket.speedUp = 1;
         respawn(socket);
         socket.speed = 5;
 
@@ -71,7 +72,7 @@ io.on('connection', function(socket) {
         }
         players.push(socket);
 
-        io.sockets.emit('playerJoin', [{
+        socket.emit('playerJoin', [{
             playerSize: socket.playerSize,
             playerName: socket.playerName,
             x: socket.x,
@@ -170,6 +171,29 @@ var id = gameloop.setGameLoop(function(delta) {
         foods.push(food);
        io.emit('addMass', food);
     }
+    if (Math.random() < 0.002) {
+        switch (Math.round(Math.random())) {
+    case 0:
+        kinder = "speed";
+        img = 3;
+
+        break;
+    case 1:
+        kinder = "bomb";
+        img = 4;
+
+        break;
+}
+        power = {
+            x: Math.random() * height,
+            y: Math.random() * width,
+            playerSize: 20,
+            kind: kinder,
+            img: img
+        };
+        powers.push(power);
+       io.emit('addPower', power);
+    }
     movePlayers();
 
 }, 1000 / 60);
@@ -188,7 +212,7 @@ function movePlayer(player) {
     }
 
     intersectAny(player);
-    player.speed = 200 / player.playerSize + 1;
+    player.speed = (200 / player.playerSize + 1) * player.speedUp;
     movePlayerTo(player,
         player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)),
         player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
@@ -216,11 +240,11 @@ function intersectAny(player) {
             continue;
         }
         if (intersect(player, p)) {
-            if (player.playerSize > p.playerSize) {
+            if (player.playerSize > p.playerSize || player.bomb == true) {
                 player.playerSize += 0.2 * p.playerSize;
                 resetPlayer(p);
                 emitPlayer(player);
-            } else {
+            } else{
                 p.playerSize += 0.2 * player.playerSize;
                 resetPlayer(player)
                 emitPlayer(p);
@@ -238,6 +262,23 @@ function intersectAny(player) {
             foods.splice(i, 1);
 
             io.emit('removeMass', i);
+        }
+    }
+
+    for (var i = 0; i < powers.length; i++) {
+        var power = powers[i];
+        if (intersect(player, power)) {
+        if(power.kind == "speed"){
+            player.speedUp += 1;
+             setTimeout(function(){ player.speedUp -= 1}, 3000);
+        }
+            else if (power.kind == "bomb"){
+                player.bomb = true;
+                setTimeout(function(){ player.bomb = false}, 3000);
+            }
+            powers.splice(i, 1);
+
+            io.emit('removePower', i);
         }
     }
 }

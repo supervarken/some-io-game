@@ -5,6 +5,7 @@ var ctx = canvas.getContext("2d");
 
 var players = [];
 var foods = [];
+var powers = [];
 var direction = {
     x: 0,
     y: 0
@@ -34,7 +35,8 @@ preload(
 "http://cloud.pubble.nl/9ec7a37f/content/2016/3/7c4a1d7c-0264-4e9d-9b3e-347fca793d14.jpg",
 "http://www.lunapic.com/editor/premade/transparent.gif",
 "http://i.imgur.com/9gWLFFH.png",
-"http://i.imgur.com/9gWLFFH.png");
+"https://wiki.teamfortress.com/w/images/3/38/Mannpower_Mode_Powerup_Haste_Icon.png?t=20151103182919",
+"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png");
 
 
 socket.on('leaderUpdate', function(lead) {
@@ -79,7 +81,8 @@ socket.on('login', function(player) {
 });
 
 //mass / bullets
-socket.on('massChange', function(eat) {
+socket.on('massChange', function(eat, pup) {
+    powers = pup;
     foods = eat;
 });
 socket.on('addMass', function(food) {
@@ -87,6 +90,15 @@ socket.on('addMass', function(food) {
 });
 socket.on('removeMass', function(i) {
     foods.splice(i, 1);
+});
+socket.on('powerChange', function(pup) {
+
+});
+socket.on('addPower', function(pup) {
+    powers.push(pup);
+});
+socket.on('removePower', function(i) {
+    powers.splice(i, 1);
 });
 
 socket.on('playerLeave', function(player) {
@@ -154,6 +166,20 @@ function render() {
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
+
+    for (i = 0; i < powers.length; i++) {
+        power = powers[i];
+        ctx.fillStyle = "orange";
+        ctx.beginPath();
+        ctx.arc(power.x, power.y, power.playerSize, 0, 2 * Math.PI, false);
+         ctx.fill();
+        ctx.drawImage(images[power.img], power.x - (0.5 * power.playerSize), power.y - (0.5 * power.playerSize), power.playerSize, power.playerSize);
+
+
+        //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
+
+    }
+
     ctx.fillStyle = "#000000";
 
     for (i in players) {
@@ -165,14 +191,15 @@ function render() {
         ctx.arc(player.x, player.y, player.playerSize, 0, (2 * Math.PI), false);
           ctx.fill();
 
-        var line = player.playerSize / 4;
+        var line = player.playerSize / 6;
         ctx.lineWidth = line;
       ctx.strokeStyle = '#003300';
       ctx.stroke();
-
+if (images[player.skin]){
         ctx.drawImage(images[player.skin], player.x - (0.5 * player.playerSize), player.y - (0.5 * player.playerSize), player.playerSize, player.playerSize);
+}
       ctx.fillStyle = "#000000";
-        ctx.fillText(player.playerName, player.x - 25, player.y - player.playerSize - 5);
+        ctx.fillText(player.playerName, player.x - 25 , player.y - player.playerSize - 5);
     }
 
 
@@ -193,6 +220,7 @@ var main = function() {
     var delta = now - then;
 
     canvas.width = window.innerWidth;
+
     canvas.height = window.innerHeight;
 
     render();
