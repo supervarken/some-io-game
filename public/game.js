@@ -19,11 +19,7 @@ var camera = {
 };
 
 var backColour = "#FFFFFF";
-
 //skins/images
-var back = new Image();
-back.src = "http://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/thumbnails/image/idcs1426.jpg";
-
 var images = new Array();
 function preload() {
 				for (i = 0; i < preload.arguments.length; i++) {
@@ -32,7 +28,7 @@ function preload() {
 				}
 			}
 preload(
-"http://cloud.pubble.nl/9ec7a37f/content/2016/3/7c4a1d7c-0264-4e9d-9b3e-347fca793d14.jpg",
+"https://pbs.twimg.com/profile_images/693492259791200256/z0oxKdVO.png",
 "http://www.lunapic.com/editor/premade/transparent.gif",
 "http://i.imgur.com/9gWLFFH.png",
 "https://wiki.teamfortress.com/w/images/3/38/Mannpower_Mode_Powerup_Haste_Icon.png?t=20151103182919",
@@ -302,7 +298,7 @@ function nameChoose() {
 
     skin = document.getElementById("slect").value;
     if(skin == 'random'){
-        skin = Math.round(Math.random() * document.querySelectorAll('option').length);
+        skin = Math.round(Math.random() * ((document.querySelectorAll('option').length - 1) - 1) + 1);
     }
     socket.emit('username', name, checkbox, skin);
 }
