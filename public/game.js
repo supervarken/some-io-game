@@ -10,6 +10,7 @@ var direction = {
     x: 0,
     y: 0
 };
+var mines = [];
 var width, height;
 
 var camera = {
@@ -32,7 +33,8 @@ preload(
 "http://www.lunapic.com/editor/premade/transparent.gif",
 "http://i.imgur.com/9gWLFFH.png",
 "https://wiki.teamfortress.com/w/images/3/38/Mannpower_Mode_Powerup_Haste_Icon.png?t=20151103182919",
-"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png");
+"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
+"http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png");
 
 
 socket.on('leaderUpdate', function(lead) {

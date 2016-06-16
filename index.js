@@ -23,6 +23,8 @@ var playerIndex = 0;
 var players = [];
 var foods = [];
 var powers = [];
+var mines = [];
+
 io.on('connection', function(socket) {
     var nameChoose = false;
     socket.emit('massChange', foods, powers);
