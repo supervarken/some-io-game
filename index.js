@@ -136,13 +136,14 @@ function resetGame(){
         io.emit('chat message', "Winner is: " + winner.playerName, "Server");
     }
     foods = [];
+    powers = [];
     for (i = 0; i < players.length; i++) {
         resetPlayer(players[i]);
 
     }
 
     io.emit('chat message', "Game resetted!", "Server");
-    io.emit('massChange', foods);
+    io.emit('massChange', foods, powers);
 }
 setInterval(function() {
     var leadObjs = [];
