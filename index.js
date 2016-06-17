@@ -27,7 +27,7 @@ var mines = [];
 
 io.on('connection', function(socket) {
     var nameChoose = false;
-    socket.emit('massChange', foods, powers);
+    socket.emit('massChange', foods, powers, mines);
 
     socket.emit('roomSize', {
         width: width,
@@ -67,7 +67,7 @@ io.on('connection', function(socket) {
         socket.speedUp = 1;
         respawn(socket);
         socket.speed = 5;
-
+        socket.mines = 0;
         socket.direction = {
             x: 0,
             y: 0
@@ -82,7 +82,14 @@ io.on('connection', function(socket) {
             me: true,
             skin: socket.skin
         }]);
-        console.log(socket.skin);
+        socket.broadcast.emit('playerJoin', [{
+            playerSize: socket.playerSize,
+            playerName: socket.playerName,
+            x: socket.x,
+            y: socket.y,
+            skin: socket.skin
+        }]);
+
         console.log(socket.playerName + ' connected');
 
 
@@ -120,6 +127,20 @@ io.on('connection', function(socket) {
         socket.on('changeDirection', function(direction) {
             socket.direction = direction;
         });
+         socket.on('emitBomb', function(direction) {
+             if (socket.mines > 0){
+            socket.mines -= 1;
+                 min = {
+            x: socket.x,
+            y: socket.y,
+            playerSize: 50,
+            owner: socket.playerName
+                 };
+                mines.push(min);
+                 io.emit('addMine', min);
+
+             }
+        });
     });
 });
 setInterval(function(){resetGame()}, 300000);
@@ -139,13 +160,14 @@ function resetGame(){
     }
     foods = [];
     powers = [];
+    mines = [];
     for (i = 0; i < players.length; i++) {
         resetPlayer(players[i]);
 
     }
 
     io.emit('chat message', "Game resetted!", "Server");
-    io.emit('massChange', foods, powers);
+    io.emit('massChange', foods, powers, mines);
 }
 setInterval(function() {
     var leadObjs = [];
@@ -162,7 +184,7 @@ io.emit('leaderUpdate', leadObjs);
             }
 }, 1000)
 var id = gameloop.setGameLoop(function(delta) {
-
+if (players.length > 0){
     var foodNow = foods.splice();
     if (Math.random() < 0.08) {
         food = {
@@ -175,16 +197,18 @@ var id = gameloop.setGameLoop(function(delta) {
        io.emit('addMass', food);
     }
     if (Math.random() < 0.002) {
-        switch (Math.round(Math.random())) {
+        switch (Math.round(Math.random() * 2)) {
     case 0:
         kinder = "speed";
         img = 3;
-
         break;
     case 1:
         kinder = "bomb";
         img = 4;
-
+        break;
+    case 2:
+        kinder = "mines";
+        img = 5;
         break;
 }
         power = {
@@ -198,7 +222,7 @@ var id = gameloop.setGameLoop(function(delta) {
        io.emit('addPower', power);
     }
     movePlayers();
-
+}
 }, 1000 / 60);
 function movePlayers() {
 
@@ -243,7 +267,7 @@ function intersectAny(player) {
             continue;
         }
         if (intersect(player, p)) {
-            if (player.playerSize > p.playerSize || player.bomb == true) {
+            if (player.playerSize > p.playerSize && p.bomb == false|| player.bomb == true && p.bomb == false || player.bomb == true && p.bomb == true && player.playerSiz > p.playerSize) {
                 player.playerSize += 0.2 * p.playerSize;
                 resetPlayer(p);
                 emitPlayer(player);
@@ -267,6 +291,24 @@ function intersectAny(player) {
             io.emit('removeMass', i);
         }
     }
+   for (var i = 0; i < mines.length; i++) {
+        var mine = mines[i];
+        if (intersect(player, mine)) {
+            if (mine.owner != player.playerName){
+            var exSize = player.playerSize / 2;
+            player.playerSize -= exSize;
+             for (var p = 0; p < players.length; p++){
+                if (players[p].playerName === mine.owner){
+                    players[p].playerSize += 0.5 * exSize;
+                    emitPlayer(players[p]);
+                }
+            }
+            mines.splice(i, 1);
+            emitPlayer(player);
+            io.emit('removeMine', i);
+            }
+        }
+    }
 
     for (var i = 0; i < powers.length; i++) {
         var power = powers[i];
@@ -278,6 +320,9 @@ function intersectAny(player) {
             else if (power.kind == "bomb"){
                 player.bomb = true;
                 setTimeout(function(){ player.bomb = false}, 3000);
+            }
+            else if (power.kind == "mines"){
+                player.mines += 1;
             }
             powers.splice(i, 1);
 

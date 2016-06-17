@@ -6,6 +6,7 @@ var ctx = canvas.getContext("2d");
 var players = [];
 var foods = [];
 var powers = [];
+var mines = [];
 var direction = {
     x: 0,
     y: 0
@@ -21,7 +22,7 @@ var camera = {
 
 var backColour = "#FFFFFF";
 //skins/images
-var images = new Array();
+var images = [];
 function preload() {
 				for (i = 0; i < preload.arguments.length; i++) {
 					images[i] = new Image()
@@ -32,7 +33,7 @@ preload(
 "https://pbs.twimg.com/profile_images/693492259791200256/z0oxKdVO.png",
 "http://www.lunapic.com/editor/premade/transparent.gif",
 "http://i.imgur.com/9gWLFFH.png",
-"https://wiki.teamfortress.com/w/images/3/38/Mannpower_Mode_Powerup_Haste_Icon.png?t=20151103182919",
+"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-2.png",
 "http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
 "http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png");
 
@@ -79,9 +80,10 @@ socket.on('login', function(player) {
 });
 
 //mass / bullets
-socket.on('massChange', function(eat, pup) {
+socket.on('massChange', function(eat, pup, mins) {
     powers = pup;
     foods = eat;
+    mines = mins;
 });
 socket.on('addMass', function(food) {
     foods.push(food);
@@ -89,15 +91,20 @@ socket.on('addMass', function(food) {
 socket.on('removeMass', function(i) {
     foods.splice(i, 1);
 });
-socket.on('powerChange', function(pup) {
-
-});
 socket.on('addPower', function(pup) {
     powers.push(pup);
 });
 socket.on('removePower', function(i) {
     powers.splice(i, 1);
 });
+
+socket.on('addMine', function(min) {
+    mines.push(min);
+});
+socket.on('removeMine', function(i) {
+    mines.splice(i, 1);
+});
+
 
 socket.on('playerLeave', function(player) {
     var index = -1;
@@ -174,6 +181,13 @@ function render() {
         ctx.drawImage(images[power.img], power.x - (0.5 * power.playerSize), power.y - (0.5 * power.playerSize), power.playerSize, power.playerSize);
 
 
+        //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
+
+    }
+     for (i = 0; i < mines.length; i++) {
+
+        mine = mines[i];
+        ctx.drawImage(images[5], mine.x - (0.5 * mine.playerSize), mine.y - (0.5 * mine.playerSize), mine.playerSize, mine.playerSize);
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
@@ -259,7 +273,9 @@ function changeDirection() {
         if (keys[65] || keys[37]) {
             x += -1;
         }
-
+         if (keys[32]) {
+            socket.emit('emitBomb', "data");
+        }
         if (direction.x != x || direction.y != y) {
             direction = {
                 x: x,
@@ -300,7 +316,7 @@ function nameChoose() {
 
     skin = document.getElementById("slect").value;
     if(skin == 'random'){
-        skin = Math.round(Math.random() * ((document.querySelectorAll('option').length - 1) - 1) + 1);
+        skin = Math.round(Math.random() * ((document.querySelectorAll('option').length - 1) - 1));
     }
     socket.emit('username', name, checkbox, skin);
 }
