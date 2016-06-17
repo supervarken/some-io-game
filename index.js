@@ -151,12 +151,14 @@ function resetGame(){
         if (players[i].playerSize > win) {
             var winner = players[i];
             win = players[i].playerSize;
+            ia = i;
         }
     }
     if (winner == null) {
         io.emit('chat message', "No players participated ", "Server");
     } else {
         io.emit('chat message', "Winner is: " + winner.playerName, "Server");
+        io.emit('trophy', ia);
     }
     foods = [];
     powers = [];

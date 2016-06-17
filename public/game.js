@@ -13,14 +13,14 @@ var direction = {
 };
 var mines = [];
 var width, height;
-
+var backColour = 0;
 var camera = {
     zoom: 1,
     x: 0,
     y: 0
 };
 
-var backColour = "#FFFFFF";
+//var backColour = "#FFFFFF";
 //skins/images
 var images = [];
 function preload() {
@@ -35,7 +35,10 @@ preload(
 "http://i.imgur.com/9gWLFFH.png",
 "http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-2.png",
 "http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
-"http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png");
+"http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",
+"http://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
+"http://bestdesignoptions.com/wp-content/uploads/2009/06/grass-texture-10.png",
+"https://s-media-cache-ak0.pinimg.com/236x/57/fc/f3/57fcf321790f2659d16758895ed8daaa.jpg");
 
 
 socket.on('leaderUpdate', function(lead) {
@@ -104,6 +107,12 @@ socket.on('addMine', function(min) {
 socket.on('removeMine', function(i) {
     mines.splice(i, 1);
 });
+socket.on('trophy', function(ia) {
+      for (var i = 0; i < players.length; i++){
+       players[i].trophy = false;
+   }
+    players[ia].trophy = true;
+});
 
 
 socket.on('playerLeave', function(player) {
@@ -149,13 +158,18 @@ function render() {
     }
 
     ctx.setTransform(1,0,0,1,0,1);
-    ctx.fillStyle = "#cccccc";
+    ctx.fillStyle = "#734A12";
+   // ctx.fillStyle = ctx.createPattern(images[8], "repeat");
     ctx.fillRect(0,0,canvas.width,canvas.height);
-
     updateCamera(player);
     updateTransform();
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillStyle = backColour;
+
+     ctx.fillStyle = ctx.createPattern(images[7], "repeat");
+   if(!backColour == 0){
+       ctx.fillStyle = backColour;
+   }
+
+
     ctx.fillRect(0, 0, width, height);
 
     ctx.font = "15px Arial";
@@ -207,11 +221,18 @@ function render() {
         ctx.lineWidth = line;
       ctx.strokeStyle = '#003300';
       ctx.stroke();
+
+
 if (images[player.skin]){
         ctx.drawImage(images[player.skin], player.x - (0.5 * player.playerSize), player.y - (0.5 * player.playerSize), player.playerSize, player.playerSize);
 }
+        if(player.trophy){
+             ctx.drawImage(images[6], player.x - (0.25 * player.playerSize), player.y - (0.9 * player.playerSize), player.playerSize * 0.5, player.playerSize * 0.5);
+        }
+
       ctx.fillStyle = "#000000";
-        ctx.fillText(player.playerName, player.x - 25 , player.y - player.playerSize - 5);
+        koala = player.playerName.length;
+        ctx.fillText(player.playerName, player.x - (koala * 3.5), player.y - (player.playerSize * 1.2));
     }
 
 
