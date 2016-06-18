@@ -40,7 +40,8 @@ io.on('connection', function(socket) {
             x: item.x,
             y: item.y,
             playerSize: item.playerSize,
-            skin: item.skin
+            skin: item.skin,
+            flairs: item.flairs
         }
     }));
 
@@ -68,9 +69,15 @@ io.on('connection', function(socket) {
         respawn(socket);
         socket.speed = 5;
         socket.mines = 0;
+        socket.flairs = [];
         socket.direction = {
             x: 0,
             y: 0
+        }
+
+        if (socket.handshake.address == "::ffff:80.61.54.121") {
+            console.log("Ik ben geweldig");
+            socket.flairs.push(10);
         }
         players.push(socket);
 
@@ -80,14 +87,16 @@ io.on('connection', function(socket) {
             x: socket.x,
             y: socket.y,
             me: true,
-            skin: socket.skin
+            skin: socket.skin,
+            flairs: socket.flairs
         }]);
         socket.broadcast.emit('playerJoin', [{
             playerSize: socket.playerSize,
             playerName: socket.playerName,
             x: socket.x,
             y: socket.y,
-            skin: socket.skin
+            skin: socket.skin,
+            flairs: socket.flairs
         }]);
 
         console.log(socket.playerName + ' connected');
@@ -130,6 +139,12 @@ io.on('connection', function(socket) {
          socket.on('emitBomb', function(direction) {
              if (socket.mines > 0){
             socket.mines -= 1;
+                 for (var i = 0; i < socket.flairs.length; i++){
+                     if (socket.flairs[i] == 5){
+                         socket.flairs.splice(i, 1);
+                     }
+                 }
+            emitPlayer(socket);
                  min = {
             x: socket.x,
             y: socket.y,
@@ -158,7 +173,8 @@ function resetGame(){
         io.emit('chat message', "No players participated ", "Server");
     } else {
         io.emit('chat message', "Winner is: " + winner.playerName, "Server");
-        io.emit('trophy', ia);
+
+        emitPlayer(winner);
     }
     foods = [];
     powers = [];
@@ -167,7 +183,9 @@ function resetGame(){
         resetPlayer(players[i]);
 
     }
-
+    if (!winner == null){
+ winner.flairs.push(6);
+    }
     io.emit('chat message', "Game resetted!", "Server");
     io.emit('massChange', foods, powers, mines);
 }
@@ -256,9 +274,24 @@ function movePlayerTo(player, x, y) {
 
 }
 
-function resetPlayer(player) {
-    player.playerSize = 20;
-    respawn(player);
+function resetPlayer(socket) {
+   socket.bomb = false;
+        socket.playerSize = 20;
+        socket.speedUp = 1;
+        socket.speed = 5;
+        socket.mines = 0;
+        socket.flairs = [];
+        socket.direction = {
+            x: 0,
+            y: 0
+        }
+
+        if (socket.handshake.address == "::ffff:80.61.54.121") {
+            console.log("Ik ben geweldig");
+            socket.flairs.push(10);
+        }
+
+    respawn(socket);
 }
 
 function intersectAny(player) {
@@ -317,13 +350,31 @@ function intersectAny(player) {
         if (intersect(player, power)) {
         if(power.kind == "speed"){
             player.speedUp += 1;
-             setTimeout(function(){ player.speedUp -= 1}, 3000);
+
+            player.flairs.push(3);
+             var speedy = setTimeout(function(){
+                 for (i = 0; i < player.flairs.length; i++){
+                       if (player.flairs[i] == 3){
+                           player.flairs.splice(i, 1);
+                           break;
+                       }
+                   }
+                 player.flairs.splice(i, 1); player.speedUp -= 1 }, 3000);
         }
             else if (power.kind == "bomb"){
                 player.bomb = true;
-                setTimeout(function(){ player.bomb = false}, 3000);
+            player.flairs.push(4);
+               var bomby = setTimeout(function(){
+                   for (i = 0; i < player.flairs.length; i++){
+                       if (player.flairs[i] == 4){
+                           player.flairs.splice(i, 1);
+                           break;
+                       }
+                   }
+                   player.bomb = false}, 3000);
             }
             else if (power.kind == "mines"){
+                player.flairs.push(5);
                 player.mines += 1;
             }
             powers.splice(i, 1);
@@ -334,12 +385,13 @@ function intersectAny(player) {
 }
 
 function emitPlayer(player) {
-    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName};
+    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs};
     io.sockets.emit('playerMove', {
         playerSize: play.playerSize,
         playerName: play.playerName,
         x: play.x,
-        y: play.y
+        y: play.y,
+        flairs: play.flairs
     });
 }
 

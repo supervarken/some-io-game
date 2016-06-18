@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function(event) {
+  document.getElementById('starter').addEventListener('submit', function(starter) {
+        starter.preventDefault();
+        nameChoose();
+
+    });
 
     document.getElementById('jj').addEventListener('submit', function(jj) {
         jj.preventDefault();
@@ -16,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         document.getElementById('m').value = "";
 
        return false;
-    })
+    });
 
     socket.on('chat message', function(msg, name) {
         gameMsg = document.createElement("li");

@@ -7,13 +7,17 @@ body {
 }
 #startScreen {
     margin-left: 30%;
-    background: rgba(200, 180, 205, 1);
-    border-radius: 25px;
+    background: rgba(200, 180, 205, 0.5);
+    border-radius: 50%;
    text-align: center;
-    width: 40%;
-    height: 50%;
     position: absolute;
     z-index: 2;
+    width: 400px;
+    height: 400px;
+    border: 30px solid black;
+    margin-top: 2%;
+    padding: 5%;
+    vertical-align: middle;
 }
 #gameCanvas {
     position: absolute;
@@ -35,13 +39,13 @@ body {
         height: 10%;
         width: 100%;
     }
-        form input {
+        #m {
             border: 2%;
             padding: 10px;
             width: 80%;
             max-height: 50%;
         }
-        form button {
+        #but {
             width: 20%;
             background: rgb(130, 224, 255);
             border: none;

@@ -20,7 +20,6 @@ var camera = {
     y: 0
 };
 
-//var backColour = "#FFFFFF";
 //skins/images
 var images = [];
 function preload() {
@@ -38,8 +37,13 @@ preload(
 "http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",
 "http://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
 "http://bestdesignoptions.com/wp-content/uploads/2009/06/grass-texture-10.png",
-"https://s-media-cache-ak0.pinimg.com/236x/57/fc/f3/57fcf321790f2659d16758895ed8daaa.jpg");
-
+"http://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
+"http://simpleicon.com/wp-content/uploads/football.svg",
+"http://downloadicons.net/sites/default/files/crown-symbol-64788.png",
+"http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg");
+images[7].onerror = function() {
+images[7].src = images[11].src;
+    };
 
 socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').innerHTML = '';
@@ -60,14 +64,12 @@ socket.on('roomSize', function(size) {
 
 
 socket.on('playerJoin', function(joinedPlayers) {
-
     for (i in joinedPlayers) {
         var player = joinedPlayers[i];
 
         players.push(player);
         console.log(player.playerName + ' joined, ' + players.length + ' players.');
     }
-    //checkLeaders();
 });
 
 socket.on('login', function(player) {
@@ -107,13 +109,6 @@ socket.on('addMine', function(min) {
 socket.on('removeMine', function(i) {
     mines.splice(i, 1);
 });
-socket.on('trophy', function(ia) {
-      for (var i = 0; i < players.length; i++){
-       players[i].trophy = false;
-   }
-    players[ia].trophy = true;
-});
-
 
 socket.on('playerLeave', function(player) {
     var index = -1;
@@ -137,6 +132,7 @@ socket.on('playerMove', function(player) {
             p.x = player.x;
             p.y = player.y;
             p.playerSize = player.playerSize;
+            p.flairs = player.flairs;
         }
     }
 });
@@ -159,7 +155,7 @@ function render() {
 
     ctx.setTransform(1,0,0,1,0,1);
     ctx.fillStyle = "#734A12";
-   // ctx.fillStyle = ctx.createPattern(images[8], "repeat");
+   ctx.fillStyle = ctx.createPattern(images[8], "repeat");
     ctx.fillRect(0,0,canvas.width,canvas.height);
     updateCamera(player);
     updateTransform();
@@ -211,30 +207,22 @@ function render() {
     for (i in players) {
 
         player = players[i];
-
-        ctx.beginPath();
-        ctx.fillStyle = "#FFFFFF";
+       ctx.beginPath();
+        ctx.fillStyle = player.skin;
         ctx.arc(player.x, player.y, player.playerSize, 0, (2 * Math.PI), false);
           ctx.fill();
-
-        var line = player.playerSize / 6;
-        ctx.lineWidth = line;
-      ctx.strokeStyle = '#003300';
-      ctx.stroke();
-
+        ctx.drawImage(images[9], player.x - (1.15 * player.playerSize), player.y - (1.15 * player.playerSize), player.playerSize * 2.3, player.playerSize * 2.3);
 
 if (images[player.skin]){
         ctx.drawImage(images[player.skin], player.x - (0.5 * player.playerSize), player.y - (0.5 * player.playerSize), player.playerSize, player.playerSize);
 }
-        if(player.trophy){
-             ctx.drawImage(images[6], player.x - (0.25 * player.playerSize), player.y - (0.9 * player.playerSize), player.playerSize * 0.5, player.playerSize * 0.5);
-        }
-
       ctx.fillStyle = "#000000";
-        koala = player.playerName.length;
+        var koala = player.playerName.length;
         ctx.fillText(player.playerName, player.x - (koala * 3.5), player.y - (player.playerSize * 1.2));
+        for(i = 0; i < player.flairs.length; i++){
+            ctx.drawImage(images[player.flairs[i]], player.x - (3.5 * koala) - (11 * i) - 15, player.y - 10 - (player.playerSize * 1.2), 10, 10);
+        }
     }
-
 
 };
 
@@ -333,13 +321,15 @@ function checkLeaders() {
 
 function nameChoose() {
     var name = document.getElementById("nameInput").value;
+    var colour = document.getElementById("colour").value;
+    console.log(colour);
     checkbox =  document.getElementById("chatChoose").checked;
 
-    skin = document.getElementById("slect").value;
+    /* skin = document.getElementById("slect").value;
     if(skin == 'random'){
         skin = Math.round(Math.random() * ((document.querySelectorAll('option').length - 1) - 1));
-    }
-    socket.emit('username', name, checkbox, skin);
+    } */
+    socket.emit('username', name, checkbox, colour);
 }
 
 var w = window;

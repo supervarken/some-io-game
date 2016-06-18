@@ -11,15 +11,11 @@
 
          <div id="startScreen">
         <h3 class="title">Username:</h3>
-        <input id="nameInput" type="text" maxlength="12" /><br><button onclick="nameChoose()" autofocus>Start Game</button>
+             <form id="starter" action="">
+        <input id="nameInput" type="text" maxlength="12" autofocus/><button onclick="nameChoose()" autofocus>Start Game</button><br>
              <input type="checkbox" id="chatChoose" checked> Show chat<br>
-             <select id="slect">
-              <option value="random" selected>Random</option>
-                <option value="0">Centurion</option>
-                <option value="1">Penguin</option>
-                <option value="2">Apvark</option>
-
-            </select>
+               Ball colour:  <input type="color" id="colour" value="#FFFFFF">
+             </form>
       </div>
         <div id="leaders">
              <h1>Leaderboard:</h1>
@@ -29,7 +25,7 @@
         <div id="chat">
             <ul id="messages"></ul>
             <form id="jj" action="">
-                <input id="m" autocomplete="off" /><button>Send</button>
+                <input id="m" autocomplete="off" /><button id="but">Send</button>
             </form>
         </div>
     </body>
