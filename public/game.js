@@ -42,9 +42,7 @@ preload(
 "http://simpleicon.com/wp-content/uploads/football.svg",
 "http://downloadicons.net/sites/default/files/crown-symbol-64788.png",
 "http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg");
-images[7].onerror = function() {
-images[7].src = images[11].src;
-    };
+//backColour = "#FFFFFF";
 
 socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').innerHTML = '';
@@ -161,8 +159,7 @@ function render() {
     ctx.fillRect(0,0,canvas.width,canvas.height);
     updateCamera(player);
     updateTransform();
-
-     ctx.fillStyle = ctx.createPattern(images[7], "repeat");
+     ctx.fillStyle = ctx.createPattern(images[11], "repeat");
    if(!backColour == 0){
        ctx.fillStyle = backColour;
    }
