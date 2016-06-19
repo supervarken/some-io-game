@@ -2,7 +2,7 @@ var socket = io();
 var connected = false;
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
-
+TO_RADIANS = Math.PI/180;
 var players = [];
 var foods = [];
 var powers = [];
@@ -11,6 +11,7 @@ var direction = {
     x: 0,
     y: 0
 };
+var counter = 0;
 var mines = [];
 var width, height;
 var backColour = 0;
@@ -133,6 +134,7 @@ socket.on('playerMove', function(player) {
             p.y = player.y;
             p.playerSize = player.playerSize;
             p.flairs = player.flairs;
+            p.r = player.r;
         }
     }
 });
@@ -182,6 +184,7 @@ function render() {
 
     }
 
+
     for (i = 0; i < powers.length; i++) {
         power = powers[i];
         ctx.fillStyle = "orange";
@@ -211,7 +214,8 @@ function render() {
         ctx.fillStyle = player.skin;
         ctx.arc(player.x, player.y, player.playerSize, 0, (2 * Math.PI), false);
           ctx.fill();
-        ctx.drawImage(images[9], player.x - (1.15 * player.playerSize), player.y - (1.15 * player.playerSize), player.playerSize * 2.3, player.playerSize * 2.3);
+          drawRotatedImage(player,player.x, player.y,player.r);
+     //   ctx.drawImage(images[9], player.x - (1.15 * player.playerSize), player.y - (1.15 * player.playerSize), player.playerSize * 2.3, player.playerSize * 2.3);
 
 if (images[player.skin]){
         ctx.drawImage(images[player.skin], player.x - (0.5 * player.playerSize), player.y - (0.5 * player.playerSize), player.playerSize, player.playerSize);
@@ -268,13 +272,19 @@ window.onkeydown = function(e) {
 function changeDirection() {
     var x = 0;
     var y = 0;
-
+    var r = 0;
     if (document.activeElement.tagName != "INPUT") {
         if (keys[87] || keys[38]) {
             y += -1;
         }
         if (keys[83] || keys[40]) {
             y += 1;
+        }
+        if (keys[84]) {
+            r += -0.5;
+        }
+        if (keys[89]) {
+            r += 0.5;
         }
         if (keys[68] || keys[39]) {
             x += 1;
@@ -285,10 +295,11 @@ function changeDirection() {
          if (keys[32]) {
             socket.emit('emitBomb', "data");
         }
-        if (direction.x != x || direction.y != y) {
+        if (direction.x != x || direction.y != y || direction.r != r) {
             direction = {
                 x: x,
-                y: y
+                y: y,
+                r: r
             };
             socket.emit('changeDirection', direction);
         }
@@ -322,7 +333,6 @@ function checkLeaders() {
 function nameChoose() {
     var name = document.getElementById("nameInput").value;
     var colour = document.getElementById("colour").value;
-    console.log(colour);
     checkbox =  document.getElementById("chatChoose").checked;
 
     /* skin = document.getElementById("slect").value;
@@ -331,6 +341,16 @@ function nameChoose() {
     } */
     socket.emit('username', name, checkbox, colour);
 }
+
+ function drawRotatedImage(image, x, y, angle) {
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle * TO_RADIANS);
+  ctx.drawImage(images[9], -(image.playerSize * 1.15), -(image.playerSize * 1.15),  image.playerSize * 2.3, image.playerSize * 2.3);
+  ctx.restore();
+ }
+
 
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;

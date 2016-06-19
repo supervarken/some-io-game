@@ -69,10 +69,12 @@ io.on('connection', function(socket) {
         respawn(socket);
         socket.speed = 5;
         socket.mines = 0;
+        socket.r = 180;
         socket.flairs = [];
         socket.direction = {
             x: 0,
-            y: 0
+            y: 0,
+            r: 0
         }
 
         if (socket.handshake.address == "::ffff:80.61.54.121") {
@@ -86,6 +88,7 @@ io.on('connection', function(socket) {
             playerName: socket.playerName,
             x: socket.x,
             y: socket.y,
+            r: socket.r,
             me: true,
             skin: socket.skin,
             flairs: socket.flairs
@@ -95,6 +98,7 @@ io.on('connection', function(socket) {
             playerName: socket.playerName,
             x: socket.x,
             y: socket.y,
+            r: socket.r,
             skin: socket.skin,
             flairs: socket.flairs
         }]);
@@ -254,8 +258,27 @@ function movePlayers() {
 }
 
 function movePlayer(player) {
-    if (player.direction.x == 0 && player.direction.y == 0) {
+    if (player.direction.x == 0 && player.direction.y == 0 && player.direction.r == 0) {
         return;
+    }
+
+    if(player.direction.r > 0){
+        player.r += 2;
+    }
+    if(player.direction.r < 0){
+        player.r -= 2;
+    }
+    if(player.direction.x > 0){
+        player.direction.x += 1;
+    }
+    if(player.direction.x < 0){
+        player.direction.x += -1;
+    }
+    if(player.direction.y > 0){
+        player.direction.y += 1;
+    }
+    if(player.direction.y > 0){
+        player.direction.y += -1;
     }
 
     intersectAny(player);
@@ -272,6 +295,7 @@ function movePlayerTo(player, x, y) {
 
     emitPlayer(player);
 
+
 }
 
 function resetPlayer(socket) {
@@ -280,10 +304,12 @@ function resetPlayer(socket) {
         socket.speedUp = 1;
         socket.speed = 5;
         socket.mines = 0;
+    socket.r = 180;
         socket.flairs = [];
         socket.direction = {
             x: 0,
-            y: 0
+            y: 0,
+            r: 0
         }
 
         if (socket.handshake.address == "::ffff:80.61.54.121") {
@@ -385,12 +411,13 @@ function intersectAny(player) {
 }
 
 function emitPlayer(player) {
-    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs};
+    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs, r: player.r};
     io.sockets.emit('playerMove', {
         playerSize: play.playerSize,
         playerName: play.playerName,
         x: play.x,
         y: play.y,
+        r: play.r,
         flairs: play.flairs
     });
 }

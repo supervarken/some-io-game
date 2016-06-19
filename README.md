@@ -2,7 +2,7 @@
 Known bugs:
 Todo: add special group for chatters
 Changes emits for specififc tasks (especially flairs)
-
+make hack proof
   <select id="slect">
               <option value="random" selected>Random</option>
                 <option value="0">Centurion</option>
