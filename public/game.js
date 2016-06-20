@@ -41,7 +41,8 @@ preload(
 "http://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
 "http://simpleicon.com/wp-content/uploads/football.svg",
 "http://downloadicons.net/sites/default/files/crown-symbol-64788.png",
-"http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg");
+"http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg",
+"https://cdn1.iconfinder.com/data/icons/round-arrows/256/up158-128.png");
 //backColour = "#FFFFFF";
 
 socket.on('leaderUpdate', function(lead) {
@@ -272,22 +273,16 @@ function changeDirection() {
     var r = 0;
     if (document.activeElement.tagName != "INPUT") {
         if (keys[87] || keys[38]) {
-            y += -1;
+            x += -1;
         }
         if (keys[83] || keys[40]) {
-            y += 1;
-        }
-        if (keys[84]) {
-            r += -0.5;
-        }
-        if (keys[89]) {
-            r += 0.5;
-        }
-        if (keys[68] || keys[39]) {
             x += 1;
         }
+        if (keys[68] || keys[39]) {
+            r += 1;
+        }
         if (keys[65] || keys[37]) {
-            x += -1;
+            r += -1;
         }
          if (keys[32]) {
             socket.emit('emitBomb', "data");
@@ -343,8 +338,11 @@ function nameChoose() {
 
   ctx.save();
   ctx.translate(x, y);
-  ctx.rotate(angle * TO_RADIANS);
+  ctx.rotate((angle) * TO_RADIANS);
   ctx.drawImage(images[9], -(image.playerSize * 1.15), -(image.playerSize * 1.15),  image.playerSize * 2.3, image.playerSize * 2.3);
+  ctx.fillStyle = "#000000";
+  //ctx.fillRect(-image.playerSize * 1.2, -image.playerSize * 1.2, image.playerSize * 2.4, 0.5 * image.playerSize);
+  ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
   ctx.restore();
  }
 

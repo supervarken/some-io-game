@@ -69,7 +69,7 @@ io.on('connection', function(socket) {
         respawn(socket);
         socket.speed = 5;
         socket.mines = 0;
-        socket.r = 180;
+        socket.r = 0;
         socket.flairs = [];
         socket.direction = {
             x: 0,
@@ -263,16 +263,16 @@ function movePlayer(player) {
     }
 
     if(player.direction.r > 0){
-        player.r += 2;
+        player.r += 4;
     }
     if(player.direction.r < 0){
-        player.r -= 2;
+        player.r -= 4;
     }
     if(player.direction.x > 0){
-        player.direction.x += 1;
+        player.direction.x = 1;
     }
     if(player.direction.x < 0){
-        player.direction.x += -1;
+        player.direction.x = -0.5;
     }
     if(player.direction.y > 0){
         player.direction.y += 1;
@@ -282,10 +282,10 @@ function movePlayer(player) {
     }
 
     intersectAny(player);
-    player.speed = (200 / player.playerSize + 1) * player.speedUp;
+    player.speed = (100 / player.playerSize + 1) * player.speedUp;
     movePlayerTo(player,
-        player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)),
-        player.y + (player.direction.y > 0 ? player.speed : (player.direction.y < 0 ? -player.speed : 0)));
+        player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)) * Math.cos(Math.PI / 180 * player.r),
+        player.y + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0))* Math.sin(Math.PI / 180 * player.r));
 }
 
 function movePlayerTo(player, x, y) {
@@ -304,7 +304,7 @@ function resetPlayer(socket) {
         socket.speedUp = 1;
         socket.speed = 5;
         socket.mines = 0;
-    socket.r = 180;
+    socket.r = 0;
         socket.flairs = [];
         socket.direction = {
             x: 0,
