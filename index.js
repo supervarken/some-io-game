@@ -41,7 +41,8 @@ io.on('connection', function(socket) {
             y: item.y,
             playerSize: item.playerSize,
             skin: item.skin,
-            flairs: item.flairs
+            flairs: item.flairs,
+            r: item.r
         }
     }));
 
@@ -188,6 +189,7 @@ function resetGame(){
 
     }
     if (!winner == null){
+        console.log(winner);
  winner.flairs.push(6);
     }
     io.emit('chat message', "Game resetted!", "Server");
@@ -272,19 +274,19 @@ function movePlayer(player) {
         player.direction.x = 1;
     }
     if(player.direction.x < 0){
-        player.direction.x = -0.5;
+        player.direction.x = -1;
     }
     if(player.direction.y > 0){
-        player.direction.y += 1;
+        player.direction.y = 1;
     }
     if(player.direction.y > 0){
-        player.direction.y += -1;
+        player.direction.y = 1;
     }
 
     intersectAny(player);
     player.speed = (100 / player.playerSize + 1) * player.speedUp;
     movePlayerTo(player,
-        player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0)) * Math.cos(Math.PI / 180 * player.r),
+        player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? (-player.speed) : 0)) * Math.cos(Math.PI / 180 * player.r),
         player.y + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0))* Math.sin(Math.PI / 180 * player.r));
 }
 
@@ -294,7 +296,6 @@ function movePlayerTo(player, x, y) {
     player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
 
     emitPlayer(player);
-
 
 }
 

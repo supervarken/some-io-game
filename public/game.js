@@ -109,7 +109,12 @@ socket.on('addMine', function(min) {
 socket.on('removeMine', function(i) {
     mines.splice(i, 1);
 });
-
+socket.on('flairUpdate', function(flairs, i){
+    players[i].flairs = flairs;
+})
+socket.on('flairUpdate', function(flairs, i){
+    players[i].flairs = flairs;
+})
 socket.on('playerLeave', function(player) {
     var index = -1;
     for (i in players) {
@@ -247,7 +252,7 @@ var main = function() {
     canvas.height = window.innerHeight;
 
     render();
-
+    changeDirection();
     then = now;
 
     requestAnimationFrame(main);
@@ -256,11 +261,11 @@ var main = function() {
 var keys = [];
 window.onkeyup = function(e) {
     keys[e.keyCode] = false;
-    changeDirection();
+    //changeDirection();
 }
 window.onkeydown = function(e) {
     keys[e.keyCode] = true;
-    changeDirection();
+    //changeDirection();
     if (keys[13]){
 
         document.getElementById("m").focus();
@@ -298,29 +303,6 @@ function changeDirection() {
 
     }
 }
-setInterval(function() {
-  //  checkLeaders();
-}, 1000);
-
-function checkLeaders() {
-
-    var lead = players.slice(0); //clone players
-
-    lead.sort(function(a, b) {
-        return b.playerSize - a.playerSize;
-    });
-
-    document.getElementById('lead').innerHTML = '';
-
-    for (i = 0; i < lead.length && i < 5; i++) {
-
-        gameBoard = document.createElement("li");
-        var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize));
-        gameBoard.appendChild(text);
-        document.getElementById('lead').appendChild(gameBoard);
-
-    }
-}
 
 function nameChoose() {
     var name = document.getElementById("nameInput").value;
@@ -345,7 +327,6 @@ function nameChoose() {
   ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
   ctx.restore();
  }
-
 
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
