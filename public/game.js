@@ -46,8 +46,11 @@ preload(
 //backColour = "#FFFFFF";
 
 socket.on('leaderUpdate', function(lead) {
-        document.getElementById('lead').innerHTML = '';
-
+    var myNode = document.getElementById("lead");
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+       // document.getElementById('lead').innerHTML = '';
     for (i = 0; i < lead.length; i++) {
 
         gameBoard = document.createElement("li");
