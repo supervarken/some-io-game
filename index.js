@@ -7,6 +7,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var width = 5000;
 var height = 5000;
+var port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* Alright, listen here. This is really bad and I know that.
@@ -442,6 +443,6 @@ function respawn(player) {
     movePlayerTo(player, Math.round(Math.random() * (width - player.playerSize)), Math.round(Math.random() * (height - player.playerSize)));
 }
 
-http.listen(3000, function() {
+http.listen(port, function() {
     console.log('listening on *:3000');
 });
