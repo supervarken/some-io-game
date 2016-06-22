@@ -314,7 +314,7 @@ function resetPlayer(socket) {
             r: 0
         }
 
-        if (socket.handshake.address == "::ffff:80.61.54.121") {
+        if (socket.handshake.address == "80.61.54.121") {
             console.log("Ik ben geweldig");
             socket.flairs.push(10);
         }
@@ -331,11 +331,11 @@ function intersectAny(player) {
         }
         if (intersect(player, p)) {
             if (player.playerSize > p.playerSize && p.bomb == false|| player.bomb == true && p.bomb == false || player.bomb == true && p.bomb == true && player.playerSiz > p.playerSize) {
-                player.playerSize += 0.2 * p.playerSize;
+                player.playerSize += 0.5 * p.playerSize;
                 resetPlayer(p);
                 emitPlayer(player);
             } else{
-                p.playerSize += 0.2 * player.playerSize;
+                p.playerSize += 0.5 * player.playerSize;
                 resetPlayer(player)
                 emitPlayer(p);
             }

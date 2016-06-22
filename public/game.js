@@ -1,4 +1,4 @@
-var socket = io();
+var socket = io.connect();
 var connected = false;
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
