@@ -53,7 +53,7 @@ io.on('connection', function(socket) {
 
         playerIndex++;
         nameChoose = true;
-        // socket.playerSize = 30; //verander om groter/kleiner te maken.
+
         if (username === "") {
             username = "Player " + playerIndex;
         }
@@ -68,21 +68,20 @@ io.on('connection', function(socket) {
         socket.playerName = username;
         socket.playerSize = 20;
         socket.speedUp = 1;
-        respawn(socket);
+
         socket.speed = 5;
         socket.mines = 0;
         socket.r = 0;
         socket.flairs = [];
         socket.direction = {
             x: 0,
-            y: 0,
             r: 0
         }
-
+         respawn(socket);
         if (socket.handshake.address == "::ffff:80.61.54.121") {
-            console.log("Ik ben geweldig");
             socket.flairs.push(10);
         }
+
         players.push(socket);
 
         socket.emit('playerJoin', [{
@@ -95,6 +94,7 @@ io.on('connection', function(socket) {
             skin: socket.skin,
             flairs: socket.flairs
         }]);
+
         socket.broadcast.emit('playerJoin', [{
             playerSize: socket.playerSize,
             playerName: socket.playerName,
@@ -150,12 +150,12 @@ io.on('connection', function(socket) {
                          socket.flairs.splice(i, 1);
                      }
                  }
-            emitPlayer(socket);
-                 min = {
-            x: socket.x,
-            y: socket.y,
-            playerSize: 50,
-            owner: socket.playerName
+                    emitPlayer(socket);
+                        min = {
+                    x: socket.x,
+                    y: socket.y,
+                    playerSize: 50,
+                    owner: socket.playerName
                  };
                 mines.push(min);
                  io.emit('addMine', min);
@@ -164,6 +164,7 @@ io.on('connection', function(socket) {
         });
     });
 });
+
 setInterval(function(){resetGame()}, 300000);
 
 function resetGame(){
@@ -210,8 +211,9 @@ setInterval(function() {
 io.emit('leaderUpdate', leadObjs);
             }
 }, 1000)
+
 var id = gameloop.setGameLoop(function(delta) {
-if (players.length > 0){
+
     var foodNow = foods.splice();
     if (Math.random() < 0.08) {
         food = {
@@ -223,6 +225,7 @@ if (players.length > 0){
         foods.push(food);
        io.emit('addMass', food);
     }
+
     if (Math.random() < 0.002) {
         switch (Math.round(Math.random() * 2)) {
     case 0:
@@ -248,8 +251,9 @@ if (players.length > 0){
         powers.push(power);
        io.emit('addPower', power);
     }
+
     movePlayers();
-}
+
 }, 1000 / 60);
 function movePlayers() {
 
@@ -277,13 +281,6 @@ function movePlayer(player) {
     if(player.direction.x < 0){
         player.direction.x = -1;
     }
-    if(player.direction.y > 0){
-        player.direction.y = 1;
-    }
-    if(player.direction.y > 0){
-        player.direction.y = 1;
-    }
-
     intersectAny(player);
     player.speed = (100 / player.playerSize + 1) * player.speedUp;
     movePlayerTo(player,
