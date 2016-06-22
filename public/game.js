@@ -255,7 +255,8 @@ var main = function() {
     canvas.height = window.innerHeight;
 
     render();
-    changeDirection();
+
+    console.log(1000 / delta);
     then = now;
 
     requestAnimationFrame(main);
@@ -264,11 +265,11 @@ var main = function() {
 var keys = [];
 window.onkeyup = function(e) {
     keys[e.keyCode] = false;
-    //changeDirection();
+    changeDirection();
 }
 window.onkeydown = function(e) {
     keys[e.keyCode] = true;
-    //changeDirection();
+    changeDirection();
     if (keys[13]){
 
         document.getElementById("m").focus();

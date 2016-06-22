@@ -165,7 +165,7 @@ io.on('connection', function(socket) {
     });
 });
 
-setInterval(function(){resetGame()}, 300000);
+//setInterval(function(){resetGame()}, 300000);
 
 function resetGame(){
      var win = 0;
@@ -215,7 +215,7 @@ io.emit('leaderUpdate', leadObjs);
 var id = gameloop.setGameLoop(function(delta) {
 
     var foodNow = foods.splice();
-    if (Math.random() < 0.08) {
+    if (Math.random() < 0.05 && foods.length < 1500) {
         food = {
             x: Math.random() * height,
             y: Math.random() * width,
@@ -226,7 +226,7 @@ var id = gameloop.setGameLoop(function(delta) {
        io.emit('addMass', food);
     }
 
-    if (Math.random() < 0.002) {
+    if (Math.random() < 0.002 && powers.length < 50) {
         switch (Math.round(Math.random() * 2)) {
     case 0:
         kinder = "speed";
