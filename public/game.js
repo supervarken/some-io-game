@@ -256,7 +256,8 @@ var main = function() {
 
     render();
 
-    console.log(1000 / delta);
+    fps = 1000 / delta;
+
     then = now;
 
     requestAnimationFrame(main);
