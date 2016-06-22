@@ -30,19 +30,19 @@ function preload() {
 				}
 			}
 preload(
-"https://pbs.twimg.com/profile_images/693492259791200256/z0oxKdVO.png",
-"https://www.lunapic.com/editor/premade/transparent.gif",
-"https://i.imgur.com/9gWLFFH.png",
-"https://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-2.png",
-"https://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
-"https://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",
-"https://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
-"https://bestdesignoptions.com/wp-content/uploads/2009/06/grass-texture-10.png",
-"https://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
-"https://simpleicon.com/wp-content/uploads/football.svg",
-"https://downloadicons.net/sites/default/files/crown-symbol-64788.png",
-"https://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg",
-"https://cdn1.iconfinder.com/data/icons/round-arrows/256/up158-128.png");
+"http://pbs.twimg.com/profile_images/693492259791200256/z0oxKdVO.png",
+"http://www.lunapic.com/editor/premade/transparent.gif",
+"http://i.imgur.com/9gWLFFH.png",
+"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-2.png",
+"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
+"http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",
+"http://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
+"http://bestdesignoptions.com/wp-content/uploads/2009/06/grass-texture-10.png",
+"http://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
+"http://simpleicon.com/wp-content/uploads/football.svg",
+"http://downloadicons.net/sites/default/files/crown-symbol-64788.png",
+"http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg",
+"http://cdn1.iconfinder.com/data/icons/round-arrows/256/up158-128.png");
 //backColour = "#FFFFFF";
 
 socket.on('leaderUpdate', function(lead) {
