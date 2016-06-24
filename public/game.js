@@ -11,8 +11,9 @@ var direction = {
     x: 0,
     y: 0
 };
-var counter = 0;
+var walls = [];
 var mines = [];
+var bullets = [];
 var width, height;
 var backColour = 0;
 var camera = {
@@ -39,7 +40,7 @@ preload(
 "http://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
 "http://bestdesignoptions.com/wp-content/uploads/2009/06/grass-texture-10.png",
 "http://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
-"http://simpleicon.com/wp-content/uploads/football.svg",
+"http://simpleicon.com/wp-content/uploads/football.png",
 "http://downloadicons.net/sites/default/files/crown-symbol-64788.png",
 "http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg",
 "http://cdn1.iconfinder.com/data/icons/round-arrows/256/up158-128.png");
@@ -88,10 +89,11 @@ socket.on('login', function(player) {
 });
 
 //mass / bullets
-socket.on('massChange', function(eat, pup, mins) {
+socket.on('massChange', function(eat, pup, mins, wal) {
     powers = pup;
     foods = eat;
     mines = mins;
+    walls = wal;
 });
 socket.on('addMass', function(food) {
     foods.push(food);
@@ -210,7 +212,16 @@ function render() {
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
+for (i = 0; i < walls.length; i++) {
 
+    ctx.fillRect(walls[i].x, walls[i].y, walls[i].w, walls[i].h);
+    }
+for (i = 0; i < bullets.length; i++) {
+      ctx.fillStyle = bullets.colour;
+        ctx.beginPath();
+        ctx.arc(bullets[i].x, bullets[i].y, bullets[i].playerSize, 0, 2 * Math.PI, false);
+         ctx.fill();
+    }
     ctx.fillStyle = "#000000";
 
     for (i in players) {
@@ -295,7 +306,10 @@ function changeDirection() {
             r += -1;
         }
          if (keys[32]) {
-            socket.emit('emitBomb', "data");
+            socket.emit('emitBomb');
+        }
+        if (keys[84]) {
+            socket.emit('shot');
         }
         if (direction.x != x || direction.y != y || direction.r != r) {
             direction = {
@@ -327,8 +341,8 @@ function nameChoose() {
   ctx.translate(x, y);
   ctx.rotate((angle) * TO_RADIANS);
   ctx.drawImage(images[9], -(image.playerSize * 1.15), -(image.playerSize * 1.15),  image.playerSize * 2.3, image.playerSize * 2.3);
-  ctx.fillStyle = "#000000";
-  //ctx.fillRect(-image.playerSize * 1.2, -image.playerSize * 1.2, image.playerSize * 2.4, 0.5 * image.playerSize);
+  ctx.fillStyle = '#000000';
+
   ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
   ctx.restore();
  }

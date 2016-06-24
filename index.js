@@ -25,10 +25,12 @@ var players = [];
 var foods = [];
 var powers = [];
 var mines = [];
+var bullets = [];
+var walls = [];
 
 io.on('connection', function(socket) {
     var nameChoose = false;
-    socket.emit('massChange', foods, powers, mines);
+    socket.emit('massChange', foods, powers, mines, walls, bullets);
 
     socket.emit('roomSize', {
         width: width,
@@ -142,6 +144,7 @@ io.on('connection', function(socket) {
         socket.on('changeDirection', function(direction) {
             socket.direction = direction;
         });
+
          socket.on('emitBomb', function(direction) {
              if (socket.mines > 0){
             socket.mines -= 1;
@@ -151,7 +154,7 @@ io.on('connection', function(socket) {
                      }
                  }
                     emitPlayer(socket);
-                        min = {
+                      var min = {
                     x: socket.x,
                     y: socket.y,
                     playerSize: 50,
@@ -159,6 +162,23 @@ io.on('connection', function(socket) {
                  };
                 mines.push(min);
                  io.emit('addMine', min);
+
+             }
+        });
+         socket.on('shot', function() {
+             if (socket.playerSize > 25){
+            socket.playerSize -= 5;
+                    emitPlayer(socket);
+                       var min = {
+                    x: socket.x,
+                    y: socket.y,
+                    playerSize: 10,
+                    colour: socket.colour,
+                 };
+
+                 io.emit('addBullet', min);
+                 min.owner = socket.playerName;
+                  bullets.push(min);
 
              }
         });
@@ -270,10 +290,10 @@ function movePlayer(player) {
     }
 
     if(player.direction.r > 0){
-        player.r += 4;
+        player.r += player.speed;
     }
     if(player.direction.r < 0){
-        player.r -= 4;
+        player.r -= player.speed;
     }
     if(player.direction.x > 0){
         player.direction.x = 1;
@@ -281,11 +301,31 @@ function movePlayer(player) {
     if(player.direction.x < 0){
         player.direction.x = -1;
     }
+    player.velX = (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? (-player.speed) : 0)) * Math.cos(Math.PI / 180 * player.r);
+    player.velY = (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0))* Math.sin(Math.PI / 180 * player.r);
     intersectAny(player);
     player.speed = (100 / player.playerSize + 1) * player.speedUp;
+    player.x += player.velX;
+    player.y += player.velY;
+        for (var i = 0; i < walls.length; i++) {
+        switch (intersectWall(player, walls[i])) {
+                case false:
+                        break;
+                case 1:
+                        player.y -= player.velY;
+                        break;
+                case 2:
+                        player.x -= player.velX;
+                        break;
+                case true:
+                         player.x -= player.velX;
+                         player.y -= player.velY;
+                        break;
+
+    }
+        }
     movePlayerTo(player,
-        player.x + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? (-player.speed) : 0)) * Math.cos(Math.PI / 180 * player.r),
-        player.y + (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0))* Math.sin(Math.PI / 180 * player.r));
+        player.x, player.y);
 }
 
 function movePlayerTo(player, x, y) {
@@ -339,6 +379,12 @@ function intersectAny(player) {
 
 
             intersection(player, p);
+        }
+    }
+
+    for (var i = 0; i < walls.length; i++) {
+        if (intersect(player, walls[i])) {
+
         }
     }
     for (var i = 0; i < foods.length; i++) {
@@ -443,3 +489,25 @@ function respawn(player) {
 http.listen(port, function() {
     console.log('listening on *:3000');
 });
+function intersectWall(player, block){
+   var distX = Math.abs(player.x - block.x - block.w / 2);
+    var distY = Math.abs(player.y - block.y - block.h / 2);
+
+    if (distX > (block.w / 2 + player.playerSize)) {
+        return false;
+    }
+    if (distY > (block.h / 2 + player.playerSize)) {
+        return false;
+    }
+
+    if (distX <= (block.w / 2)) { //boven / beneden
+     return 1;
+    }
+    if (distY <= (block.h / 2)) { //link / rechts
+        return 2;
+    }
+
+    var dx = distX - block.w / 2;
+    var dy = distY - block.h / 2;
+    return (dx * dx + dy * dy <= (player.playerSize * player.playerSize));
+}
