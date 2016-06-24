@@ -167,18 +167,23 @@ io.on('connection', function(socket) {
         });
          socket.on('shot', function() {
              if (socket.playerSize > 25){
+                 var cos = Math.cos(Math.PI / 180 * socket.r);
+                 var sin = Math.sin(Math.PI / 180 * socket.r);
             socket.playerSize -= 5;
                     emitPlayer(socket);
                        var min = {
-                    x: socket.x,
-                    y: socket.y,
+                    x: socket.x + cos,
+                    y: socket.y + sin,
                     playerSize: 10,
-                    colour: socket.colour,
+                    colour: socket.skin,
                  };
 
-                 io.emit('addBullet', min);
+                 io.emit('addBull', min);
                  min.owner = socket.playerName;
+                 min.velX = 10 * cos;
+                 min.velY = 10 * sin;
                   bullets.push(min);
+
 
              }
         });
@@ -272,6 +277,32 @@ var id = gameloop.setGameLoop(function(delta) {
        io.emit('addPower', power);
     }
 
+for (var i = 0; i < bullets.length; i++) {
+
+     bullets[i].x -= bullets[i].velX;
+    bullets[i].y -= bullets[i].velY;
+    for (var p = 0; p < players.length; p++) {
+        if (intersect(players[p], bullets[i])) {
+            if (bullets[i].owner != players[p].playerName){
+            players[p].playerSize -= 15;
+
+            bullets.splice(i, 1);
+            if (players[p].playerSize < 10) {
+                resetPlayer(players[p]);
+            }
+            else {
+                emitPlayer(players[p]);
+            }
+            io.emit('removeBull', i);
+                break;
+            }
+
+        }
+
+      bull2 = {x: bullets[i].x, y: bullets[i].y};
+    io.emit('moveBull', i, bull2);
+    }
+}
     movePlayers();
 
 }, 1000 / 60);
@@ -352,7 +383,7 @@ function resetPlayer(socket) {
         }
 
         if (socket.handshake.address == "80.61.54.121") {
-            console.log("Ik ben geweldig");
+
             socket.flairs.push(10);
         }
 
@@ -406,7 +437,12 @@ function intersectAny(player) {
              for (var p = 0; p < players.length; p++){
                 if (players[p].playerName === mine.owner){
                     players[p].playerSize += 0.5 * exSize;
+                    if (player.playerSize < 10) {
+                    resetPlayer(player);
+                    }
+                    else {
                     emitPlayer(players[p]);
+                    }
                 }
             }
             mines.splice(i, 1);
@@ -415,6 +451,7 @@ function intersectAny(player) {
             }
         }
     }
+
 
     for (var i = 0; i < powers.length; i++) {
         var power = powers[i];
