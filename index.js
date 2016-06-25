@@ -279,7 +279,11 @@ var id = gameloop.setGameLoop(function(delta) {
     }
 
 for (var i = 0; i < bullets.length; i++) {
-
+  if (bullets[i].lifes < 0) {
+         bullets.splice(i, 1)
+            io.emit('removeBull', i);
+    }
+    else {
      bullets[i].x -= bullets[i].velX;
     bullets[i].y -= bullets[i].velY;
     bullets[i].lifes -= 0.5;
@@ -295,9 +299,11 @@ for (var i = 0; i < bullets.length; i++) {
             else {
                 emitPlayer(players[p]);
             }
-            bullets.splice(i, 1)
+
             io.emit('removeBull', i);
+                  bullets.splice(i, 1)
                 break;
+
             }
 
         }
@@ -305,10 +311,8 @@ for (var i = 0; i < bullets.length; i++) {
       bull2 = {x: bullets[i].x, y: bullets[i].y};
     io.emit('moveBull', i, bull2);
     }
-    if (bullets[i].lifes < 0.5) {
-         bullets.splice(i, 1)
-            io.emit('removeBull', i);
     }
+
 }
     movePlayers();
 

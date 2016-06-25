@@ -28,6 +28,7 @@ function preload() {
 					images[i].src = preload.arguments[i]
 				}
 			}
+
 preload(
 "http://pbs.twimg.com/profile_images/693492259791200256/z0oxKdVO.png",
 "http://www.lunapic.com/editor/premade/transparent.gif",
@@ -36,7 +37,7 @@ preload(
 "http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
 "http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",
 "http://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
-"http://bestdesignoptions.com/wp-content/uploads/2009/06/grass-texture-10.png",
+"",
 "http://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
 "http://simpleicon.com/wp-content/uploads/football.png",
 "http://downloadicons.net/sites/default/files/crown-symbol-64788.png",
@@ -121,6 +122,14 @@ function changeDirection() {
     }
 }
 
+function howToPlay() {
+    if (document.getElementById('howto').style.display == 'none') {
+            document.getElementById('howto').style.display = 'block';
+    }
+            else {
+                document.getElementById('howto').style.display = 'none';
+            }
+}
 function nameChoose() {
     var name = document.getElementById("nameInput").value;
     var colour = document.getElementById("colour").value;
