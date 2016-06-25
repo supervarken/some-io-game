@@ -182,6 +182,7 @@ io.on('connection', function(socket) {
                  min.owner = socket.playerName;
                  min.velX = 10 * cos;
                  min.velY = 10 * sin;
+                 min.lifes = 100;
                   bullets.push(min);
 
 
@@ -281,6 +282,7 @@ for (var i = 0; i < bullets.length; i++) {
 
      bullets[i].x -= bullets[i].velX;
     bullets[i].y -= bullets[i].velY;
+    bullets[i].lifes -= 0.5;
     for (var p = 0; p < players.length; p++) {
         if (intersect(players[p], bullets[i])) {
             if (bullets[i].owner != players[p].playerName){
@@ -293,6 +295,7 @@ for (var i = 0; i < bullets.length; i++) {
             else {
                 emitPlayer(players[p]);
             }
+            bullets.splice(i, 1)
             io.emit('removeBull', i);
                 break;
             }
@@ -301,6 +304,10 @@ for (var i = 0; i < bullets.length; i++) {
 
       bull2 = {x: bullets[i].x, y: bullets[i].y};
     io.emit('moveBull', i, bull2);
+    }
+    if (bullets[i].lifes < 0.5) {
+         bullets.splice(i, 1)
+            io.emit('removeBull', i);
     }
 }
     movePlayers();
