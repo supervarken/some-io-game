@@ -340,10 +340,10 @@ function movePlayer(player) {
     }
 
     if(player.direction.r > 0){
-        player.r += 5;
+        player.r += 5 * (20 / player.playerSize);
     }
     if(player.direction.r < 0){
-        player.r -= 5;
+        player.r -= 5 * (20 / player.playerSize);
     }
     if(player.direction.x > 0){
         player.direction.x = 1;
@@ -512,15 +512,9 @@ function intersectAny(player) {
 }
 
 function emitPlayer(player) {
-    play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs, r: player.r};
-    io.sockets.emit('playerMove', {
-        playerSize: play.playerSize,
-        playerName: play.playerName,
-        x: play.x,
-        y: play.y,
-        r: play.r,
-        flairs: play.flairs
-    });
+    var play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs, r: player.r};
+
+    io.emit('playerMove', play);
 }
 
 function intersection(player1, player2) {
