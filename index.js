@@ -26,7 +26,7 @@ var foods = [];
 var powers = [];
 var mines = [];
 var bullets = [];
-var walls = [];
+var walls = [{x: 100, y: 100, w: 100, h: 100}];
 
 io.on('connection', function(socket) {
     var nameChoose = false;
@@ -212,6 +212,7 @@ function resetGame(){
     foods = [];
     powers = [];
     mines = [];
+    var bullets = [];
     for (i = 0; i < players.length; i++) {
         resetPlayer(players[i]);
 
@@ -221,7 +222,7 @@ function resetGame(){
  winner.flairs.push(6);
     }
     io.emit('chat message', "Game resetted!", "Server");
-    io.emit('massChange', foods, powers, mines);
+    io.emit('massChange', foods, powers, mines, walls, bullets);
 }
 setInterval(function() {
     var leadObjs = [];
@@ -290,7 +291,14 @@ for (var i = 0; i < bullets.length; i++) {
     for (var p = 0; p < players.length; p++) {
         if (intersect(players[p], bullets[i])) {
             if (bullets[i].owner != players[p].playerName){
-            players[p].playerSize -= 15;
+            players[p].playerSize -= 10;
+                for (var l = 0; l < players.length; l++){
+                if (players[l].playerName === bullets[i].owner){
+                    players[l].playerSize += 10;
+                    emitPlayer(players[l]);
+                }
+                }
+
 
             bullets.splice(i, 1);
             if (players[p].playerSize < 10) {
@@ -332,10 +340,10 @@ function movePlayer(player) {
     }
 
     if(player.direction.r > 0){
-        player.r += player.speed;
+        player.r += 5;
     }
     if(player.direction.r < 0){
-        player.r -= player.speed;
+        player.r -= 5;
     }
     if(player.direction.x > 0){
         player.direction.x = 1;
@@ -448,9 +456,9 @@ function intersectAny(player) {
              for (var p = 0; p < players.length; p++){
                 if (players[p].playerName === mine.owner){
                     players[p].playerSize += 0.5 * exSize;
-                    if (player.playerSize < 10) {
-                    resetPlayer(player);
-                    }
+                   if (player.playerSize < 10) {
+                resetPlayer(player);
+            }
                     else {
                     emitPlayer(players[p]);
                     }

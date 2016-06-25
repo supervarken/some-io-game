@@ -46,6 +46,8 @@ preload(
 //backColour = "#FFFFFF";
 
 
+canvas.addEventListener('mousedown', function(e) { e.preventDefault(); socket.emit('shot');}, false);
+
 function updateTransform() {
     ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -(camera.x - canvas.width * 0.5) * camera.zoom, -(camera.y - canvas.height * 0.5) * camera.zoom);
 }
@@ -153,6 +155,8 @@ function nameChoose() {
   ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
   ctx.restore();
  }
+
+
 
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;

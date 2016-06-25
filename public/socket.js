@@ -37,6 +37,7 @@ socket.on('login', function(player) {
     document.getElementById("gameCanvas").style.opacity = "1";
     document.getElementById("leaders").style.opacity = "1";
     document.getElementById("startScreen").style.display = "none";
+    document.getElementById("gameCanvas").style.zIndex = "0";
     // connected = true;
     //playerNumber = player;
 

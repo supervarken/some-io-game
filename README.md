@@ -1,12 +1,9 @@
 # some-io-game
 Known bugs:
+static bullets appear when shooting
+leaderboard flashes sometimes
+randomly lag and fps not always showing
+
 Todo: add special group for chatters
 Changes emits for specififc tasks (especially flairs)
 make hack proof
-  <select id="slect">
-              <option value="random" selected>Random</option>
-                <option value="0">Centurion</option>
-                <option value="1">Penguin</option>
-                <option value="2">Apvark</option>
-            </select>
-            
