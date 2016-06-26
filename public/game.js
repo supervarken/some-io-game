@@ -46,15 +46,18 @@ preload(
 //backColour = "#FFFFFF";
 
 
-canvas.addEventListener('mousedown', function(e) { e.preventDefault(); socket.emit('shot');}, false);
+canvas.addEventListener('mousedown', function(e) { e.preventDefault(); document.getElementById("m").blur(); socket.emit('shot');}, false);
 
 function updateTransform() {
-    ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -(camera.x - canvas.width * 0.5) * camera.zoom, -(camera.y - canvas.height * 0.5) * camera.zoom);
+    ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -(camera.x - camera.width * 0.5) * camera.zoom, -(camera.y - camera.height * 0.5) * camera.zoom);
 }
 
 function updateCamera(player) {
     camera.x = player.x;
     camera.y = player.y;
+
+    camera.height = canvas.height;
+    camera.width = canvas.width;
 }
 
 var main = function() {
@@ -150,13 +153,21 @@ function nameChoose() {
   ctx.translate(x, y);
   ctx.rotate((angle) * TO_RADIANS);
   ctx.drawImage(images[9], -(image.playerSize * 1.15), -(image.playerSize * 1.15),  image.playerSize * 2.3, image.playerSize * 2.3);
-  ctx.fillStyle = '#000000';
+  ctx.fillStyle = image.colour;
 
-  ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
+  //ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
+     xr = -2 * image.playerSize; yr = 0;
+   ctx.beginPath();
+    ctx.moveTo(xr,-0.015 * player.playerSize);
+    ctx.lineTo(xr+0.3*player.playerSize,0.3 * player.playerSize);
+    ctx.lineTo(xr+0.3*player.playerSize,-0.3*player.playerSize);
+     ctx.lineTo(xr,0.015 * player.playerSize);
+    ctx.fill();
+     ctx.lineWidth = 0.05 * player.playerSize;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
   ctx.restore();
  }
-
-
 
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;

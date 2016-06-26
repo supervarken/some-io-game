@@ -172,8 +172,8 @@ io.on('connection', function(socket) {
             socket.playerSize -= 5;
                     emitPlayer(socket);
                        var min = {
-                    x: socket.x + cos,
-                    y: socket.y + sin,
+                    x: socket.x - (cos * socket.playerSize),
+                    y: socket.y - (sin * socket.playerSize),
                     playerSize: 10,
                     colour: socket.skin,
                  };
@@ -226,13 +226,39 @@ function resetGame(){
 }
 setInterval(function() {
     var leadObjs = [];
-    var lead = players.slice(0); //clone players
+    var lead = players.slice(0);//clone players arra
 
     lead.sort(function(a, b) {
         return b.playerSize - a.playerSize;
     });
-    for (i = 0; i < 5 && i < lead.length; i++){
+
+    if(lead[0]){
+        var flair = true;
+             for (var i = 0; i < lead[0].flairs.length; i++){
+
+                     if (lead[0].flairs[i] == 6){
+                         flair = false;
+                     }
+                 }
+        if (flair){
+            lead[0].flairs.push(6);
+
+
+        }
+             for (var i = 1; i < lead.length; i++){
+            for (var l = 0; l < lead[i].flairs.length; l++){
+
+                     if (lead[i].flairs[l] == 6){
+
+                         lead[i].flairs.splice(l, 1);
+                        emitPlayer(lead[i]);
+                     }
+                 }
+            }
+    }
+    for (var i = 0; i < 5 && i < lead.length; i++){
         var leadObj = {playerName: lead[i].playerName, playerSize: lead[i].playerSize};
+
         leadObjs.push(leadObj);
 
 io.emit('leaderUpdate', leadObjs);
