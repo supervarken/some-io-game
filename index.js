@@ -28,6 +28,9 @@ var mines = [];
 var bullets = [];
 var walls = [{x: 100, y: 100, w: 100, h: 100}];
 
+for (var i = 0; i < 5; i++){
+   addBot();
+}
 io.on('connection', function(socket) {
     var nameChoose = false;
     socket.emit('massChange', foods, powers, mines, walls, bullets);
@@ -80,9 +83,11 @@ io.on('connection', function(socket) {
             r: 0
         }
          respawn(socket);
+
         if (socket.handshake.address == "::ffff:80.61.54.121") {
             socket.flairs.push(10);
         }
+
 
         players.push(socket);
 
@@ -117,7 +122,7 @@ io.on('connection', function(socket) {
             if (msg == ""){}
             else if (msg == "/reset") { resetPlayer(socket); }
             else if (msg == "/resetgame jojo") { resetGame(); }
-
+            else if (msg == "/addBot jojo") { addBot(); }
              else if(msg.indexOf("/resetplayer jojo ") >= 0) {
            choosenOne = msg.substr(18);
                  for (i = 0; i < players.length; i++){
@@ -304,7 +309,67 @@ var id = gameloop.setGameLoop(function(delta) {
         powers.push(power);
        io.emit('addPower', power);
     }
+for (var i = 0; i < players.length; i++) {
+    if (players[i].robot) {
 
+        //console.log(players[i].direction);
+        if (players[i].direction.x == -1){
+            if (Math.random() < 0.01){
+                x = 0;
+            }
+                else {
+                    x = -1;
+                }
+        }
+        if (players[i].direction.x == 0){
+            if (Math.random() < 0.05){
+                x = -1;
+            }
+                else {
+                    x = 0;
+                }
+        }
+
+        if (players[i].direction.r == 1){
+            if (Math.random() < 0.01){
+                r = -1;
+            }
+                else if (Math.random() < 0.2){
+                r = 0;
+            }
+                else {
+                    r = 1;
+                }
+        }
+       else if (players[i].direction.r == -1){
+            if (Math.random() < 0.01){
+                r = 1;
+            }
+             else if (Math.random() < 0.2){
+                r = 0;
+            }
+                else {
+                    r = -1;
+                }
+        }
+         else {
+            if (Math.random() < 0.05){
+                r = 1;
+            }
+              else if (Math.random() < 0.05){
+                r = -1;
+            }
+                else {
+                    r = 0;
+                }
+        }
+
+        players[i].direction = {
+            x: x,
+            r: r
+        };
+    }
+}
 for (var i = 0; i < bullets.length; i++) {
   if (bullets[i].lifes < 0) {
          bullets.splice(i, 1)
@@ -427,9 +492,10 @@ function resetPlayer(socket) {
             r: 0
         }
 
-        if (socket.handshake.address == "80.61.54.121") {
-
+       if (!socket.robot){
+        if (socket.handshake.address == "::ffff:80.61.54.121") {
             socket.flairs.push(10);
+        }
         }
 
     respawn(socket);
@@ -562,6 +628,29 @@ function respawn(player) {
     movePlayerTo(player, Math.round(Math.random() * (width - player.playerSize)), Math.round(Math.random() * (height - player.playerSize)));
 }
 
+function addBot() {
+     var socket = [];
+        playerIndex++;
+
+        socket.playerName = "Bot  " + playerIndex;
+
+        socket.bomb = false;
+        socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        socket.playerSize = 20;
+        socket.speedUp = 1;
+        socket.speed = 5;
+        socket.mines = 0;
+        socket.r = 0;
+        socket.robot = true;
+        socket.flairs = [];
+        socket.direction = {
+            x: 0,
+            r: 0
+        }
+         respawn(socket);
+
+        players.push(socket);
+}
 http.listen(port, function() {
     console.log('listening on *:3000');
 });
