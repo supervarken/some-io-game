@@ -1,3 +1,4 @@
+var players = [];
 var gameloop = require('node-gameloop');
 
 var express = require('express');
@@ -22,7 +23,7 @@ app.get('/restart', function(req, res) {
 
 var intersections = 0;
 var playerIndex = 0;
-var players = [];
+
 var foods = [];
 var powers = [];
 var mines = [];
@@ -274,10 +275,12 @@ var id = gameloop.setGameLoop(function(delta) {
        io.emit('addPower', power);
     }
 moveBots();
-
+var bulletR = [];
 for (var i = 0; i < bullets.length; i++) {
+
   if (bullets[i].lifes < 0) {
-         bullets.splice(i, 1)
+      bulletR.push(i);
+
             io.emit('removeBull', i);
     }
     else {
@@ -287,10 +290,10 @@ for (var i = 0; i < bullets.length; i++) {
     for (var p = 0; p < players.length; p++) {
         if (intersect(players[p], bullets[i])) {
             if (bullets[i].owner != players[p].playerName){
-            players[p].playerSize -= 10;
+            players[p].playerSize -= 5;
                 for (var l = 0; l < players.length; l++){
                 if (players[l].playerName === bullets[i].owner){
-                    players[l].playerSize += 10;
+                    players[l].playerSize += 5;
                     emitPlayer(players[l]);
                 }
                 }
@@ -318,6 +321,10 @@ for (var i = 0; i < bullets.length; i++) {
     }
 
 }
+for (i = 0; i < bulletR.length; i++) {
+     bullets.splice(i, 1);
+}
+
     movePlayers();
 
 }, 1000 / 60);
@@ -331,7 +338,7 @@ function movePlayers() {
 }
 
 function movePlayer(player) {
-    if (player.direction.x == 0 && player.direction.y == 0 && player.direction.r == 0) {
+    if (player.direction.x == 0 && player.direction.r == 0) {
         return;
     }
 
@@ -585,7 +592,7 @@ function moveBots() {
     for (var i = 0; i < players.length; i++) {
     if (players[i].robot) {
         if (players[i].playerSize > 100){
-            if (Math.random() < 0.0005){
+            if (Math.random() < 0.0015){
                bullet(players[i]);
             }
         }
