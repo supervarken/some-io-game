@@ -331,10 +331,10 @@ for (var i = 0; i < players.length; i++) {
         }
 
         if (players[i].direction.r == 1){
-            if (Math.random() < 0.01){
+            if (Math.random() < (0.2 / players[i].playerSize)){
                 r = -1;
             }
-                else if (Math.random() < 0.2){
+                else if (Math.random() < (4 / players[i].playerSize)){
                 r = 0;
             }
                 else {
@@ -342,10 +342,10 @@ for (var i = 0; i < players.length; i++) {
                 }
         }
        else if (players[i].direction.r == -1){
-            if (Math.random() < 0.01){
+            if (Math.random() <  (0.2 / players[i].playerSize)){
                 r = 1;
             }
-             else if (Math.random() < 0.2){
+             else if (Math.random() < (4 / players[i].playerSize)){
                 r = 0;
             }
                 else {
@@ -353,10 +353,10 @@ for (var i = 0; i < players.length; i++) {
                 }
         }
          else {
-            if (Math.random() < 0.05){
+            if (Math.random() < (1 / players[i].playerSize)){
                 r = 1;
             }
-              else if (Math.random() < 0.05){
+              else if (Math.random() < (1 / players[i].playerSize)){
                 r = -1;
             }
                 else {
