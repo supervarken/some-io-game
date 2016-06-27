@@ -7,6 +7,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var width = 5000;
 var height = 5000;
+var amount = (width * height) / 20000;
 var port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -151,47 +152,10 @@ io.on('connection', function(socket) {
         });
 
          socket.on('emitBomb', function(direction) {
-             if (socket.mines > 0){
-            socket.mines -= 1;
-                 for (var i = 0; i < socket.flairs.length; i++){
-                     if (socket.flairs[i] == 5){
-                         socket.flairs.splice(i, 1);
-                     }
-                 }
-                    emitPlayer(socket);
-                      var min = {
-                    x: socket.x,
-                    y: socket.y,
-                    playerSize: 50,
-                    owner: socket.playerName
-                 };
-                mines.push(min);
-                 io.emit('addMine', min);
-
-             }
+        miner(socket);
         });
          socket.on('shot', function() {
-             if (socket.playerSize > 25){
-                 var cos = Math.cos(Math.PI / 180 * socket.r);
-                 var sin = Math.sin(Math.PI / 180 * socket.r);
-            socket.playerSize -= 5;
-                    emitPlayer(socket);
-                       var min = {
-                    x: socket.x - (cos * socket.playerSize),
-                    y: socket.y - (sin * socket.playerSize),
-                    playerSize: 10,
-                    colour: socket.skin,
-                 };
-
-                 io.emit('addBull', min);
-                 min.owner = socket.playerName;
-                 min.velX = 10 * cos;
-                 min.velY = 10 * sin;
-                 min.lifes = 100;
-                  bullets.push(min);
-
-
-             }
+          bullet(socket);
         });
     });
 });
@@ -309,67 +273,8 @@ var id = gameloop.setGameLoop(function(delta) {
         powers.push(power);
        io.emit('addPower', power);
     }
-for (var i = 0; i < players.length; i++) {
-    if (players[i].robot) {
+moveBots();
 
-        //console.log(players[i].direction);
-        if (players[i].direction.x == -1){
-            if (Math.random() < 0.01){
-                x = 0;
-            }
-                else {
-                    x = -1;
-                }
-        }
-        if (players[i].direction.x == 0){
-            if (Math.random() < 0.05){
-                x = -1;
-            }
-                else {
-                    x = 0;
-                }
-        }
-
-        if (players[i].direction.r == 1){
-            if (Math.random() < (0.2 / players[i].playerSize)){
-                r = -1;
-            }
-                else if (Math.random() < (4 / players[i].playerSize)){
-                r = 0;
-            }
-                else {
-                    r = 1;
-                }
-        }
-       else if (players[i].direction.r == -1){
-            if (Math.random() <  (0.2 / players[i].playerSize)){
-                r = 1;
-            }
-             else if (Math.random() < (4 / players[i].playerSize)){
-                r = 0;
-            }
-                else {
-                    r = -1;
-                }
-        }
-         else {
-            if (Math.random() < (1 / players[i].playerSize)){
-                r = 1;
-            }
-              else if (Math.random() < (1 / players[i].playerSize)){
-                r = -1;
-            }
-                else {
-                    r = 0;
-                }
-        }
-
-        players[i].direction = {
-            x: x,
-            r: r
-        };
-    }
-}
 for (var i = 0; i < bullets.length; i++) {
   if (bullets[i].lifes < 0) {
          bullets.splice(i, 1)
@@ -651,9 +556,125 @@ function addBot() {
 
         players.push(socket);
 }
-http.listen(port, function() {
-    console.log('listening on *:3000');
-});
+
+function bullet(socket) {
+              if (socket.playerSize > 25){
+                 var cos = Math.cos(Math.PI / 180 * socket.r);
+                 var sin = Math.sin(Math.PI / 180 * socket.r);
+            socket.playerSize -= 5;
+                    emitPlayer(socket);
+                       var min = {
+                    x: socket.x - (cos * socket.playerSize),
+                    y: socket.y - (sin * socket.playerSize),
+                    playerSize: 10,
+                    colour: socket.skin,
+                 };
+
+                 io.emit('addBull', min);
+                 min.owner = socket.playerName;
+                 min.velX = 10 * cos;
+                 min.velY = 10 * sin;
+                 min.lifes = 100;
+                  bullets.push(min);
+
+
+             }
+}
+
+function moveBots() {
+    for (var i = 0; i < players.length; i++) {
+    if (players[i].robot) {
+        if (players[i].playerSize > 100){
+            if (Math.random() < 0.0005){
+               bullet(players[i]);
+            }
+        }
+          if (players[i].mines > 0){
+            if (Math.random() < 0.001){
+               miner(players[i]);
+            }
+        }
+        //console.log(players[i].direction);
+        if (players[i].direction.x == -1){
+            if (Math.random() < 0.01){
+                x = 0;
+            }
+                else {
+                    x = -1;
+                }
+        }
+        if (players[i].direction.x == 0){
+            if (Math.random() < 0.05){
+                x = -1;
+            }
+                else {
+                    x = 0;
+                }
+        }
+
+        if (players[i].direction.r == 1){
+            if (Math.random() < (0.2 / players[i].playerSize)){
+                r = -1;
+            }
+                else if (Math.random() < (4 / players[i].playerSize)){
+                r = 0;
+            }
+                else {
+                    r = 1;
+                }
+        }
+       else if (players[i].direction.r == -1){
+            if (Math.random() <  (0.2 / players[i].playerSize)){
+                r = 1;
+            }
+             else if (Math.random() < (4 / players[i].playerSize)){
+                r = 0;
+            }
+                else {
+                    r = -1;
+                }
+        }
+         else {
+            if (Math.random() < (1 / players[i].playerSize)){
+                r = 1;
+            }
+              else if (Math.random() < (1 / players[i].playerSize)){
+                r = -1;
+            }
+                else {
+                    r = 0;
+                }
+        }
+
+        players[i].direction = {
+            x: x,
+            r: r
+        };
+    }
+}
+
+}
+
+function miner(socket) {
+         if (socket.mines > 0){
+            socket.mines -= 1;
+                 for (var i = 0; i < socket.flairs.length; i++){
+                     if (socket.flairs[i] == 5){
+                         socket.flairs.splice(i, 1);
+                     }
+                 }
+                    emitPlayer(socket);
+                      var min = {
+                    x: socket.x,
+                    y: socket.y,
+                    playerSize: 50,
+                    owner: socket.playerName
+                 };
+                mines.push(min);
+                 io.emit('addMine', min);
+
+             }
+}
 function intersectWall(player, block){
    var distX = Math.abs(player.x - block.x - block.w / 2);
     var distY = Math.abs(player.y - block.y - block.h / 2);
@@ -676,3 +697,7 @@ function intersectWall(player, block){
     var dy = distY - block.h / 2;
     return (dx * dx + dy * dy <= (player.playerSize * player.playerSize));
 }
+
+http.listen(port, function() {
+    console.log('listening on *:3000');
+});
