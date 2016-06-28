@@ -73,7 +73,7 @@ io.on('connection', function(socket) {
         socket.bomb = false;
         socket.skin = skin;
         socket.playerName = username;
-        socket.playerSize = 20;
+        socket.playerSize = 20.00;
         socket.speedUp = 1;
 
         socket.speed = 5;
@@ -123,9 +123,9 @@ io.on('connection', function(socket) {
         socket.on('chat message', function(msg, name) {
             if (msg == ""){}
             else if (msg == "/reset") { resetPlayer(socket); }
-            else if (msg == "/resetgame jojo") { resetGame(); }
-            else if (msg == "/addBot jojo") { addBot(); }
-             else if(msg.indexOf("/resetplayer jojo ") >= 0) {
+            else if (msg == "/resetgame jooj") { resetGame(); }
+            else if (msg == "/addbot jooj") { addBot(); }
+             else if(msg.indexOf("/resetplayer jooj ") >= 0) {
            choosenOne = msg.substr(18);
                  for (i = 0; i < players.length; i++){
                      if(players[i].playerName == choosenOne){
@@ -267,7 +267,7 @@ var id = gameloop.setGameLoop(function(delta) {
         power = {
             x: Math.random() * height,
             y: Math.random() * width,
-            playerSize: 20,
+            playerSize: 20.00,
             kind: kinder,
             img: img
         };
@@ -275,13 +275,11 @@ var id = gameloop.setGameLoop(function(delta) {
        io.emit('addPower', power);
     }
 moveBots();
-var bulletR = [];
 for (var i = 0; i < bullets.length; i++) {
-
   if (bullets[i].lifes < 0) {
-      bulletR.push(i);
-
-            io.emit('removeBull', i);
+      bullets.splice(i, 1);
+      io.emit('removeBull', i);
+      i--;
     }
     else {
      bullets[i].x -= bullets[i].velX;
@@ -290,16 +288,14 @@ for (var i = 0; i < bullets.length; i++) {
     for (var p = 0; p < players.length; p++) {
         if (intersect(players[p], bullets[i])) {
             if (bullets[i].owner != players[p].playerName){
-            players[p].playerSize -= 5;
+            players[p].playerSize -= 2.5;
                 for (var l = 0; l < players.length; l++){
                 if (players[l].playerName === bullets[i].owner){
-                    players[l].playerSize += 5;
+                    players[l].playerSize += 2.5;
                     emitPlayer(players[l]);
+                    break;
                 }
                 }
-
-
-            bullets.splice(i, 1);
             if (players[p].playerSize < 10) {
                 resetPlayer(players[p]);
             }
@@ -309,6 +305,7 @@ for (var i = 0; i < bullets.length; i++) {
 
             io.emit('removeBull', i);
                   bullets.splice(i, 1)
+                  i--;
                 break;
 
             }
@@ -320,9 +317,6 @@ for (var i = 0; i < bullets.length; i++) {
     }
     }
 
-}
-for (i = 0; i < bulletR.length; i++) {
-     bullets.splice(i, 1);
 }
 
     movePlayers();
@@ -392,7 +386,7 @@ function movePlayerTo(player, x, y) {
 
 function resetPlayer(socket) {
    socket.bomb = false;
-        socket.playerSize = 20;
+        socket.playerSize = 20.00;
         socket.speedUp = 1;
         socket.speed = 5;
         socket.mines = 0;
@@ -444,7 +438,7 @@ function intersectAny(player) {
     for (var i = 0; i < foods.length; i++) {
         var food = foods[i];
         if (intersect(player, food)) {
-            player.playerSize += 1;
+            player.playerSize = (player.playerSize * 10 + 3) / 10;
 
             foods.splice(i, 1);
 
@@ -548,7 +542,7 @@ function addBot() {
 
         socket.bomb = false;
         socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
-        socket.playerSize = 20;
+        socket.playerSize = 20.00;
         socket.speedUp = 1;
         socket.speed = 5;
         socket.mines = 0;
@@ -562,13 +556,22 @@ function addBot() {
          respawn(socket);
 
         players.push(socket);
+       io.emit('playerJoin', [{
+            playerSize: socket.playerSize,
+            playerName: socket.playerName,
+            x: socket.x,
+            y: socket.y,
+            r: socket.r,
+            skin: socket.skin,
+            flairs: socket.flairs
+        }]);
 }
 
 function bullet(socket) {
-              if (socket.playerSize > 25){
+              if (socket.playerSize >= 22.5){
                  var cos = Math.cos(Math.PI / 180 * socket.r);
                  var sin = Math.sin(Math.PI / 180 * socket.r);
-            socket.playerSize -= 5;
+            socket.playerSize -= 2.5;
                     emitPlayer(socket);
                        var min = {
                     x: socket.x - (cos * socket.playerSize),
@@ -592,7 +595,7 @@ function moveBots() {
     for (var i = 0; i < players.length; i++) {
     if (players[i].robot) {
         if (players[i].playerSize > 100){
-            if (Math.random() < 0.0015){
+            if (Math.random() < 0.0008){
                bullet(players[i]);
             }
         }

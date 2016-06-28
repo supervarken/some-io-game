@@ -1,4 +1,4 @@
-var socket = io.connect('');
+var socket = io.connect();
 var connected = false;
 socket.on('leaderUpdate', function(lead) {
     var myNode = document.getElementById("lead");
@@ -9,7 +9,7 @@ socket.on('leaderUpdate', function(lead) {
     for (i = 0; i < lead.length; i++) {
 
         gameBoard = document.createElement("li");
-        var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize));
+        var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize * 10));
         gameBoard.appendChild(text);
         document.getElementById('lead').appendChild(gameBoard);
 

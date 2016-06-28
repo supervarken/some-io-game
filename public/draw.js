@@ -1,7 +1,7 @@
 
 function render() {
 
-    player = {x: width / 2, y: height / 2};
+   player = {x: width / 2, y: height / 2};
 
     for(i in players) {
         var p = players[i];
@@ -11,26 +11,34 @@ function render() {
         }
     }
 
-    if(!player) {
-       return;// player = players[0];
+    if(player === undefined) {
+        console.log("dd");
+
+
     }
 
     ctx.setTransform(1,0,0,1,0,1);
+
+    ctx.font = "15px Arial";
     ctx.fillStyle = "#734A12";
    ctx.fillStyle = ctx.createPattern(images[8], "repeat");
     ctx.fillRect(0,0,canvas.width,canvas.height);
+
     updateCamera(player);
+
+
     updateTransform();
-     ctx.fillStyle = ctx.createPattern(images[11], "repeat");
+
+     ctx.fillStyle = ctx.createPattern(images[7], "repeat");
    if(!backColour == 0){
        ctx.fillStyle = backColour;
    }
+     ctx.fillRect(0, 0, width, height);
+     ctx.lineWidth = 20;
+      ctx.strokeStyle = 'white';
+    ctx.strokeRect(0, 0, width, height);
 
-
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.font = "15px Arial";
-
+    ctx.fill();
     //ctx.drawImage(back, 0, 0, 1500, 1000);
     for (i = 0; i < foods.length; i++) {
         food = foods[i];
@@ -95,6 +103,18 @@ if (images[player.skin]){
         for(i = 0; i < player.flairs.length; i++){
             ctx.drawImage(images[player.flairs[i]], player.x - (3.5 * koala) - (11 * i) - 15, player.y - 10 - (player.playerSize * 1.2), 10, 10);
         }
+
     }
+     if(player.me){
+
+        ctx.fillStyle = player.skin;
+        ctx.arc(player.x - (canvas.width / 2) + 60, player.y - (canvas.height / 2) + 60, 60, 0, (2 * Math.PI), false);
+          ctx.fill();
+      ctx.fillStyle = "#000000";
+          ctx.font = "bold 15px Dax Regular";
+    ctx.fillText("My Score:",player.x - (canvas.width / 2) + 25, player.y - (canvas.height / 2) + 35);
+ctx.fillText(Math.round(player.playerSize * 10),player.x - (canvas.width / 2) + 40, player.y - (canvas.height / 2) + 70);
+}
+
 
 };
