@@ -6,6 +6,7 @@ This is my first attempt at creating a real time multiplayer game using node.js
 #Known bugs:
 leaderboard flashes sometimes
 randomly lag and fps not always showing
+unable to move when killed by bot (speed/bomb?)
 
 #Todo:
 add special group for chatters

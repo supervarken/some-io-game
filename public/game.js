@@ -49,12 +49,15 @@ preload(
 canvas.addEventListener('mousedown', function(e) { e.preventDefault(); document.getElementById("m").blur(); socket.emit('shot');}, false);
 
 function updateTransform() {
-    ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -(camera.x - camera.width * 0.5) * camera.zoom, -(camera.y - camera.height * 0.5) * camera.zoom);
+
+    ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -(camera.x - camera.width * (0.5 / camera.zoom)) * camera.zoom, -(camera.y - camera.height * (0.5 / camera.zoom)) * camera.zoom);
 }
 
 function updateCamera(player) {
     camera.x = player.x;
     camera.y = player.y;
+
+    camera.zoom = ((20 + (1 * player.playerSize))/ (player.playerSize ));
 
     camera.height = canvas.height;
     camera.width = canvas.width;

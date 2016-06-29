@@ -7,7 +7,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 var width = 5000;
-var height = 5000;
+var height = 10000;
 var amount = (width * height) / 20000;
 var port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'public')));
@@ -238,10 +238,10 @@ io.emit('leaderUpdate', leadObjs);
 var id = gameloop.setGameLoop(function(delta) {
 
     var foodNow = foods.splice();
-    if (Math.random() < 0.05 && foods.length < 1500) {
+    if (Math.random() < 0.05 && foods.length < 2000) {
         food = {
-            x: Math.random() * height,
-            y: Math.random() * width,
+            x: Math.random() * width,
+            y: Math.random() * height,
             playerSize: 10,
             foodcolor: '#' + Math.floor(Math.random() * 16777215).toString(16)
         };
@@ -265,8 +265,8 @@ var id = gameloop.setGameLoop(function(delta) {
         break;
 }
         power = {
-            x: Math.random() * height,
-            y: Math.random() * width,
+            x: Math.random() * width,
+            y: Math.random() *  height,
             playerSize: 20.00,
             kind: kinder,
             img: img
@@ -454,7 +454,7 @@ function intersectAny(player) {
              for (var p = 0; p < players.length; p++){
                 if (players[p].playerName === mine.owner){
                     players[p].playerSize += 0.5 * exSize;
-                   if (player.playerSize < 10) {
+                   if (player.playerSize < 20) {
                 resetPlayer(player);
             }
                     else {

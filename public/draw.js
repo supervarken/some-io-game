@@ -19,7 +19,7 @@ function render() {
 
     ctx.setTransform(1,0,0,1,0,1);
 
-    ctx.font = "15px Arial";
+    ctx.font = 0.4 * player.playerSize + "px Arial";
     ctx.fillStyle = "#734A12";
    ctx.fillStyle = ctx.createPattern(images[8], "repeat");
     ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -99,21 +99,24 @@ if (images[player.skin]){
 }
       ctx.fillStyle = "#000000";
         var koala = player.playerName.length;
-        ctx.fillText(player.playerName, player.x - (koala * 3.5), player.y - (player.playerSize * 1.2));
+        ctx.fillText(player.playerName, player.x - (koala * 3.5) / camera.zoom, player.y - (player.playerSize * 1.2));
         for(i = 0; i < player.flairs.length; i++){
             ctx.drawImage(images[player.flairs[i]], player.x - (3.5 * koala) - (11 * i) - 15, player.y - 10 - (player.playerSize * 1.2), 10, 10);
         }
 
     }
      if(player.me){
-
+var wave = 50 / camera.zoom;
         ctx.fillStyle = player.skin;
-        ctx.arc(player.x - (canvas.width / 2) + 60, player.y - (canvas.height / 2) + 60, 60, 0, (2 * Math.PI), false);
+        ctx.arc(player.x - (canvas.width / 2) / camera.zoom + wave, player.y - (canvas.height / 2) / camera.zoom + wave, wave, 0, (2 * Math.PI), false);
           ctx.fill();
       ctx.fillStyle = "#000000";
-          ctx.font = "bold 15px Dax Regular";
-    ctx.fillText("My Score:",player.x - (canvas.width / 2) + 25, player.y - (canvas.height / 2) + 35);
-ctx.fillText(Math.round(player.playerSize * 10),player.x - (canvas.width / 2) + 40, player.y - (canvas.height / 2) + 70);
+          ctx.font = "bold " + 20 / camera.zoom + "px Dax Regular";
+    ctx.fillText("My Score: ",player.x - (canvas.width / 2) / camera.zoom + (10 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (45 / camera.zoom));
+ctx.fillText(Math.round(player.playerSize * 10),player.x - (canvas.width / 2) / camera.zoom + (35 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (70 / camera.zoom));
+ctx.globalAlpha = 0.5;
+ctx.fillRect(player.x - (canvas.width / 2) / camera.zoom, player.y + (canvas.height / 2) / camera.zoom - (height/50) / camera.zoom, (width / 50) / camera.zoom, (height / 50) / camera.zoom);
+         ctx.globalAlpha = 1;
 }
 
 
