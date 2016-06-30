@@ -1,17 +1,17 @@
 
 function render() {
 
-   player = {x: width / 2, y: height / 2};
+   playerme = {x: width / 2, y: height / 2};
 
     for(i in players) {
         var p = players[i];
         if(p.me) {
-            player = p;
+            playerme = p;
             break;
         }
     }
 
-    if(player === undefined) {
+    if(playerme === undefined) {
         console.log("dd");
 
 
@@ -19,12 +19,12 @@ function render() {
 
     ctx.setTransform(1,0,0,1,0,1);
 
-    ctx.font = 0.4 * player.playerSize + "px Arial";
+    ctx.font = 0.4 * playerme.playerSize + "px Arial";
     ctx.fillStyle = "#734A12";
    ctx.fillStyle = ctx.createPattern(images[8], "repeat");
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    updateCamera(player);
+    updateCamera(playerme);
     updateTransform();
 
      ctx.fillStyle = ctx.createPattern(images[7], "repeat");
@@ -103,24 +103,24 @@ if (images[player.skin]){
         }
 
     }
-     if(player.me){
+     if(playerme.me){
 var wave = 50 / camera.zoom;
-        ctx.fillStyle = player.skin;
-        ctx.arc(player.x - (canvas.width / 2) / camera.zoom + wave, player.y - (canvas.height / 2) / camera.zoom + wave, wave, 0, (2 * Math.PI), false);
+        ctx.fillStyle = playerme.skin;
+        ctx.arc(playerme.x - (canvas.width / 2) / camera.zoom + wave, playerme.y - (canvas.height / 2) / camera.zoom + wave, wave, 0, (2 * Math.PI), false);
           ctx.fill();
       ctx.fillStyle = "#000000";
           ctx.font = "bold " + 20 / camera.zoom + "px Dax Regular";
-    ctx.fillText("My Score: ",player.x - (canvas.width / 2) / camera.zoom + (10 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (45 / camera.zoom));
-ctx.fillText(Math.round(player.playerSize * 10),player.x - (canvas.width / 2) / camera.zoom + (35 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (70 / camera.zoom));
-ctx.fillText("FPS: " + fps.toFixed(2),player.x - (canvas.width / 2) / camera.zoom + (20 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (90 / camera.zoom));
+    ctx.fillText("My Score: ",playerme.x - (canvas.width / 2) / camera.zoom + (10 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (45 / camera.zoom));
+ctx.fillText(Math.round(playerme.playerSize * 10),playerme.x - (canvas.width / 2) / camera.zoom + (35 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (70 / camera.zoom));
+ctx.fillText("FPS: " + fps.toFixed(2),playerme.x - (canvas.width / 2) / camera.zoom + (20 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (90 / camera.zoom));
 
 ctx.globalAlpha = 0.5;
 cz = camera.zoom
-mapx = player.x + 2 - (canvas.width / 2) / camera.zoom;
-mapy = player.y - 2 + (canvas.height / 2) / camera.zoom - (height/50) / camera.zoom;
+mapx = playerme.x + 2 - (canvas.width / 2) / camera.zoom;
+mapy = playerme.y - 2 + (canvas.height / 2) / camera.zoom - (height/50) / camera.zoom;
 mapw = (width / 50) / camera.zoom;
 maph = (height / 50) / camera.zoom;
-ctx.fillRect(mapx, mapy, mapw, maph);
+ctx.fillRect(mapx, mapy, mapw + 1.5/ cz, maph + 1.5/ cz );
 
          ctx.globalAlpha = 1;
 
@@ -131,7 +131,7 @@ for (var i = 0; i < players.length; i++){
         ctx.fillStyle = "#ffffff";
     }
 
-   ctx.fillRect(mapx + (play.x / (width / 100)) / cz, mapy + ((play.y / (height / 200)) / cz),3/ cz, 3 / cz);
+   ctx.fillRect(mapx + (play.x / (width / 100) - 1.5)/ cz, mapy + ((play.y / (height / 200) - 1.5)/ cz),3/ cz, 3 / cz);
 }
 
 }
