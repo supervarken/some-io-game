@@ -57,7 +57,7 @@ function updateCamera(player) {
     camera.x = player.x;
     camera.y = player.y;
 
-    camera.zoom = ((20 + (1 * player.playerSize))/ (player.playerSize ));
+    camera.zoom = ((20 + (player.playerSize))/ (player.playerSize ));
 
     camera.height = canvas.height;
     camera.width = canvas.width;

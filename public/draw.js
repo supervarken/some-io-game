@@ -25,8 +25,6 @@ function render() {
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
     updateCamera(player);
-
-
     updateTransform();
 
      ctx.fillStyle = ctx.createPattern(images[7], "repeat");
@@ -114,10 +112,30 @@ var wave = 50 / camera.zoom;
           ctx.font = "bold " + 20 / camera.zoom + "px Dax Regular";
     ctx.fillText("My Score: ",player.x - (canvas.width / 2) / camera.zoom + (10 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (45 / camera.zoom));
 ctx.fillText(Math.round(player.playerSize * 10),player.x - (canvas.width / 2) / camera.zoom + (35 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (70 / camera.zoom));
+ctx.fillText("FPS: " + fps.toFixed(2),player.x - (canvas.width / 2) / camera.zoom + (20 / camera.zoom), player.y - (canvas.height / 2) / camera.zoom + (90 / camera.zoom));
+
 ctx.globalAlpha = 0.5;
-ctx.fillRect(player.x - (canvas.width / 2) / camera.zoom, player.y + (canvas.height / 2) / camera.zoom - (height/50) / camera.zoom, (width / 50) / camera.zoom, (height / 50) / camera.zoom);
+cz = camera.zoom
+mapx = player.x + 2 - (canvas.width / 2) / camera.zoom;
+mapy = player.y - 2 + (canvas.height / 2) / camera.zoom - (height/50) / camera.zoom;
+mapw = (width / 50) / camera.zoom;
+maph = (height / 50) / camera.zoom;
+ctx.fillRect(mapx, mapy, mapw, maph);
+
          ctx.globalAlpha = 1;
+
+for (var i = 0; i < players.length; i++){
+    ctx.fillStyle = "#0000FF";
+    play = players[i];
+    if(play.me){
+        ctx.fillStyle = "#ffffff";
+    }
+
+   ctx.fillRect(mapx + (play.x / (width / 100)) / cz, mapy + ((play.y / (height / 200)) / cz),3/ cz, 3 / cz);
+}
+
 }
 
 
 };
+
