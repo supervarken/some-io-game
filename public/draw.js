@@ -19,7 +19,7 @@ function render() {
 
     ctx.setTransform(1,0,0,1,0,1);
 
-    ctx.font = 0.4 * playerme.playerSize + "px Arial";
+    ctx.font = 20 / camera.zoom + "px Arial";
     ctx.fillStyle = "#734A12";
    ctx.fillStyle = ctx.createPattern(images[8], "repeat");
     ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -112,7 +112,7 @@ var wave = 50 / camera.zoom;
           ctx.font = "bold " + 20 / camera.zoom + "px Dax Regular";
     ctx.fillText("My Score: ",playerme.x - (canvas.width / 2) / camera.zoom + (10 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (45 / camera.zoom));
 ctx.fillText(Math.round(playerme.playerSize * 10),playerme.x - (canvas.width / 2) / camera.zoom + (35 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (70 / camera.zoom));
-ctx.fillText("FPS: " + fps.toFixed(2),playerme.x - (canvas.width / 2) / camera.zoom + (20 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (90 / camera.zoom));
+ctx.fillText("FPS: " + Math.round(fps),playerme.x - (canvas.width / 2) / camera.zoom + (20 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (90 / camera.zoom));
 
 ctx.globalAlpha = 0.5;
 cz = camera.zoom
