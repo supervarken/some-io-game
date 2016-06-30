@@ -484,7 +484,10 @@ function intersectAny(player) {
                            break;
                        }
                    }
-                 player.flairs.splice(i, 1); player.speedUp -= 1 }, 3000);
+                 player.flairs.splice(i, 1);
+                 if (player.speedUp > 1) {
+                     player.speedUp -= 1; }
+                     }, 3000);
         }
             else if (power.kind == "bomb"){
                 player.bomb = true;
