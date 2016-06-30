@@ -1,7 +1,7 @@
 
 function render() {
 
-   playerme = {x: width / 2, y: height / 2};
+   playerme = {x: width / 2, y: height / 2, playerSize: 10000};
 
     for(i in players) {
         var p = players[i];

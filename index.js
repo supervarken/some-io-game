@@ -28,7 +28,7 @@ var foods = [];
 var powers = [];
 var mines = [];
 var bullets = [];
-var walls = [{x: 100, y: 100, w: 100, h: 100}];
+var walls = [];
 
 for (var i = 0; i < 5; i++){
    addBot();
