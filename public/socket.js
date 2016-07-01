@@ -87,20 +87,19 @@ socket.on('flairUpdate', function(flairs, i){
     players[i].flairs = flairs;
 })
 socket.on('playerLeave', function(player) {
-    var index = -1;
-    for (i in players) {
-        var p = players[i];
-        if (player.playerName == p.playerName) {
-            index = i;
-        }
-    }
-    if (i == -1) {
-        return;
-    }
-    players.splice(index, 1);
+    players.splice(player.i, 1);
     console.log(player.playerName + ' left, ' + players.length + ' players left.');
-});
 
+});
+socket.on('discon', function(player) {
+
+    document.getElementById("chat").style.display = "none";
+    document.getElementById("gameCanvas").style.opacity = "0.5";
+    document.getElementById("leaders").style.opacity = "0.5";
+    document.getElementById("startScreen").style.display = "block";
+    document.getElementById("gameCanvas").style.zIndex = "-1";
+
+})
 socket.on('playerMove', function(player) {
     for (i in players) {
         var p = players[i];

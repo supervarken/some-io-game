@@ -182,6 +182,8 @@ function clientMove(playerme){
               playerme.velY = (direction.x > 0 ? playerme.speed : (direction.x < 0 ? -playerme.speed : 0))* Math.sin(Math.PI / 180 * playerme.r);
             playerme.x += playerme.velX;
             playerme.y += playerme.velY;
+            playerme.x = Math.min(Math.max(playerme.playerSize, playerme.x), (width - playerme.playerSize)); //add player.playersize
+            playerme.y = Math.min(Math.max(playerme.playerSize, playerme.y), (height - playerme.playerSize));
     }
 }
 var w = window;

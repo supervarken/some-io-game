@@ -34,7 +34,7 @@ for (var i = 0; i < 5; i++){
    addBot();
 }
 io.on('connection', function(socket) {
-    var nameChoose = false;
+    socket.nameChoose = false;
     socket.emit('massChange', foods, powers, mines, walls, bullets);
 
     socket.emit('roomSize', {
@@ -56,10 +56,10 @@ io.on('connection', function(socket) {
 
 
     socket.on('username', function(username, chat, skin) {
-        if (nameChoose) return;
+       if (socket.nameChoose) return;
 
         playerIndex++;
-        nameChoose = true;
+        socket.nameChoose = true;
 
         if (username === "") {
             username = "Player " + playerIndex;
@@ -141,12 +141,16 @@ io.on('connection', function(socket) {
         });
 
         socket.on('disconnect', function() {
+            if (socket.nameChoose) {
             var index = players.indexOf(socket);
+            console.log(index)
             players.splice(index, 1);
             console.log(socket.playerName + ' disconnected');
-            io.sockets.emit('playerLeave', {
-                playerName: socket.playerName
+            io.emit('playerLeave', {
+                playerName: socket.playerName,
+                i: index
             });
+            }
         });
 
         socket.on('changeDirection', function(direction) {
@@ -386,6 +390,18 @@ function movePlayerTo(player, x, y) {
 }
 
 function resetPlayer(socket) {
+    if (!socket.robot) {
+            socket.nameChoose = false;
+            var index = players.indexOf(socket);
+            players.splice(index, 1);
+            io.emit('playerLeave', {
+                playerName: socket.playerName,
+                i: index
+            });
+
+    socket.emit('discon', "hmm");
+    }
+
    socket.bomb = false;
         socket.playerSize = 20.00;
         socket.speedUp = 1;
@@ -608,7 +624,7 @@ function moveBots() {
                miner(players[i]);
             }
         }
-        //console.log(players[i].direction);
+
         if (players[i].direction.x == -1){
             if (Math.random() < 0.01){
                 x = 0;
