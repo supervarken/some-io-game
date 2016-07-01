@@ -5,7 +5,9 @@ This is my first attempt at creating a real time multiplayer game using node.js
 
 #Known bugs:
 leaderboard flashes sometimes
-randomly lag (mostly fixed now)
+size of text
+disconnect on school internet
+arrow not exact
 
 
 #Todo:

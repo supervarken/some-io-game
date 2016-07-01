@@ -7,7 +7,7 @@ var powers = [];
 var mines = [];
 var direction = {
     x: 0,
-    y: 0
+    r: 0
 };
 var walls = [];
 var mines = [];
@@ -37,7 +37,7 @@ preload(
 "http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
 "http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",
 "http://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
-"http://bestdesignoptions.com/wp-content/uploads/2009/06/grass-texture-10.png",
+"http://i.imgur.com/hqdj1jl.png",
 "http://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
 "http://simpleicon.com/wp-content/uploads/football.png",
 "", //http://downloadicons.net/sites/default/files/crown-symbol-64788.png
@@ -107,10 +107,10 @@ function changeDirection() {
             x += 1;
         }
         if (keys[68] || keys[39]) {
-            r += 1;
+            r += 5;
         }
         if (keys[65] || keys[37]) {
-            r += -1;
+            r += -5;
         }
          if (keys[32]) {
             socket.emit('emitBomb');
@@ -118,10 +118,9 @@ function changeDirection() {
         if (keys[84]) {
             socket.emit('shot');
         }
-        if (direction.x != x || direction.y != y || direction.r != r) {
+        if (direction.x != x || direction.r != r) {
             direction = {
                 x: x,
-                y: y,
                 r: r
             };
             socket.emit('changeDirection', direction);
@@ -161,18 +160,30 @@ function nameChoose() {
   //ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
      xr = -2 * image.playerSize; yr = 0;
    ctx.beginPath();
-    ctx.moveTo(xr,-0.015 * player.playerSize);
-    ctx.lineTo(xr+0.3*player.playerSize,0.3 * player.playerSize);
-    ctx.lineTo(xr+0.3*player.playerSize,-0.3*player.playerSize);
-     ctx.lineTo(xr,0.015 * player.playerSize);
+    ctx.moveTo(xr,-0.015 * image.playerSize);
+    ctx.lineTo(xr+0.3*image.playerSize,0.3 * image.playerSize);
+    ctx.lineTo(xr+0.3*image.playerSize,-0.3*image.playerSize);
+     ctx.lineTo(xr,0.015 * image.playerSize);
     ctx.fill();
-     ctx.lineWidth = 0.05 * player.playerSize;
+     ctx.lineWidth = 0.05 * image.playerSize;
       ctx.strokeStyle = 'black';
       ctx.stroke();
      ctx.closePath();
   ctx.restore();
  }
 
+function clientMove(playerme){
+        if(playerme.me) {
+
+    playerme.speed = (100 / playerme.playerSize + 1) * playerme.speedUp;
+               playerme.r += direction.r * (20 / playerme.playerSize);
+               playerme.velX = (direction.x > 0 ? playerme.speed : (direction.x < 0 ? (-playerme.speed) : 0)) * Math.cos(Math.PI / 180 * playerme.r);
+
+              playerme.velY = (direction.x > 0 ? playerme.speed : (direction.x < 0 ? -playerme.speed : 0))* Math.sin(Math.PI / 180 * playerme.r);
+            playerme.x += playerme.velX;
+            playerme.y += playerme.velY;
+    }
+}
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
 

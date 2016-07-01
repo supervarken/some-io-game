@@ -1,7 +1,7 @@
 
 function render() {
 
-   playerme = {x: width / 2, y: height / 2, playerSize: 10000};
+   var playerme = {x: width / 2, y: height / 2, playerSize: 10000};
 
     for(i in players) {
         var p = players[i];
@@ -11,17 +11,13 @@ function render() {
         }
     }
 
-    if(playerme === undefined) {
-        console.log("dd");
-
-
-    }
+    clientMove(playerme);
 
     ctx.setTransform(1,0,0,1,0,1);
 
     ctx.font = 20 / camera.zoom + "px Arial";
     ctx.fillStyle = "#734A12";
-   ctx.fillStyle = ctx.createPattern(images[8], "repeat");
+   ctx.fillStyle = "#5E5E5E";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
     updateCamera(playerme);

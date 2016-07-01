@@ -101,7 +101,8 @@ io.on('connection', function(socket) {
             r: socket.r,
             me: true,
             skin: socket.skin,
-            flairs: socket.flairs
+            flairs: socket.flairs,
+            speedUp: socket.speedUp
         }]);
 
         socket.broadcast.emit('playerJoin', [{
@@ -513,7 +514,7 @@ function intersectAny(player) {
 }
 
 function emitPlayer(player) {
-    var play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs, r: player.r};
+    var play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs, r: player.r, speedUp: player.speedUp};
 
     io.emit('playerMove', play);
 }

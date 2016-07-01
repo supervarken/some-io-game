@@ -110,6 +110,7 @@ socket.on('playerMove', function(player) {
             p.playerSize = player.playerSize;
             p.flairs = player.flairs;
             p.r = player.r;
+            p.speedUp = player.speedUp;
         }
     }
 });
