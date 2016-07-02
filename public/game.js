@@ -183,6 +183,16 @@ function goBack(){
     document.getElementById("leaders").style.opacity = "0.5";
     document.getElementById("startScreen").style.display = "block";
     document.getElementById("gameCanvas").style.zIndex = "-1";
+    document.getElementById("nameInput").focus();
+}
+
+function bulletsMove() {
+    for (i = 0; i < bullets.length; i++) {
+
+    bullets[i].x -= (600/fps) * bullets[i].velX;
+    bullets[i].y -= (600/fps) * bullets[i].velY;
+
+    }
 }
 function clientMove(playerme){
         if(playerme.me) {

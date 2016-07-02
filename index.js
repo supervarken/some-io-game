@@ -118,7 +118,7 @@ io.on('connection', function(socket) {
 
 
         socket.emit('login', playerIndex);
-         socket.emit('chat message', "Welcome to plong.ga! Commands: /reset to reset your player, /colour [colourname] to change background colour","Server");
+         socket.emit('chat message', "Welcome to plong.ga! Commands: /reset to restart your game, /colour [colourname] to change background colour","Server");
 
 
 
@@ -231,13 +231,14 @@ setInterval(function() {
                  }
             }
     }
+
     for (var i = 0; i < 5 && i < lead.length; i++){
         var leadObj = {playerName: lead[i].playerName, playerSize: lead[i].playerSize};
 
         leadObjs.push(leadObj);
-
+    }
 io.emit('leaderUpdate', leadObjs);
-            }
+
 }, 1000)
 
 var id = gameloop.setGameLoop(function(delta) {
@@ -318,7 +319,7 @@ for (var i = 0; i < bullets.length; i++) {
         }
 
       bull2 = {x: bullets[i].x, y: bullets[i].y};
-    io.emit('moveBull', i, bull2);
+    //io.emit('moveBull', i, bull2);
     }
     }
 
@@ -533,7 +534,7 @@ function intersection(player1, player2) {
     intersections += 1;
     var messaged = "Total intersections: " + intersections + ", last one by: " + player1.playerName + " and " + player2.playerName;
     console.log(messaged);
-    io.emit('chat message', messaged, "Server");
+    //io.emit('chat message', messaged, "Server");
 }
 
 function intersect(player1, player2) {
@@ -592,6 +593,8 @@ function bullet(socket) {
                     y: socket.y - (sin * socket.playerSize),
                     playerSize: 10,
                     colour: socket.skin,
+                    velX: 10 * cos,
+                 velY: 10 * sin
                  };
 
                  io.emit('addBull', {
@@ -599,10 +602,11 @@ function bullet(socket) {
                     y: socket.y - (sin * socket.playerSize),
                     playerSize: 10,
                     colour: socket.skin,
+                     velX: cos,
+                     velY: sin
                  });
                  min.owner = socket.playerName;
-                 min.velX = 10 * cos;
-                 min.velY = 10 * sin;
+
                  min.lifes = 100;
                 bullets.push(min);
 

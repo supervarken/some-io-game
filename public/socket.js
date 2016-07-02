@@ -1,4 +1,5 @@
 var socket = io.connect();
+var lead = [];
 var connected = false;
 socket.on('leaderUpdate', function(lead) {
     var myNode = document.getElementById("lead");
@@ -14,6 +15,7 @@ socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').appendChild(gameBoard);
 
     }
+    lead = lead;
 })
 socket.on('roomSize', function(size) {
     width = size.width;

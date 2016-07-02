@@ -13,7 +13,7 @@ function render() {
 
     clientMove(playerme);
 
-    ctx.setTransform(1,0,0,1,0,1);
+    bulletsMove();
 
     ctx.font = 20 / camera.zoom + "px Arial";
     ctx.fillStyle = "#734A12";
@@ -41,16 +41,10 @@ function render() {
         ctx.beginPath();
         ctx.arc(food.x, food.y, food.playerSize, 0, 2 * Math.PI, false);
         ctx.fill();
+        ctx.closePath();
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
     }
-for (i = 0; i < bullets.length; i++) {
-    var bullet = bullets[i];
-      ctx.fillStyle = bullet.colour;
-        ctx.beginPath();
-        ctx.arc(bullet.x, bullet.y, bullet.playerSize, 0, 2 * Math.PI, false);
-         ctx.fill();
 
-    }
 
     for (i = 0; i < powers.length; i++) {
        var  power = powers[i];
@@ -58,6 +52,7 @@ for (i = 0; i < bullets.length; i++) {
         ctx.beginPath();
         ctx.arc(power.x, power.y, power.playerSize, 0, 2 * Math.PI, false);
          ctx.fill();
+        ctx.closePath();
         ctx.drawImage(images[power.img], power.x - (0.5 * power.playerSize), power.y - (0.5 * power.playerSize), power.playerSize, power.playerSize);
 
 
@@ -75,7 +70,14 @@ for (i = 0; i < walls.length; i++) {
 
     ctx.fillRect(walls[i].x, walls[i].y, walls[i].w, walls[i].h);
     }
-
+for (i = 0; i < bullets.length; i++) {
+    var bullet = bullets[i];
+      ctx.fillStyle = bullet.colour;
+        ctx.beginPath();
+        ctx.arc(bullet.x, bullet.y, bullet.playerSize, 0, 2 * Math.PI, false);
+         ctx.fill();
+         ctx.closePath();
+    }
 
     ctx.fillStyle = "#000000";
 
@@ -86,6 +88,7 @@ for (i = 0; i < walls.length; i++) {
         ctx.fillStyle = player.skin;
         ctx.arc(player.x, player.y, player.playerSize, 0, (2 * Math.PI), false);
           ctx.fill();
+        ctx.closePath();
           drawRotatedImage(player,player.x, player.y,player.r);
      //   ctx.drawImage(images[9], player.x - (1.15 * player.playerSize), player.y - (1.15 * player.playerSize), player.playerSize * 2.3, player.playerSize * 2.3);
 
@@ -100,27 +103,26 @@ if (images[player.skin]){
         }
 
     }
+    ctx.setTransform(1,0,0,1,0,1);
+
      if(playerme.me){
-var wave = 50 / camera.zoom;
         ctx.fillStyle = playerme.skin;
-        ctx.arc(playerme.x - (canvas.width / 2) / camera.zoom + wave, playerme.y - (canvas.height / 2) / camera.zoom + wave, wave, 0, (2 * Math.PI), false);
+        ctx.arc(40, 40, 40, 0, (2 * Math.PI), false);
           ctx.fill();
       ctx.fillStyle = "#000000";
-          ctx.font = "bold " + 20 / camera.zoom + "px Dax Regular";
-    ctx.fillText("My Score: ",playerme.x - (canvas.width / 2) / camera.zoom + (10 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (45 / camera.zoom));
-ctx.fillText(Math.round(playerme.playerSize * 10),playerme.x - (canvas.width / 2) / camera.zoom + (35 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (70 / camera.zoom));
-ctx.fillText("FPS: " + Math.round(fps),playerme.x - (canvas.width / 2) / camera.zoom + (20 / camera.zoom), playerme.y - (canvas.height / 2) / camera.zoom + (90 / camera.zoom));
+          ctx.font = "bold 15px Dax Regular";
+    ctx.fillText("My Score: ",10, 30);
+ctx.fillText(Math.round(playerme.playerSize * 10),25, 50);
+ctx.fillText("FPS: " + Math.round(fps), 15,70);
 
+
+var mapw = width / 50 + 1.5;
+var maph = height / 50 + 1.5;
+var x = 5;
+var y = canvas.height - maph - 5;
 ctx.globalAlpha = 0.5;
-cz = camera.zoom
-mapx = playerme.x + 2 - (canvas.width / 2) / camera.zoom;
-mapy = playerme.y - 2 + (canvas.height / 2) / camera.zoom - (height/50) / camera.zoom;
-mapw = (width / 50) / camera.zoom;
-maph = (height / 50) / camera.zoom;
-ctx.fillRect(mapx, mapy, mapw + 1.5/ cz, maph + 1.5/ cz );
-
-         ctx.globalAlpha = 1;
-
+ctx.fillRect(x, y, mapw, maph);
+ctx.globalAlpha = 1;
 for (var i = 0; i < players.length; i++){
     ctx.fillStyle = "#0000FF";
     play = players[i];
@@ -128,11 +130,10 @@ for (var i = 0; i < players.length; i++){
         ctx.fillStyle = "#ffffff";
     }
 
-   ctx.fillRect(mapx + (play.x / (width / 100) - 1.5)/ cz, mapy + ((play.y / (height / 200) - 1.5)/ cz),3/ cz, 3 / cz);
+   ctx.fillRect(x + play.x / (maph / 2),y + play.y / (mapw / 2), 3 , 3);
 }
 
 }
-
 
 };
 
