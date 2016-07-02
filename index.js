@@ -594,12 +594,17 @@ function bullet(socket) {
                     colour: socket.skin,
                  };
 
-                 io.emit('addBull', min);
+                 io.emit('addBull', {
+                    x: socket.x - (cos * socket.playerSize),
+                    y: socket.y - (sin * socket.playerSize),
+                    playerSize: 10,
+                    colour: socket.skin,
+                 });
                  min.owner = socket.playerName;
                  min.velX = 10 * cos;
                  min.velY = 10 * sin;
                  min.lifes = 100;
-                  bullets.push(min);
+                bullets.push(min);
 
 
              }

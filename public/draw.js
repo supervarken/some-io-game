@@ -35,19 +35,25 @@ function render() {
     ctx.fill();
     //ctx.drawImage(back, 0, 0, 1500, 1000);
     for (i = 0; i < foods.length; i++) {
-        food = foods[i];
+        var food = foods[i];
 
         ctx.fillStyle = food.foodcolor;
         ctx.beginPath();
         ctx.arc(food.x, food.y, food.playerSize, 0, 2 * Math.PI, false);
         ctx.fill();
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
+    }
+for (i = 0; i < bullets.length; i++) {
+    var bullet = bullets[i];
+      ctx.fillStyle = bullet.colour;
+        ctx.beginPath();
+        ctx.arc(bullet.x, bullet.y, bullet.playerSize, 0, 2 * Math.PI, false);
+         ctx.fill();
 
     }
 
-
     for (i = 0; i < powers.length; i++) {
-        power = powers[i];
+       var  power = powers[i];
         ctx.fillStyle = "orange";
         ctx.beginPath();
         ctx.arc(power.x, power.y, power.playerSize, 0, 2 * Math.PI, false);
@@ -70,12 +76,7 @@ for (i = 0; i < walls.length; i++) {
     ctx.fillRect(walls[i].x, walls[i].y, walls[i].w, walls[i].h);
     }
 
-for (i = 0; i < bullets.length; i++) {
-      ctx.fillStyle = bullets[i].colour;
-        ctx.beginPath();
-        ctx.arc(bullets[i].x, bullets[i].y, bullets[i].playerSize, 0, 2 * Math.PI, false);
-         ctx.fill();
-    }
+
     ctx.fillStyle = "#000000";
 
     for (i in players) {
