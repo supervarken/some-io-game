@@ -121,7 +121,20 @@ io.on('connection', function(socket) {
         socket.emit('login', playerIndex);
          socket.emit('chat message', "Welcome to plong.ga! Commands: /reset to reset your player, /colour [colourname] to change background colour","Server");
 
-        socket.on('chat message', function(msg, name) {
+
+
+        socket.on('changeDirection', function(direction) {
+            socket.direction = direction;
+        });
+
+         socket.on('emitBomb', function(direction) {
+        miner(socket);
+        });
+         socket.on('shot', function() {
+          bullet(socket);
+        });
+    });
+          socket.on('chat message', function(msg, name) {
             if (msg == ""){}
             else if (msg == "/reset") { resetPlayer(socket); }
             else if (msg == "/resetgame jooj") { resetGame(); }
@@ -152,18 +165,6 @@ io.on('connection', function(socket) {
             });
             }
         });
-
-        socket.on('changeDirection', function(direction) {
-            socket.direction = direction;
-        });
-
-         socket.on('emitBomb', function(direction) {
-        miner(socket);
-        });
-         socket.on('shot', function() {
-          bullet(socket);
-        });
-    });
 });
 
 //setInterval(function(){resetGame()}, 300000);
@@ -401,7 +402,7 @@ function resetPlayer(socket) {
 
     socket.emit('discon', "hmm");
     }
-
+else {
    socket.bomb = false;
         socket.playerSize = 20.00;
         socket.speedUp = 1;
@@ -415,13 +416,8 @@ function resetPlayer(socket) {
             r: 0
         }
 
-       if (!socket.robot){
-        if (socket.handshake.address == "::ffff:80.61.54.121") {
-            socket.flairs.push(10);
-        }
-        }
-
     respawn(socket);
+}
 }
 
 function intersectAny(player) {
@@ -471,20 +467,19 @@ function intersectAny(player) {
              for (var p = 0; p < players.length; p++){
                 if (players[p].playerName === mine.owner){
                     players[p].playerSize += 0.5 * exSize;
-                   if (player.playerSize < 20) {
+                    emitPlayer(players[p]);
+                }
+                }
+                 if (player.playerSize < 20) {
                 resetPlayer(player);
             }
-                    else {
-                    emitPlayer(players[p]);
-                    }
-                }
-            }
+
             mines.splice(i, 1);
             emitPlayer(player);
             io.emit('removeMine', i);
             }
         }
-    }
+   }
 
 
     for (var i = 0; i < powers.length; i++) {
