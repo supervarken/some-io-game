@@ -1,3 +1,4 @@
+var socket = {connected: false};
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 TO_RADIANS = Math.PI/180;
@@ -74,6 +75,10 @@ var main = function() {
 
     render();
 
+    if (!socket.connected) {
+        goBack();
+      players = [];foods = [];powers = [];mines = [];direction = {x: 0,r: 0};walls = [];mines = [];bullets = [];width, height;
+    }
     fps = 1000 / delta;
 
     then = now;
@@ -172,6 +177,13 @@ function nameChoose() {
   ctx.restore();
  }
 
+function goBack(){
+        document.getElementById("chat").style.display = "none";
+    document.getElementById("gameCanvas").style.opacity = "0.5";
+    document.getElementById("leaders").style.opacity = "0.5";
+    document.getElementById("startScreen").style.display = "block";
+    document.getElementById("gameCanvas").style.zIndex = "-1";
+}
 function clientMove(playerme){
         if(playerme.me) {
 

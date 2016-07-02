@@ -114,7 +114,6 @@ io.on('connection', function(socket) {
             skin: socket.skin,
             flairs: socket.flairs
         }]);
-
         console.log(socket.playerName + ' connected');
 
 
@@ -302,7 +301,7 @@ for (var i = 0; i < bullets.length; i++) {
                     break;
                 }
                 }
-            if (players[p].playerSize < 10) {
+            if (players[p].playerSize < 15) {
                 resetPlayer(players[p]);
             }
             else {

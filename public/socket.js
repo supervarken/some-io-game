@@ -93,11 +93,7 @@ socket.on('playerLeave', function(player) {
 });
 socket.on('discon', function(player) {
 
-    document.getElementById("chat").style.display = "none";
-    document.getElementById("gameCanvas").style.opacity = "0.5";
-    document.getElementById("leaders").style.opacity = "0.5";
-    document.getElementById("startScreen").style.display = "block";
-    document.getElementById("gameCanvas").style.zIndex = "-1";
+goBack();
 
 })
 socket.on('playerMove', function(player) {
