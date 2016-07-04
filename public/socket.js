@@ -1,5 +1,5 @@
 var socket = io.connect();
-var lead = [];
+lead = [];
 var connected = false;
 socket.on('leaderUpdate', function(lead) {
     var myNode = document.getElementById("lead");

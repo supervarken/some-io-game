@@ -160,20 +160,21 @@ function nameChoose() {
   ctx.translate(x, y);
   ctx.rotate((angle) * TO_RADIANS);
   ctx.drawImage(images[9], -(image.playerSize * 1.15), -(image.playerSize * 1.15),  image.playerSize * 2.3, image.playerSize * 2.3);
-  ctx.fillStyle = image.colour;
+
 
   //ctx.fillRect(-image.playerSize * 1.5, -image.playerSize * 0.3, image.playerSize * 0.5, image.playerSize * 0.5);
-     xr = -2 * image.playerSize; yr = 0;
+     xr = -2 * image.playerSize;
    ctx.beginPath();
     ctx.moveTo(xr,-0.015 * image.playerSize);
-    ctx.lineTo(xr+0.3*image.playerSize,0.3 * image.playerSize);
-    ctx.lineTo(xr+0.3*image.playerSize,-0.3*image.playerSize);
-     ctx.lineTo(xr,0.015 * image.playerSize);
-    ctx.fill();
+    ctx.lineTo(xr+(0.3*image.playerSize),0.3 * image.playerSize);
+    ctx.lineTo(xr+(0.3*image.playerSize),-0.3*image.playerSize);
+      ctx.closePath();
      ctx.lineWidth = 0.05 * image.playerSize;
       ctx.strokeStyle = 'black';
       ctx.stroke();
-     ctx.closePath();
+      ctx.fillStyle = image.colour;
+     ctx.fill();
+
   ctx.restore();
  }
 
@@ -195,7 +196,7 @@ function bulletsMove() {
     }
 }
 function clientMove(playerme){
-        if(playerme.me) {
+        if(playerme.me && socket.connected) {
 
     playerme.speed = (100 / playerme.playerSize + 1) * playerme.speedUp;
                playerme.r += direction.r * (20 / playerme.playerSize);

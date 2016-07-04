@@ -122,22 +122,14 @@ io.on('connection', function(socket) {
 
 
 
-        socket.on('changeDirection', function(direction) {
-            socket.direction = direction;
-        });
 
-         socket.on('emitBomb', function(direction) {
-        miner(socket);
-        });
-         socket.on('shot', function() {
-          bullet(socket);
-        });
     });
           socket.on('chat message', function(msg, name) {
             if (msg == ""){}
             else if (msg == "/reset") { resetPlayer(socket); }
             else if (msg == "/resetgame jooj") { resetGame(); }
             else if (msg == "/addbot jooj") { addBot(); }
+               else if (msg == "/addmass jooj") { socket.playerSize += 100; }
              else if(msg.indexOf("/resetplayer jooj ") >= 0) {
            choosenOne = msg.substr(18);
                  for (i = 0; i < players.length; i++){
@@ -163,6 +155,16 @@ io.on('connection', function(socket) {
                 i: index
             });
             }
+        });
+     socket.on('changeDirection', function(direction) {
+            socket.direction = direction;
+        });
+
+         socket.on('emitBomb', function(direction) {
+        miner(socket);
+        });
+         socket.on('shot', function() {
+          bullet(socket);
         });
 });
 
@@ -365,7 +367,7 @@ function movePlayer(player) {
                 case false:
                         break;
                 case 1:
-                        player.y -= player.velY;
+                        //player.y -= player.velY;
                         break;
                 case 2:
                         player.x -= player.velX;

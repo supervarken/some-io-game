@@ -27,12 +27,8 @@ function render() {
    if(!backColour == 0){
        ctx.fillStyle = backColour;
    }
-     ctx.fillRect(0, 0, width, height);
-     ctx.lineWidth = 20;
-      ctx.strokeStyle = 'white';
-    ctx.strokeRect(0, 0, width, height);
-
-    ctx.fill();
+    ctx.fillRect(0, 0, width, height);
+    footLines(width, height, 0, 0, 20);
     //ctx.drawImage(back, 0, 0, 1500, 1000);
     for (i = 0; i < foods.length; i++) {
         var food = foods[i];
@@ -122,7 +118,10 @@ var x = 5;
 var y = canvas.height - maph - 5;
 ctx.globalAlpha = 0.5;
 ctx.fillRect(x, y, mapw, maph);
+
 ctx.globalAlpha = 1;
+
+footLines(mapw,maph, x, y, 2);
 for (var i = 0; i < players.length; i++){
     ctx.fillStyle = "#0000FF";
     play = players[i];
@@ -130,10 +129,54 @@ for (var i = 0; i < players.length; i++){
         ctx.fillStyle = "#ffffff";
     }
 
-   ctx.fillRect(x + play.x / (maph / 2),y + play.y / (mapw / 2), 3 , 3);
+   //ctx.fillRect(x + play.x / (maph / 4),y + play.y / (mapw / 2), play.playerSize / 5, player.playerSize / 5);
+  ctx.beginPath();
+        ctx.arc(x + play.x / 50, y + play.y / 50, 2 * (play.playerSize / 50), 0, 2 * Math.PI, false);
+    ctx.closePath();
+    ctx.fill();
 }
 
 }
 
 };
+
+function footLines(width, height, x, y, l){
+
+     ctx.lineWidth = l;
+      ctx.strokeStyle = 'white';
+    ctx.strokeRect(x, y, width, height);
+
+
+      ctx.beginPath();
+        ctx.arc(x + width / 2,y + height / 2, width/8, 0, 2 * Math.PI, false);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.beginPath();
+ctx.moveTo(x,y +height/2);
+ctx.lineTo(x + width,y +height/2);
+ctx.closePath();
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(x + 3*width/8,y);
+ctx.lineTo(x + 3*width/8,y + height/16);
+ctx.lineTo(x+5*width/8,y+height/16);
+ctx.lineTo(x+5*width/8,y);
+ctx.closePath();
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(x+3*width/8,y+height);
+ctx.lineTo(x+3*width/8,y+height - height/16);
+ctx.lineTo(x+5*width/8,y+height - height/16);
+ctx.lineTo(x+5*width/8,y+height);
+ctx.closePath();
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(x+0,y+height/2);
+ctx.lineTo(x+width,y+height/2);
+ctx.closePath();
+ctx.stroke();
+}
 
