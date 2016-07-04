@@ -234,7 +234,7 @@ setInterval(function() {
             }
     }
 
-    for (var i = 0; i < 5 && i < lead.length; i++){
+    for (var i = 0; i < lead.length; i++){ //&& i < 5
         var leadObj = {playerName: lead[i].playerName, playerSize: lead[i].playerSize};
 
         leadObjs.push(leadObj);

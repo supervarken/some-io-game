@@ -1,5 +1,5 @@
 var socket = io.connect();
-lead = [];
+leads = [];
 var connected = false;
 socket.on('leaderUpdate', function(lead) {
     var myNode = document.getElementById("lead");
@@ -7,7 +7,7 @@ socket.on('leaderUpdate', function(lead) {
             myNode.removeChild(myNode.firstChild);
         }
        // document.getElementById('lead').innerHTML = '';
-    for (i = 0; i < lead.length; i++) {
+    for (i = 0; i < lead.length && i < 5; i++) {
 
         gameBoard = document.createElement("li");
         var text = document.createTextNode(lead[i].playerName + "  " + Math.round(lead[i].playerSize * 10));
@@ -15,7 +15,8 @@ socket.on('leaderUpdate', function(lead) {
         document.getElementById('lead').appendChild(gameBoard);
 
     }
-    lead = lead;
+    leads = lead;
+
 })
 socket.on('roomSize', function(size) {
     width = size.width;

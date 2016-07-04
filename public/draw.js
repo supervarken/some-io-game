@@ -102,20 +102,11 @@ if (images[player.skin]){
     ctx.setTransform(1,0,0,1,0,1);
 
      if(playerme.me){
-        ctx.fillStyle = playerme.skin;
-        ctx.arc(40, 40, 40, 0, (2 * Math.PI), false);
-          ctx.fill();
-      ctx.fillStyle = "#000000";
-          ctx.font = "bold 15px Dax Regular";
-    ctx.fillText("My Score: ",10, 30);
-ctx.fillText(Math.round(playerme.playerSize * 10),25, 50);
-ctx.fillText("FPS: " + Math.round(fps), 15,70);
-
 
 var mapw = width / 50 + 1.5;
 var maph = height / 50 + 1.5;
 var x = 5;
-var y = canvas.height - maph - 5;
+var y = 5;
 ctx.globalAlpha = 0.5;
 ctx.fillRect(x, y, mapw, maph);
 
@@ -125,17 +116,33 @@ footLines(mapw,maph, x, y, 2);
 for (var i = 0; i < players.length; i++){
     ctx.fillStyle = "#0000FF";
     play = players[i];
+
+     if(leads[0] && play.playerName === leads[0].playerName){
+        ctx.fillStyle = "#FFFF00";
+    }
     if(play.me){
         ctx.fillStyle = "#ffffff";
     }
 
    //ctx.fillRect(x + play.x / (maph / 4),y + play.y / (mapw / 2), play.playerSize / 5, player.playerSize / 5);
   ctx.beginPath();
-        ctx.arc(x + play.x / 50, y + play.y / 50, 2 * (play.playerSize / 50), 0, 2 * Math.PI, false);
+        ctx.arc(x + play.x / 50, y + play.y / 50, 3 * (play.playerSize / 50), 0, 2 * Math.PI, false);
     ctx.closePath();
     ctx.fill();
 }
-
+var x = 5;
+var y = canvas.height + 20;
+         ctx.font = "bold 15px Dax Regular";
+ctx.fillStyle = "#FFFFFF";
+ctx.fillText(playerme.playerName,x, y-100);
+ctx.fillText("Score: " + Math.round(playerme.playerSize * 10),x, y-80);
+ctx.fillText("FPS: " + Math.round(fps), x,y-60);
+for (var i = 0; i < leads.length; i++){
+    if (leads[i].playerName == playerme.playerName){
+        rank = i + 1;
+    }
+}
+ctx.fillText("Ranking: " + rank, x,y-40);
 }
 
 };

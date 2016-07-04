@@ -1,3 +1,4 @@
+var rank = "";
 var socket = {connected: false};
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
