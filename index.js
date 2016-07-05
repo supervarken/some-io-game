@@ -554,9 +554,12 @@ function respawn(player) {
 function addBot() {
      var socket = [];
         playerIndex++;
-        var ran = Math.round(Math.random() * (names.length - 0 + 1)) + 0;
+        var ran = Math.round(Math.random() * (names.length));
+        console.log(ran);
+    console.log(names.length);
         socket.playerName = names[ran];
-
+    //socket.playerName = playerIndex;
+      names.splice(ran,1);
         socket.bomb = false;
         socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
         socket.playerSize = 20.00;
@@ -582,6 +585,7 @@ function addBot() {
             skin: socket.skin,
             flairs: socket.flairs
         }]);
+
 }
 
 function bullet(socket) {
