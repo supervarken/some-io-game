@@ -2,7 +2,7 @@ var socket = io.connect();
 leads = [];
 var connected = false;
 socket.on('leaderUpdate', function(lead) {
-    var myNode = document.getElementById("lead");
+   /* var myNode = document.getElementById("lead");
         while (myNode.firstChild) {
             myNode.removeChild(myNode.firstChild);
         }
@@ -14,7 +14,7 @@ socket.on('leaderUpdate', function(lead) {
         gameBoard.appendChild(text);
         document.getElementById('lead').appendChild(gameBoard);
 
-    }
+    } */
     leads = lead;
 
 })

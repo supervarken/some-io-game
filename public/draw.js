@@ -130,6 +130,7 @@ for (var i = 0; i < players.length; i++){
     ctx.closePath();
     ctx.fill();
 }
+
 var x = 5;
 var y = canvas.height + 20;
          ctx.font = "bold 15px Dax Regular";
@@ -145,6 +146,32 @@ for (var i = 0; i < leads.length; i++){
 ctx.fillText("Ranking: " + rank, x,y-40);
 }
 
+
+
+var x = canvas.width - 405;
+var y = 5;
+var l = canvas.width - 80;
+ctx.globalAlpha = 1;
+ctx.lineWidth = 5;
+var sb = Math.min(leads.length, 5);
+ctx.fillStyle = "#a4c1ba";
+ctx.roundRect(x, y, 400, 35 + sb * 34, 10).stroke();
+ctx.fillStyle = "#0a0d0f";
+ctx.roundRect(x, y, 400, 35 + sb * 34, 10).fill();
+ctx.font = "25px scoreboard";
+ctx.fillStyle = "#FFFFFF";
+var y = y + 35;
+ctx.fillText("ScoreBoard",x + 130, y);
+ctx.fillStyle = "red";
+
+for (i = 0; i < leads.length && i < 5; i++){
+var q = i + 1;
+ctx.fillText(q + ".",x + 15, y + 32 * q);
+ctx.fillText(leads[i].playerName,x + 60, y + 32 * q);
+
+ctx.fillText(Math.round(leads[i].playerSize * 10),l, y + 32 * q);
+}
+ctx.globalAlpha = 1;
 };
 
 function footLines(width, height, x, y, l){
@@ -187,3 +214,15 @@ ctx.closePath();
 ctx.stroke();
 }
 
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+  if (w < 2 * r) r = w / 2;
+  if (h < 2 * r) r = h / 2;
+  this.beginPath();
+  this.moveTo(x+r, y);
+  this.arcTo(x+w, y,   x+w, y+h, r);
+  this.arcTo(x+w, y+h, x,   y+h, r);
+  this.arcTo(x,   y+h, x,   y,   r);
+  this.arcTo(x,   y,   x+w, y,   r);
+  this.closePath();
+  return this;
+}
