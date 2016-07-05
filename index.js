@@ -29,8 +29,8 @@ var powers = [];
 var mines = [];
 var bullets = [];
 var walls = [];
-
-for (var i = 0; i < 5; i++){
+var names = ["SuperVark","Jesse","Apvark","reddit","Netherlands","Cool","Oh Wow","kill you","LOL","plongga","djDaBoot","Someone","Football","USA","cool","Turkey"];
+for (bot = 0; bot < 5; bot++){
    addBot();
 }
 io.on('connection', function(socket) {
@@ -554,8 +554,8 @@ function respawn(player) {
 function addBot() {
      var socket = [];
         playerIndex++;
-
-        socket.playerName = "Bot  " + playerIndex;
+        var ran = Math.round(Math.random() * (names.length - 0 + 1)) + 0;
+        socket.playerName = names[ran];
 
         socket.bomb = false;
         socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
