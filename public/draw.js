@@ -147,21 +147,21 @@ ctx.fillText("Ranking: " + rank, x,y-40);
 }
 
 
-
-var x = canvas.width - 405;
+//var w = canvas.width / 4;
+var w = 300;
+var x = canvas.width - w - 5;
 var y = 5;
 var l = canvas.width - 80;
-ctx.globalAlpha = 1;
 ctx.lineWidth = 5;
 var sb = Math.min(leads.length, 5);
 ctx.fillStyle = "#a4c1ba";
-ctx.roundRect(x, y, 400, 35 + sb * 34, 10).stroke();
+ctx.roundRect(x, y, w, 35 + sb * 34, 10).stroke();
 ctx.fillStyle = "#0a0d0f";
-ctx.roundRect(x, y, 400, 35 + sb * 34, 10).fill();
+ctx.roundRect(x, y, w, 35 + sb * 34, 10).fill();
 ctx.font = "25px scoreboard";
 ctx.fillStyle = "#FFFFFF";
 var y = y + 35;
-ctx.fillText("ScoreBoard",x + 130, y);
+ctx.fillText("ScoreBoard",x + 80, y);
 ctx.fillStyle = "red";
 
 for (i = 0; i < leads.length && i < 5; i++){
@@ -171,7 +171,7 @@ ctx.fillText(leads[i].playerName,x + 60, y + 32 * q);
 
 ctx.fillText(Math.round(leads[i].playerSize * 10),l, y + 32 * q);
 }
-ctx.globalAlpha = 1;
+
 };
 
 function footLines(width, height, x, y, l){

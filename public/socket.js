@@ -1,5 +1,4 @@
 var socket = io.connect();
-leads = [];
 var connected = false;
 socket.on('leaderUpdate', function(lead) {
    /* var myNode = document.getElementById("lead");

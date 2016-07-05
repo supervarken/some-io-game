@@ -1,3 +1,4 @@
+var leads = [];
 var rank = "";
 var socket = {connected: false};
 var canvas = document.getElementById("gameCanvas");
