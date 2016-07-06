@@ -58,7 +58,9 @@ function render() {
      for (i = 0; i < mines.length; i++) {
 
         mine = mines[i];
-        ctx.drawImage(images[5], mine.x - (0.5 * mine.playerSize), mine.y - (0.5 * mine.playerSize), mine.playerSize, mine.playerSize);
+
+        ctx.closePath();
+        ctx.drawImage(images[5], mine.x - 15, mine.y - 15, 30, 30);
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }

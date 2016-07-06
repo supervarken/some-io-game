@@ -706,7 +706,7 @@ function miner(socket) {
                       var min = {
                     x: socket.x,
                     y: socket.y,
-                    playerSize: 50,
+                    playerSize: 15,
                     owner: socket.playerName
                  };
                 mines.push(min);

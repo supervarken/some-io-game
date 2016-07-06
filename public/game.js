@@ -201,10 +201,10 @@ function clientMove(playerme){
         if(playerme.me && socket.connected) {
 
     playerme.speed = (100 / playerme.playerSize + 1) * playerme.speedUp;
-               playerme.r += direction.r * (20 / playerme.playerSize);
-               playerme.velX = (direction.x > 0 ? playerme.speed : (direction.x < 0 ? (-playerme.speed) : 0)) * Math.cos(Math.PI / 180 * playerme.r);
+               playerme.r += direction.r * (60/fps) * (20 / playerme.playerSize);
+               playerme.velX = (60/fps) * (direction.x > 0 ? playerme.speed : (direction.x < 0 ? (-playerme.speed) : 0)) * Math.cos(Math.PI / 180 * playerme.r);
 
-              playerme.velY = (direction.x > 0 ? playerme.speed : (direction.x < 0 ? -playerme.speed : 0))* Math.sin(Math.PI / 180 * playerme.r);
+              playerme.velY = (60/fps) * (direction.x > 0 ? playerme.speed : (direction.x < 0 ? -playerme.speed : 0))* Math.sin(Math.PI / 180 * playerme.r);
             playerme.x += playerme.velX;
             playerme.y += playerme.velY;
             playerme.x = Math.min(Math.max(playerme.playerSize, playerme.x), (width - playerme.playerSize)); //add player.playersize
