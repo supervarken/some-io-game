@@ -75,7 +75,7 @@ io.on('connection', function(socket) {
         socket.playerName = username;
         socket.playerSize = 20.00;
         socket.speedUp = 1;
-
+        socket.shoot = true;
         socket.speed = 5;
         socket.mines = 0;
         socket.r = 0;
@@ -409,6 +409,7 @@ else {
         socket.playerSize = 20.00;
         socket.speedUp = 1;
         socket.speed = 5;
+       socket.shoot = true;
         socket.mines = 0;
     socket.r = 0;
         socket.flairs = [];
@@ -563,6 +564,7 @@ function addBot() {
         socket.bomb = false;
         socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
         socket.playerSize = 20.00;
+        socket.shoot = true;
         socket.speedUp = 1;
         socket.speed = 5;
         socket.mines = 0;
@@ -589,7 +591,7 @@ function addBot() {
 }
 
 function bullet(socket) {
-              if (socket.playerSize >= 22.5){
+              if (socket.playerSize >= 22.5 && socket.shoot){
                  var cos = Math.cos(Math.PI / 180 * socket.r);
                  var sin = Math.sin(Math.PI / 180 * socket.r);
             socket.playerSize -= 2.5;
@@ -614,8 +616,10 @@ function bullet(socket) {
                  min.owner = socket.playerName;
 
                  min.lifes = 100;
-                bullets.push(min);
 
+                bullets.push(min);
+                socket.shoot = false;
+                setTimeout(function(){socket.shoot = true;}, 300);
 
              }
 }

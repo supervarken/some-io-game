@@ -1,3 +1,4 @@
+var connection = false;
 var leads = [];
 var rank = "";
 var socket = {connected: false};
@@ -79,6 +80,7 @@ var main = function() {
 
     if (!socket.connected) {
         goBack();
+        connection = false;
       players = [];foods = [];powers = [];mines = [];direction = {x: 0,r: 0};walls = [];mines = [];bullets = [];width, height;
     }
     fps = 1000 / delta;
@@ -181,6 +183,7 @@ function nameChoose() {
  }
 
 function goBack(){
+    connection = false;
         document.getElementById("chat").style.display = "none";
     document.getElementById("gameCanvas").style.opacity = "0.5";
     document.getElementById("leaders").style.opacity = "0.5";
@@ -198,7 +201,7 @@ function bulletsMove() {
     }
 }
 function clientMove(playerme){
-        if(playerme.me && socket.connected) {
+        if(playerme.me && connection) {
 
     playerme.speed = (100 / playerme.playerSize + 1) * playerme.speedUp;
                playerme.r += direction.r * (60/fps) * (20 / playerme.playerSize);
