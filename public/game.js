@@ -60,9 +60,12 @@ function updateTransform() {
 function updateCamera(player) {
     camera.x = player.x;
     camera.y = player.y;
-
+    if(player.playerSize){
     camera.zoom = ((20 + (player.playerSize))/ (player.playerSize ));
-
+    }
+    else {
+        camera.zoom = 0.35;
+    }
     camera.height = canvas.height;
     camera.width = canvas.width;
 }

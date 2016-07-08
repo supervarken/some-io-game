@@ -282,6 +282,7 @@ var id = gameloop.setGameLoop(function(delta) {
         };
         powers.push(power);
        io.emit('addPower', power);
+
     }
 moveBots();
 for (var i = 0; i < bullets.length; i++) {
@@ -493,14 +494,17 @@ function intersectAny(player) {
             player.speedUp += 1;
 
             player.flairs.push(3);
+             emitFlairs(player);
              var speedy = setTimeout(function(){
                  for (i = 0; i < player.flairs.length; i++){
                        if (player.flairs[i] == 3){
                            player.flairs.splice(i, 1);
+                           emitFlairs(player);
                            break;
                        }
                    }
-                 player.flairs.splice(i, 1);
+
+                 emitFlairs(player);
                  if (player.speedUp > 1) {
                      player.speedUp -= 1; }
                      }, 3000);
@@ -508,10 +512,12 @@ function intersectAny(player) {
             else if (power.kind == "bomb"){
                 player.bomb = true;
             player.flairs.push(4);
+                 emitFlairs(player);
                var bomby = setTimeout(function(){
                    for (i = 0; i < player.flairs.length; i++){
                        if (player.flairs[i] == 4){
                            player.flairs.splice(i, 1);
+                           emitFlairs(player);
                            break;
                        }
                    }
@@ -519,12 +525,14 @@ function intersectAny(player) {
             }
             else if (power.kind == "mines"){
                 player.flairs.push(5);
+                 emitFlairs(player);
                 player.mines += 1;
             }
             powers.splice(i, 1);
-
+             emitFlairs(player);
             io.emit('removePower', i);
         }
+
     }
 }
 

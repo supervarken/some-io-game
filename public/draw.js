@@ -1,7 +1,7 @@
 
 function render() {
 
-   var playerme = {x: width / 2, y: height / 2, playerSize: 10000};
+   var playerme = {x: width / 2, y: height / 2};
 
     for(i in players) {
         var p = players[i];
@@ -145,7 +145,7 @@ for (var i = 0; i < leads.length; i++){
         rank = i + 1;
     }
 }
-ctx.fillText("Ranking: " + rank, x,y-40);
+ctx.fillText("Ranking: " + rank + "/" + leads.length, x,y-40);
 }
 
 
