@@ -86,9 +86,7 @@ socket.on('removeMine', function(i) {
 socket.on('flairUpdate', function(flairs, i){
     players[i].flairs = flairs;
 })
-socket.on('flairUpdate', function(flairs, i){
-    players[i].flairs = flairs;
-})
+
 socket.on('playerLeave', function(player) {
     players.splice(player.i, 1);
     console.log(player.playerName + ' left, ' + players.length + ' players left.');

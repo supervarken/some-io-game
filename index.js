@@ -228,7 +228,8 @@ setInterval(function() {
                      if (lead[i].flairs[l] == 6){
 
                          lead[i].flairs.splice(l, 1);
-                        emitPlayer(lead[i]);
+                         emitFlairs(lead[i]);
+                        //emitPlayer(lead[i]);
                      }
                  }
             }
@@ -558,8 +559,12 @@ function addBot() {
         var ran = Math.round(Math.random() * (names.length));
         console.log(ran);
     console.log(names.length);
+
         socket.playerName = names[ran];
     //socket.playerName = playerIndex;
+    if(socket.playerName == undefined){
+        socket.playerName = "Bot " + playerIndex;
+    }
       names.splice(ran,1);
         socket.bomb = false;
         socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
@@ -706,7 +711,8 @@ function miner(socket) {
                          socket.flairs.splice(i, 1);
                      }
                  }
-                    emitPlayer(socket);
+                    emitFlairs(socket);
+                    //emitPlayer(socket);
                       var min = {
                     x: socket.x,
                     y: socket.y,
@@ -718,6 +724,13 @@ function miner(socket) {
 
              }
 }
+
+function emitFlairs(socket) {
+    var index = players.indexOf(socket);
+    io.emit('flairUpdate', players[index].flairs, index);
+
+}
+
 function intersectWall(player, block){
    var distX = Math.abs(player.x - block.x - block.w / 2);
     var distY = Math.abs(player.y - block.y - block.h / 2);
