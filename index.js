@@ -28,7 +28,7 @@ var foods = [];
 var powers = [];
 var mines = [];
 var bullets = [];
-var walls = [];
+var walls = [{x: 0, y: 200, w: 10000, h: 200},{x: 1000, y: 500, w: 100, h: 200}];
 var names = ["SuperVark","Jesse","Apvark","reddit","Netherlands","Cool","Oh Wow","kill you","LOL","plongga","djDaBoot","Someone","Football","USA","cool","Turkey"];
 for (bot = 0; bot < 5; bot++){
    addBot();
@@ -70,6 +70,9 @@ io.on('connection', function(socket) {
             }
 
         }
+        socket.bumpX = 0;
+        socket.bumpY = 0;
+        socket.fric = 0;
         socket.bomb = false;
         socket.skin = skin;
         socket.playerName = username;
@@ -342,10 +345,27 @@ function movePlayers() {
 }
 
 function movePlayer(player) {
-    if (player.direction.x == 0 && player.direction.r == 0) {
+    /*if (player.direction.x == 0 && player.direction.r == 0 && player.fric <= 0) {
         return;
-    }
+    }*/
 
+   player.bumpX -= 0.02 * player.bumpX;
+    if(player.bumpX < 0.01 && player.bumpX > 0 || player.bumpX > -0.01 && player.bumpX < 0 ){
+        player.bumpX = 0;
+    }
+player.bumpY -= 0.05 * player.bumpY;
+     if(player.bumpY < 0.01 && player.bumpY > 0 || player.bumpY > -0.01 && player.bumpY < 0 ){
+        player.bumpY = 0;
+    }
+    if (player.fric > 0.01){
+       player.fric -= 0.1 * player.fric;
+    }
+    else if (player.fric < -0.01){
+         player.fric -= 0.1 * player.fric;
+    }
+   else {
+       player.fric = 0;
+   }
     if(player.direction.r > 0){
         player.r += 5 * (20 / player.playerSize);
     }
@@ -353,30 +373,47 @@ function movePlayer(player) {
         player.r -= 5 * (20 / player.playerSize);
     }
     if(player.direction.x > 0){
-        player.direction.x = 1;
+
+        if (player.fric < 1){
+        player.fric += 0.1;
+        }
     }
     if(player.direction.x < 0){
-        player.direction.x = -1;
+        if (player.fric > -1){
+        player.fric += -0.1;
+        }
     }
-    player.velX = (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? (-player.speed) : 0)) * Math.cos(Math.PI / 180 * player.r);
-    player.velY = (player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? -player.speed : 0))* Math.sin(Math.PI / 180 * player.r);
+    //(player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? (-player.speed) : 0));
+    var newX = player.fric * player.speed * Math.cos(Math.PI / 180 * player.r);
+    var newY = player.fric * player.speed *  Math.sin(Math.PI / 180 * player.r);
+    player.velX = newX; //laatste moment die kant op
+    player.velY =  newY;
     intersectAny(player);
     player.speed = (100 / player.playerSize + 1) * player.speedUp;
-    player.x += player.velX;
-    player.y += player.velY;
+    player.x += player.bumpX +  player.velX;
+    player.y += player.bumpY + player.velY;
+      if (!player.robot){
+
+       console.log(player.bumpX);
+   }
+
+
         for (var i = 0; i < walls.length; i++) {
         switch (intersectWall(player, walls[i])) {
                 case false:
                         break;
                 case 1:
                         //player.y -= player.velY;
+            bump(player);
                         break;
                 case 2:
                         player.x -= player.velX;
                         break;
                 case true:
-                         player.x -= player.velX;
-                         player.y -= player.velY;
+                         //player.x -= player.velX;
+                         //player.y -= player.velY;
+           bump(player);
+
                         break;
 
     }
@@ -433,6 +470,10 @@ function intersectAny(player) {
             continue;
         }
         if (intersect(player, p)) {
+        player.bumpX = -player.velX * 1.2;
+     player.bumpY = -player.velY * 1.2;
+
+    /*
             if (player.playerSize > p.playerSize && p.bomb == false|| player.bomb == true && p.bomb == false || player.bomb == true && p.bomb == true && player.playerSiz > p.playerSize) {
                 player.playerSize += 0.5 * p.playerSize;
                 resetPlayer(p);
@@ -441,10 +482,9 @@ function intersectAny(player) {
                 p.playerSize += 0.5 * player.playerSize;
                 resetPlayer(player)
                 emitPlayer(p);
-            }
+            }*/
 
-
-            intersection(player, p);
+            intersections += 1;
         }
     }
 
@@ -542,13 +582,6 @@ function emitPlayer(player) {
     io.emit('playerMove', play);
 }
 
-function intersection(player1, player2) {
-    intersections += 1;
-    var messaged = "Total intersections: " + intersections + ", last one by: " + player1.playerName + " and " + player2.playerName;
-    console.log(messaged);
-    //io.emit('chat message', messaged, "Server");
-}
-
 function intersect(player1, player2) {
     //var biggestSize = Math.max(player1.playerSize, player2.playerSize);
     return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2); //diameter of the size of
@@ -565,8 +598,6 @@ function addBot() {
      var socket = [];
         playerIndex++;
         var ran = Math.round(Math.random() * (names.length));
-        console.log(ran);
-    console.log(names.length);
 
         socket.playerName = names[ran];
     //socket.playerName = playerIndex;
@@ -574,6 +605,8 @@ function addBot() {
         socket.playerName = "Bot " + playerIndex;
     }
       names.splice(ran,1);
+        socket.bumpX = 0;
+        socket.bumpY = 0;
         socket.bomb = false;
         socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
         socket.playerSize = 20.00;
@@ -582,6 +615,7 @@ function addBot() {
         socket.speed = 5;
         socket.mines = 0;
         socket.r = 0;
+     socket.fric = 0;
         socket.robot = true;
         socket.flairs = [];
         socket.direction = {
@@ -738,7 +772,12 @@ function emitFlairs(socket) {
     io.emit('flairUpdate', players[index].flairs, index);
 
 }
+function bump(player){
 
+     player.bumpX = player.velX * 1.2;
+     player.bumpY = -player.velY * 1.2;
+
+}
 function intersectWall(player, block){
    var distX = Math.abs(player.x - block.x - block.w / 2);
     var distY = Math.abs(player.y - block.y - block.h / 2);

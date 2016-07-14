@@ -11,7 +11,7 @@ function render() {
         }
     }
 
-    clientMove(playerme);
+    //clientMove(playerme);
 
     bulletsMove();
 

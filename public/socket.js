@@ -84,7 +84,6 @@ socket.on('removeMine', function(i) {
     mines.splice(i, 1);
 });
 socket.on('flairUpdate', function(flairs, i){
-    console.log(flairs + " " + i)
     players[i].flairs = flairs;
 })
 

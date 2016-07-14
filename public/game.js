@@ -187,10 +187,20 @@ function nameChoose() {
 
 function goBack(){
     connection = false;
-        document.getElementById("chat").style.display = "none";
+   var starty = document.getElementById("startScreen");
+     document.getElementById("chat").style.display = "none";
     document.getElementById("gameCanvas").style.opacity = "0.5";
     document.getElementById("leaders").style.opacity = "0.5";
-    document.getElementById("startScreen").style.display = "block";
+
+    starty.addEventListener('webkitAnimationEnd', function(){
+    this.style.webkitAnimationName = '';
+}, false);
+
+
+    starty.style.webkitAnimationName = 'example';
+    // you'll probably want to preventDefault here.
+
+    starty.style.display = "block";
     document.getElementById("gameCanvas").style.zIndex = "-1";
     document.getElementById("nameInput").focus();
 }
