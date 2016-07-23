@@ -44,15 +44,42 @@ function render() {
 
     for (i = 0; i < powers.length; i++) {
        var  power = powers[i];
-        ctx.fillStyle = "orange";
+              var  power = powers[i];
+        if (power.a == undefined){
+            power.a = Math.random() * 1000;
+        }
+
+        power.a += 0.1;
+
+        //ctx.fillStyle = "rgba(200, 50, 50, " + (Math.sin(power.a) / 4 + 0.5)+ ")";
+
         ctx.beginPath();
-        ctx.arc(power.x, power.y, power.playerSize, 0, 2 * Math.PI, false);
-         ctx.fill();
+        ctx.fillStyle = "rgba(200, 100, 20, 1)"
+        ctx.arc(power.x, power.y, power.playerSize/1, 0, 2 * Math.PI, false);
+        ctx.fill();
+
+            ctx.strokeStyle = "rgba(0, 0, 0, " + (Math.sin(power.a) / 8 + 0.125)+ ")";
+        ctx.lineWidth = 10;
+        ctx.stroke();
+
+
+         ctx.beginPath();
+           ctx.fillStyle = "rgba(255, 20, 20, 1)";
+        ctx.arc(power.x, power.y, power.playerSize/1.3, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.fillStyle = "rgba(0, 0, 0, " + (Math.sin(power.a) / 8 + 0.125)+ ")";
+
+         ctx.beginPath();
+         ctx.arc(power.x, power.y, power.playerSize/1.3, 0, 2 * Math.PI, false);
+           ctx.fill();
+        //ctx.closePath();
+
+
         ctx.closePath();
         ctx.drawImage(images[power.img], power.x - (0.5 * power.playerSize), power.y - (0.5 * power.playerSize), power.playerSize, power.playerSize);
 
-
-        //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
      for (i = 0; i < mines.length; i++) {
@@ -64,9 +91,23 @@ function render() {
         //  ctx.fillRect(food.x,food.y,food.playerSize,food.playerSize);
 
     }
-for (i = 0; i < walls.length; i++) {
 
-    ctx.fillRect(walls[i].x, walls[i].y, walls[i].w, walls[i].h);
+for (i = 0; i < walls.length; i++) {
+ctx.fillStyle = "white";
+   //ctx.fillRect(walls[i].x, walls[i].y, walls[i].w, walls[i].h);
+    ctx.beginPath();
+        //ctx.arc(walls[i].x, walls[i].y, walls[i].playerSize, 0, 2 * Math.PI, false);
+         ctx.fill();
+         ctx.closePath();
+    ctx.save();
+    walls[i].ang += walls[i].si;
+    if (walls[i].ang > 360 || walls[i].ang < -360){
+        walls[i].ang = 0;
+    }
+      ctx.translate(walls[i].x, walls[i].y);
+    ctx.rotate(walls[i].ang*Math.PI/180);
+    ctx.drawImage(images[13], -100, -100, 200, 200);
+    ctx.restore();
     }
 for (i = 0; i < bullets.length; i++) {
     var bullet = bullets[i];
@@ -116,7 +157,7 @@ ctx.globalAlpha = 1;
 
 footLines(mapw,maph, x, y, 2);
 for (var i = 0; i < players.length; i++){
-    ctx.fillStyle = "#0000FF";
+    ctx.fillStyle = "#8899FF";
     play = players[i];
 
      if(leads[0] && play.playerName === leads[0].playerName){
@@ -128,10 +169,22 @@ for (var i = 0; i < players.length; i++){
 
    //ctx.fillRect(x + play.x / (maph / 4),y + play.y / (mapw / 2), play.playerSize / 5, player.playerSize / 5);
   ctx.beginPath();
-        ctx.arc(x + play.x / 50, y + play.y / 50, 3 * (play.playerSize / 50), 0, 2 * Math.PI, false);
+        ctx.arc(x + play.x / 50, y + play.y / 50, 2 * (play.playerSize / 50), 0, 2 * Math.PI, false);
     ctx.closePath();
     ctx.fill();
 }
+
+for (var i = 0; i < walls.length; i++){
+    ctx.fillStyle = "grey";
+    wall = walls[i];
+
+   //ctx.fillRect(x + play.x / (maph / 4),y + play.y / (mapw / 2), play.playerSize / 5, player.playerSize / 5);
+  ctx.beginPath();
+        ctx.arc(x + wall.x / 50, y + wall.y / 50, 1 * (wall.playerSize / 50), 0, 2 * Math.PI, false);
+    ctx.closePath();
+    ctx.fill();
+}
+
 
 var x = 5;
 var y = canvas.height + 20;
@@ -157,11 +210,14 @@ var l = canvas.width - 80;
 ctx.lineWidth = 5;
 var sb = Math.min(leads.length, 5);
 ctx.fillStyle = "#a4c1ba";
+ctx.strokeStyle = "rgba(0, 0, 0, 0.1)"
 ctx.roundRect(x, y, w, 35 + sb * 34, 10).stroke();
 ctx.fillStyle = "#0a0d0f";
 ctx.roundRect(x, y, w, 35 + sb * 34, 10).fill();
 ctx.font = "25px scoreboard";
 ctx.fillStyle = "#FFFFFF";
+
+
 var y = y + 35;
 ctx.fillText("ScoreBoard",x + 80, y);
 ctx.fillStyle = "red";

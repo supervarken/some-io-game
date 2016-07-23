@@ -52,6 +52,10 @@ socket.on('massChange', function(eat, pup, mins, wal, bulles) {
     foods = eat;
     mines = mins;
     walls = wal;
+    for (i = 0; i < walls.length; i++){
+        walls[i].ang = Math.round(Math.random() * 360);
+          walls[i].si = Math.random() < 0.5 ? -5 : 5;
+    }
     bullets = bulles;
 });
 socket.on('addMass', function(data) {
@@ -104,7 +108,7 @@ socket.on('playerMove', function(player) {
             p.x = player.x;
             p.y = player.y;
             p.playerSize = player.playerSize;
-            //p.flairs = player.flairs;
+            p.fric = player.fric;
             p.r = player.r;
             p.speedUp = player.speedUp;
         }

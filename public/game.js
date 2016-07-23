@@ -46,7 +46,8 @@ preload(
 "http://simpleicon.com/wp-content/uploads/football.png",
 "", //http://downloadicons.net/sites/default/files/crown-symbol-64788.png
 "http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg",
-"http://cdn1.iconfinder.com/data/icons/round-arrows/256/up158-128.png");
+"http://cdn1.iconfinder.com/data/icons/round-arrows/256/up158-128.png",
+"https://openclipart.org/image/2400px/svg_to_png/124303/1298928176.png");
 //backColour = "#FFFFFF";
 
 
@@ -61,7 +62,7 @@ function updateCamera(player) {
     camera.x = player.x;
     camera.y = player.y;
     if(player.playerSize){
-    camera.zoom = ((20 + (player.playerSize))/ (player.playerSize ));
+    camera.zoom = ((20 + (player.playerSize))/ (player.playerSize ))/2;
     }
     else {
         camera.zoom = 0.35;
@@ -215,8 +216,8 @@ function bulletsMove() {
 }
 function clientMove(playerme){
         if(playerme.me && connection) {
-
-    playerme.speed = (100 / playerme.playerSize + 1) * playerme.speedUp;
+console.log(playerme);
+    playerme.speed = playerme.fric * (100 / playerme.playerSize + 1) * playerme.speedUp;
                playerme.r += direction.r * (60/fps) * (20 / playerme.playerSize);
                playerme.velX = (60/fps) * (direction.x > 0 ? playerme.speed : (direction.x < 0 ? (-playerme.speed) : 0)) * Math.cos(Math.PI / 180 * playerme.r);
 

@@ -12,10 +12,6 @@ var amount = (width * height) / 20000;
 var port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 
-/* Alright, listen here. This is really bad and I know that.
- *  It's just a test server and I don't want to explain to my friends how to use Putty and all that to update the server and restart it when they're playing around with the code.
- *  So, don't put me on /r/ProgrammingHumor okay? Thanks.
- */
 app.get('/restart', function(req, res) {
     res.send('Restaring... please be patient');
     process.exit();
@@ -28,11 +24,15 @@ var foods = [];
 var powers = [];
 var mines = [];
 var bullets = [];
-var walls = [{x: 0, y: 200, w: 10000, h: 200},{x: 1000, y: 500, w: 100, h: 200}];
+var walls = [];
 var names = ["SuperVark","Jesse","Apvark","reddit","Netherlands","Cool","Oh Wow","kill you","LOL","plongga","djDaBoot","Someone","Football","USA","cool","Turkey"];
-for (bot = 0; bot < 5; bot++){
+for (bot = 0; bot < 10; bot++){
    addBot();
 }
+for (var ii = 0; ii < 50; ii++){
+    addWall();
+}
+
 io.on('connection', function(socket) {
     socket.nameChoose = false;
     socket.emit('massChange', foods, powers, mines, walls, bullets);
@@ -150,7 +150,7 @@ io.on('connection', function(socket) {
         socket.on('disconnect', function() {
             if (socket.nameChoose) {
             var index = players.indexOf(socket);
-            console.log(index)
+
             players.splice(index, 1);
             console.log(socket.playerName + ' disconnected');
             io.emit('playerLeave', {
@@ -250,11 +250,11 @@ io.emit('leaderUpdate', leadObjs);
 var id = gameloop.setGameLoop(function(delta) {
 
     var foodNow = foods.splice();
-    if (Math.random() < 0.05 && foods.length < 2000) {
+    if (Math.random() < 0.05 && foods.length < 1000) {
         food = {
             x: Math.random() * width,
             y: Math.random() * height,
-            playerSize: 10,
+            playerSize: 6,
             foodcolor: '#' + Math.floor(Math.random() * 16777215).toString(16)
         };
         foods.push(food);
@@ -345,9 +345,9 @@ function movePlayers() {
 }
 
 function movePlayer(player) {
-    /*if (player.direction.x == 0 && player.direction.r == 0 && player.fric <= 0) {
+    if (player.fric == 0 && player.direction.x == 0 && player.direction.y == 0) {
         return;
-    }*/
+    }
 
    player.bumpX -= 0.02 * player.bumpX;
     if(player.bumpX < 0.01 && player.bumpX > 0 || player.bumpX > -0.01 && player.bumpX < 0 ){
@@ -367,71 +367,113 @@ player.bumpY -= 0.05 * player.bumpY;
        player.fric = 0;
    }
     if(player.direction.r > 0){
-        player.r += 5 * (20 / player.playerSize);
+        player.r += 4;
     }
     if(player.direction.r < 0){
-        player.r -= 5 * (20 / player.playerSize);
+        player.r -= 4;
     }
-    if(player.direction.x > 0){
-
-        if (player.fric < 1){
+    if(player.direction.x > 0 && player.fric < 1.5){
         player.fric += 0.1;
-        }
     }
-    if(player.direction.x < 0){
-        if (player.fric > -1){
+    if(player.direction.x < 0 && player.fric > -1.5){
         player.fric += -0.1;
-        }
     }
+        player.speed = player.fric * 5 * player.speedUp;
     //(player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? (-player.speed) : 0));
-    var newX = player.fric * player.speed * Math.cos(Math.PI / 180 * player.r);
-    var newY = player.fric * player.speed *  Math.sin(Math.PI / 180 * player.r);
+    var newX =  player.speed * Math.cos(Math.PI / 180 * player.r);
+    var newY = player.speed *  Math.sin(Math.PI / 180 * player.r);
     player.velX = newX; //laatste moment die kant op
     player.velY =  newY;
     intersectAny(player);
-    player.speed = (100 / player.playerSize + 1) * player.speedUp;
+
     player.x += player.bumpX +  player.velX;
     player.y += player.bumpY + player.velY;
-      if (!player.robot){
 
-       console.log(player.bumpX);
-   }
-
-
-        for (var i = 0; i < walls.length; i++) {
+        /* for (var i = 0; i < walls.length; i++) {
         switch (intersectWall(player, walls[i])) {
                 case false:
                         break;
                 case 1:
                         //player.y -= player.velY;
-            bump(player);
+            //bump(player);
+                resetPlayer(player);
                         break;
                 case 2:
-                        player.x -= player.velX;
+                       // player.x -= player.velX;
+                 resetPlayer(player);
                         break;
                 case true:
+                 resetPlayer(player);
                          //player.x -= player.velX;
                          //player.y -= player.velY;
-           bump(player);
+           //bump(player);
 
                         break;
 
     }
+        } */
+    for (var i = 0; i < walls.length; i++) {
+    if (intersect(player, walls[i])){
+
+         resetPlayer(player);
         }
+    }
+
+    if (player.x+player.playerSize > width || player.x - player.playerSize < 0 || player.y+player.playerSize > height || player.y - player.playerSize < 0 ){
+    resetPlayer(player);
+}
+    else {
     movePlayerTo(player,
         player.x, player.y);
+    }
 }
 
 function movePlayerTo(player, x, y) {
 
-    player.x = Math.min(Math.max(player.playerSize, x), (width - player.playerSize)); //add player.playersize
-    player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
-
+  //  player.x = Math.min(Math.max(player.playerSize, x), (width - player.playerSize)); //add player.playersize
+    //player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
+player.x = x;
+    player.y = y;
     emitPlayer(player);
 
 }
 
+
+function msDelete(object, array, removeAfterMs) {
+   array.push(object)
+
+     io.emit('addMass', object);
+
+   setTimeout(() => {
+     var idx = array.indexOf(object);
+       if (idx > -1){
+           io.emit('removeMass', idx);
+           array.splice(idx,1);
+       }
+   }, removeAfterMs)
+}
 function resetPlayer(socket) {
+
+    for (var i = 0; i < socket.playerSize; i += 1){
+
+    var pt_angle = Math.random() * 2 * Math.PI; //random angle
+    var pt_radius_sq = Math.random() * socket.playerSize * socket.playerSize; // random piece on that angle
+    var sx = Math.sqrt(pt_radius_sq) * Math.cos(pt_angle);
+    var sy = Math.sqrt(pt_radius_sq) * Math.sin(pt_angle);
+   var x = sx + socket.x;
+       var y = sy + socket.y;
+
+            var food = {
+            x: x,
+            y: y,
+            playerSize: 6,
+            foodcolor: socket.skin
+            };
+
+      msDelete(food, foods, 10000);
+
+         }
+
     if (!socket.robot) {
             socket.nameChoose = false;
             var index = players.indexOf(socket);
@@ -445,12 +487,12 @@ function resetPlayer(socket) {
     }
 else {
    socket.bomb = false;
-        socket.playerSize = 20.00;
+        socket.playerSize = 20;
         socket.speedUp = 1;
         socket.speed = 5;
        socket.shoot = true;
         socket.mines = 0;
-    socket.r = 0;
+        socket.r = 0;
         socket.flairs = [];
         socket.direction = {
             x: 0,
@@ -459,7 +501,12 @@ else {
         }
 
     respawn(socket);
+
+
 }
+
+
+
 }
 
 function intersectAny(player) {
@@ -470,8 +517,10 @@ function intersectAny(player) {
             continue;
         }
         if (intersect(player, p)) {
-        player.bumpX = -player.velX * 1.2;
-     player.bumpY = -player.velY * 1.2;
+        p.bumpX = player.velX * (player.playerSize/100 + 1);
+     p.bumpY = player.velY * (player.playerSize/100 + 1);
+               player.bumpX = p.velX * (p.playerSize/100 + 1);
+     player.bumpY = p.velY * (p.playerSize/100 + 1);
 
     /*
             if (player.playerSize > p.playerSize && p.bomb == false|| player.bomb == true && p.bomb == false || player.bomb == true && p.bomb == true && player.playerSiz > p.playerSize) {
@@ -577,7 +626,7 @@ function intersectAny(player) {
 }
 
 function emitPlayer(player) {
-    var play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, flairs: player.flairs, r: player.r, speedUp: player.speedUp};
+    var play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, fric: player.fric, r: player.r, speedUp: player.speedUp};
 
     io.emit('playerMove', play);
 }
@@ -637,6 +686,12 @@ function addBot() {
 
 }
 
+function addWall(){
+   var x = Math.round(Math.random() * (width - 100));
+    var y = Math.round(Math.random() * (height - 100));
+        var well = {x: x,y: y, playerSize: 100};
+        walls.push(well);
+}
 function bullet(socket) {
               if (socket.playerSize >= 22.5 && socket.shoot){
                  var cos = Math.cos(Math.PI / 180 * socket.r);
@@ -768,9 +823,10 @@ function miner(socket) {
 }
 
 function emitFlairs(socket) {
+    if (socket){
     var index = players.indexOf(socket);
     io.emit('flairUpdate', players[index].flairs, index);
-
+    }
 }
 function bump(player){
 
