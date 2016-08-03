@@ -471,11 +471,11 @@ function intersectAny(player) {
             continue;
         }
         if (intersect(player, p)) {
-            p.bumpX = 1.5 * player.velX * ((player.playerSize / 100 + 1) * (p.playerSize / 100 + 1));
-            p.bumpY = 1.5 * player.velY * ((player.playerSize / 100 + 1) * (p.playerSize / 100 + 1));
+            p.bumpX = 1.5 * player.velX * ((player.playerSize / 100 + 1) / (p.playerSize / 100 + 1));
+            p.bumpY = 1.5 * player.velY * ((player.playerSize / 100 + 1) / (p.playerSize / 100 + 1));
 
-            player.bumpX = 1.5 * p.velX * ((p.playerSize / 100 + 1) * (player.playerSize / 100 + 1));
-            player.bumpY = 1.5 * p.velY * ((p.playerSize / 100 + 1) * (player.playerSize / 100 + 1));
+            player.bumpX = 1.5 * p.velX * ((p.playerSize / 100 + 1) / (player.playerSize / 100 + 1));
+            player.bumpY = 1.5 * p.velY * ((p.playerSize / 100 + 1) / (player.playerSize / 100 + 1));
 
         }
     }
