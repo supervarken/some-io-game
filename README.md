@@ -8,14 +8,12 @@ flairs cause crash
 bots randomly disapperaring
 
 #Todo:
-change bumping
+add powerup time left
 add bumpers 
 relative size change
 make corners same for size
 
-Changes emits for specififc tasks (especially flairs)
-redesigning
-power up redesign
+
 chat redesign
 start screen redesign
 zoom out when max size

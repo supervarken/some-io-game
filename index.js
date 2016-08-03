@@ -25,11 +25,11 @@ var powers = [];
 var mines = [];
 var bullets = [];
 var walls = [];
-var names = ["SuperVark","Jesse","Apvark","reddit","Netherlands","Cool","Oh Wow","kill you","LOL","plongga","djDaBoot","Someone","Football","USA","cool","Turkey"];
-for (bot = 0; bot < 10; bot++){
-   addBot();
+var names = ["SuperVark", "Jesse", "Apvark", "reddit", "Netherlands", "Cool", "Oh Wow", "kill you", "LOL", "plongga", "djDaBoot", "Someone", "Football", "USA", "cool", "Turkey"];
+for (bot = 0; bot < 10; bot++) {
+    addBot();
 }
-for (var ii = 0; ii < 50; ii++){
+for (var ii = 0; ii < 50; ii++) {
     addWall();
 }
 
@@ -49,14 +49,15 @@ io.on('connection', function(socket) {
             y: item.y,
             playerSize: item.playerSize,
             skin: item.skin,
-            flairs: item.flairs,
-            r: item.r
+
+            r: item.r,
+            pu: socket.pu
         }
     }));
 
 
     socket.on('username', function(username, chat, skin) {
-       if (socket.nameChoose) return;
+        if (socket.nameChoose) return;
 
         playerIndex++;
         socket.nameChoose = true;
@@ -64,7 +65,7 @@ io.on('connection', function(socket) {
         if (username === "") {
             username = "Player " + playerIndex;
         }
-        for (var i=0;i<players.length;i++) {
+        for (var i = 0; i < players.length; i++) {
             if (players[i].playerName == username) {
                 username = username + 2;
             }
@@ -82,16 +83,13 @@ io.on('connection', function(socket) {
         socket.speed = 5;
         socket.mines = 0;
         socket.r = 0;
-        socket.flairs = [];
+        socket.pu = 0;
+
         socket.direction = {
             x: 0,
             r: 0
         }
-         respawn(socket);
-
-        if (socket.handshake.address == "::ffff:80.61.54.121") {
-            socket.flairs.push(10);
-        }
+        respawn(socket);
 
 
         players.push(socket);
@@ -104,8 +102,9 @@ io.on('connection', function(socket) {
             r: socket.r,
             me: true,
             skin: socket.skin,
-            flairs: socket.flairs,
-            speedUp: socket.speedUp
+
+            speedUp: socket.speedUp,
+            pu: socket.pu
         }]);
 
         socket.broadcast.emit('playerJoin', [{
@@ -115,40 +114,42 @@ io.on('connection', function(socket) {
             y: socket.y,
             r: socket.r,
             skin: socket.skin,
-            flairs: socket.flairs
+
+            pu: socket.pu
         }]);
         console.log(socket.playerName + ' connected');
 
 
         socket.emit('login', playerIndex);
-         socket.emit('chat message', "Welcome to plong.ga! Commands: /reset to restart your game, /colour [colourname] to change background colour","Server");
+        socket.emit('chat message', "Welcome to plong.ga! Commands: /reset to restart your game, /colour [colourname] to change background colour", "Server");
 
 
 
 
     });
-          socket.on('chat message', function(msg, name) {
-            if (msg == ""){}
-            else if (msg == "/reset") { resetPlayer(socket); }
-            else if (msg == "/resetgame jooj") { resetGame(); }
-            else if (msg == "/addbot jooj") { addBot(); }
-               else if (msg == "/addmass jooj") { socket.playerSize += 100; }
-             else if(msg.indexOf("/resetplayer jooj ") >= 0) {
-           choosenOne = msg.substr(18);
-                 for (i = 0; i < players.length; i++){
-                     if(players[i].playerName == choosenOne){
-                         resetPlayer(players[i]);
-                     }
-                 }
-             }
-
-            else {
-                io.emit('chat message', msg, socket.playerName);
+    socket.on('chat message', function(msg, name) {
+        if (msg == "") {} else if (msg == "/reset") {
+            resetPlayer(socket);
+        } else if (msg == "/resetgame jooj") {
+            resetGame();
+        } else if (msg == "/addbot jooj") {
+            addBot();
+        } else if (msg == "/addmass jooj") {
+            socket.playerSize += 100;
+        } else if (msg.indexOf("/resetplayer jooj ") >= 0) {
+            choosenOne = msg.substr(18);
+            for (i = 0; i < players.length; i++) {
+                if (players[i].playerName == choosenOne) {
+                    resetPlayer(players[i]);
+                }
             }
-        });
+        } else {
+            io.emit('chat message', msg, socket.playerName);
+        }
+    });
 
-        socket.on('disconnect', function() {
-            if (socket.nameChoose) {
+    socket.on('disconnect', function() {
+        if (socket.nameChoose) {
             var index = players.indexOf(socket);
 
             players.splice(index, 1);
@@ -157,98 +158,67 @@ io.on('connection', function(socket) {
                 playerName: socket.playerName,
                 i: index
             });
-            }
-        });
-     socket.on('changeDirection', function(direction) {
-            socket.direction = direction;
-        });
+        }
+    });
+    socket.on('changeDirection', function(direction) {
+        socket.direction = direction;
+    });
 
-         socket.on('emitBomb', function(direction) {
-        miner(socket);
-        });
-         socket.on('shot', function() {
-          bullet(socket);
-        });
+    socket.on('emitBomb', function(direction) {
+
+        if (socket.pu == 3) {
+
+                socket.speedUp = 2;
+
+        var speedy = setTimeout(function() {
+
+                        socket.speedUp = 1;
+
+                 powerE(socket,0);
+                }, 3000);
+        }
+
+        if (socket.pu == 4) {
+                socket.bomb = true;
+
+                var bomby = setTimeout(function() {powerE(socket,0);socket.bomb = false}, 10000);
+        }
+
+        if (socket.pu == 5) {
+            miner(socket);
+        }
+
+    });
+
+    socket.on('shot', function() {
+        bullet(socket);
+    });
 });
 
-//setInterval(function(){resetGame()}, 300000);
 
-function resetGame(){
-     var win = 0;
-    for (i = 0; i < players.length; i++) {
-        if (players[i].playerSize > win) {
-            var winner = players[i];
-            win = players[i].playerSize;
-            ia = i;
-        }
-    }
-    if (winner == null) {
-        io.emit('chat message', "No players participated ", "Server");
-    } else {
-        io.emit('chat message', "Winner is: " + winner.playerName, "Server");
-
-        emitPlayer(winner);
-    }
-    foods = [];
-    powers = [];
-    mines = [];
-    var bullets = [];
-    for (i = 0; i < players.length; i++) {
-        resetPlayer(players[i]);
-
-    }
-    if (!winner == null){
-        console.log(winner);
- winner.flairs.push(6);
-    }
-    io.emit('chat message', "Game resetted!", "Server");
-    io.emit('massChange', foods, powers, mines, walls, bullets);
-}
 setInterval(function() {
     var leadObjs = [];
-    var lead = players.slice(0);//clone players arra
+    var lead = players.slice(0); //clone players arra
 
     lead.sort(function(a, b) {
         return b.playerSize - a.playerSize;
     });
 
-    if(lead[0]){
-        var flair = true;
-             for (var i = 0; i < lead[0].flairs.length; i++){
-
-                     if (lead[0].flairs[i] == 6){
-                         flair = false;
-                     }
-                 }
-        if (flair){
-            lead[0].flairs.push(6);
-
-
-        }
-             for (var i = 1; i < lead.length; i++){
-            for (var l = 0; l < lead[i].flairs.length; l++){
-
-                     if (lead[i].flairs[l] == 6){
-
-                         lead[i].flairs.splice(l, 1);
-                         emitFlairs(lead[i]);
-                        //emitPlayer(lead[i]);
-                     }
-                 }
-            }
-    }
-
-    for (var i = 0; i < lead.length; i++){ //&& i < 5
-        var leadObj = {playerName: lead[i].playerName, playerSize: lead[i].playerSize};
+    for (var i = 0; i < lead.length; i++) { //&& i < 5
+        var leadObj = {
+            playerName: lead[i].playerName,
+            playerSize: lead[i].playerSize
+        };
 
         leadObjs.push(leadObj);
     }
-io.emit('leaderUpdate', leadObjs);
+    io.emit('leaderUpdate', leadObjs);
 
-}, 1000)
+}, 1000);
 
 var id = gameloop.setGameLoop(function(delta) {
 
+    //food creating
     var foodNow = foods.splice();
     if (Math.random() < 0.05 && foods.length < 1000) {
         food = {
@@ -258,83 +228,94 @@ var id = gameloop.setGameLoop(function(delta) {
             foodcolor: '#' + Math.floor(Math.random() * 16777215).toString(16)
         };
         foods.push(food);
-       io.emit('addMass', food);
+        io.emit('addMass', food);
     }
 
+
+    //powerup creating
     if (Math.random() < 0.002 && powers.length < 50) {
         switch (Math.round(Math.random() * 2)) {
-    case 0:
-        kinder = "speed";
-        img = 3;
-        break;
-    case 1:
-        kinder = "bomb";
-        img = 4;
-        break;
-    case 2:
-        kinder = "mines";
-        img = 5;
-        break;
-}
+            case 0:
+                kinder = "speed";
+                img = 3;
+                break;
+            case 1:
+                kinder = "bomb";
+                img = 4;
+                break;
+            case 2:
+                kinder = "mines";
+                img = 5;
+                break;
+        }
         power = {
             x: Math.random() * width,
-            y: Math.random() *  height,
+            y: Math.random() * height,
             playerSize: 20.00,
             kind: kinder,
             img: img
         };
         powers.push(power);
-       io.emit('addPower', power);
+        io.emit('addPower', power);
 
     }
-moveBots();
-for (var i = 0; i < bullets.length; i++) {
-  if (bullets[i].lifes < 0) {
-      bullets.splice(i, 1);
-      io.emit('removeBull', i);
-      i--;
-    }
-    else {
-     bullets[i].x -= bullets[i].velX;
-    bullets[i].y -= bullets[i].velY;
-    bullets[i].lifes -= 0.5;
-    for (var p = 0; p < players.length; p++) {
-        if (intersect(players[p], bullets[i])) {
-            if (bullets[i].owner != players[p].playerName){
-            players[p].playerSize -= 2.5;
-                for (var l = 0; l < players.length; l++){
-                if (players[l].playerName === bullets[i].owner){
-                    players[l].playerSize += 2.5;
-                    emitPlayer(players[l]);
-                    break;
-                }
-                }
-            if (players[p].playerSize < 15) {
-                resetPlayer(players[p]);
-            }
-            else {
-                emitPlayer(players[p]);
-            }
 
+
+
+    moveBots();
+
+
+
+    for (var i = 0; i < bullets.length; i++) {
+        if (bullets[i].lifes < 0) {
+            bullets.splice(i, 1);
             io.emit('removeBull', i);
-                  bullets.splice(i, 1)
-                  i--;
-                break;
+            i--;
+        }
+        else {
+            bullets[i].x -= bullets[i].velX;
+            bullets[i].y -= bullets[i].velY;
+            bullets[i].lifes -= 0.5;
+            for (var p = 0; p < players.length; p++) {
+                if (intersect(players[p], bullets[i])) {
+                    if (bullets[i].owner != players[p].playerName) {
+                        if (players[p].bomb == false){
+                        players[p].playerSize -= 2.5;
+
+                        for (var l = 0; l < players.length; l++) {
+                            if (players[l].playerName === bullets[i].owner) {
+                                players[l].playerSize += 2.5;
+                                emitPlayer(players[l]);
+                                break;
+                            }
+                        }
+
+                        if (players[p].playerSize < 15) {
+                            resetPlayer(players[p]);
+                        }
+                        else {
+                            emitPlayer(players[p]);
+                        }
+                        }
+                        io.emit('removeBull', i);
+
+                        bullets.splice(i, 1)
+                        i--;
+                        break;
+
+                    }
+
+                }
 
             }
-
         }
 
-      bull2 = {x: bullets[i].x, y: bullets[i].y};
-    //io.emit('moveBull', i, bull2);
     }
-    }
-
-}
 
     movePlayers();
 
 }, 1000 / 60);
+
 function movePlayers() {
 
     for (i in players) {
@@ -345,167 +326,140 @@ function movePlayers() {
 }
 
 function movePlayer(player) {
+    {
     if (player.fric == 0 && player.direction.x == 0 && player.direction.y == 0) {
         return;
     }
 
-   player.bumpX -= 0.02 * player.bumpX;
-    if(player.bumpX < 0.01 && player.bumpX > 0 || player.bumpX > -0.01 && player.bumpX < 0 ){
+    player.bumpX -= 0.02 * player.bumpX;
+    if (player.bumpX < 0.01 && player.bumpX > 0 || player.bumpX > -0.01 && player.bumpX < 0) {
         player.bumpX = 0;
     }
-player.bumpY -= 0.05 * player.bumpY;
-     if(player.bumpY < 0.01 && player.bumpY > 0 || player.bumpY > -0.01 && player.bumpY < 0 ){
+    player.bumpY -= 0.05 * player.bumpY;
+    if (player.bumpY < 0.01 && player.bumpY > 0 || player.bumpY > -0.01 && player.bumpY < 0) {
         player.bumpY = 0;
     }
-    if (player.fric > 0.01){
-       player.fric -= 0.1 * player.fric;
+    if (Math.abs(player.fric) > 0.01) {
+        player.fric -= 0.1 * player.fric;
+    } else {
+        player.fric = 0;
     }
-    else if (player.fric < -0.01){
-         player.fric -= 0.1 * player.fric;
-    }
-   else {
-       player.fric = 0;
-   }
-    if(player.direction.r > 0){
+
+    if (player.direction.r > 0) {
         player.r += 4;
     }
-    if(player.direction.r < 0){
+    if (player.direction.r < 0) {
         player.r -= 4;
     }
-    if(player.direction.x > 0 && player.fric < 1.5){
+    if (player.direction.x > 0 && player.fric < 1.5) {
         player.fric += 0.1;
     }
-    if(player.direction.x < 0 && player.fric > -1.5){
+    if (player.direction.x < 0 && player.fric > -1.5) {
         player.fric += -0.1;
     }
-        player.speed = player.fric * 5 * player.speedUp;
-    //(player.direction.x > 0 ? player.speed : (player.direction.x < 0 ? (-player.speed) : 0));
-    var newX =  player.speed * Math.cos(Math.PI / 180 * player.r);
-    var newY = player.speed *  Math.sin(Math.PI / 180 * player.r);
+    player.speed = player.fric * 5 * player.speedUp;
+
+    var newX = player.speed * Math.cos(Math.PI / 180 * player.r);
+    var newY = player.speed * Math.sin(Math.PI / 180 * player.r);
     player.velX = newX; //laatste moment die kant op
-    player.velY =  newY;
+    player.velY = newY;
     intersectAny(player);
 
-    player.x += player.bumpX +  player.velX;
+    player.x += player.bumpX + player.velX;
     player.y += player.bumpY + player.velY;
 
-        /* for (var i = 0; i < walls.length; i++) {
-        switch (intersectWall(player, walls[i])) {
-                case false:
-                        break;
-                case 1:
-                        //player.y -= player.velY;
-            //bump(player);
-                resetPlayer(player);
-                        break;
-                case 2:
-                       // player.x -= player.velX;
-                 resetPlayer(player);
-                        break;
-                case true:
-                 resetPlayer(player);
-                         //player.x -= player.velX;
-                         //player.y -= player.velY;
-           //bump(player);
-
-                        break;
-
-    }
-        } */
+        }
     for (var i = 0; i < walls.length; i++) {
-    if (intersect(player, walls[i])){
+        if (intersect(player, walls[i])) {
 
-         resetPlayer(player);
+            resetPlayer(player);
         }
     }
 
-    if (player.x+player.playerSize > width || player.x - player.playerSize < 0 || player.y+player.playerSize > height || player.y - player.playerSize < 0 ){
-    resetPlayer(player);
-}
-    else {
-    movePlayerTo(player,
-        player.x, player.y);
+    if (player.x + player.playerSize > width || player.x - player.playerSize < 0 || player.y + player.playerSize > height || player.y - player.playerSize < 0) {
+        resetPlayer(player);
+    } else {
+        movePlayerTo(player,
+            player.x, player.y);
     }
 }
 
+
+
 function movePlayerTo(player, x, y) {
 
-  //  player.x = Math.min(Math.max(player.playerSize, x), (width - player.playerSize)); //add player.playersize
-    //player.y = Math.min(Math.max(player.playerSize, y), (height - player.playerSize));
-player.x = x;
+
+    player.x = x;
     player.y = y;
     emitPlayer(player);
 
 }
 
-
 function msDelete(object, array, removeAfterMs) {
-   array.push(object)
+    array.push(object)
 
-     io.emit('addMass', object);
+    io.emit('addMass', object);
 
-   setTimeout(() => {
-     var idx = array.indexOf(object);
-       if (idx > -1){
-           io.emit('removeMass', idx);
-           array.splice(idx,1);
-       }
-   }, removeAfterMs)
+    setTimeout(() => {
+        var idx = array.indexOf(object);
+        if (idx > -1) {
+            io.emit('removeMass', idx);
+            array.splice(idx, 1);
+        }
+    }, removeAfterMs)
 }
+
 function resetPlayer(socket) {
 
-    for (var i = 0; i < socket.playerSize; i += 1){
+    for (var i = 0; i < socket.playerSize; i += 1) {
 
-    var pt_angle = Math.random() * 2 * Math.PI; //random angle
-    var pt_radius_sq = Math.random() * socket.playerSize * socket.playerSize; // random piece on that angle
-    var sx = Math.sqrt(pt_radius_sq) * Math.cos(pt_angle);
-    var sy = Math.sqrt(pt_radius_sq) * Math.sin(pt_angle);
-   var x = sx + socket.x;
-       var y = sy + socket.y;
+        var pt_angle = Math.random() * 2 * Math.PI; //random angle
+        var pt_radius_sq = Math.random() * socket.playerSize * socket.playerSize; // random piece on that angle
+        var sx = Math.sqrt(pt_radius_sq) * Math.cos(pt_angle);
+        var sy = Math.sqrt(pt_radius_sq) * Math.sin(pt_angle);
+        var x = sx + socket.x;
+        var y = sy + socket.y;
 
-            var food = {
+        var food = {
             x: x,
             y: y,
             playerSize: 6,
             foodcolor: socket.skin
-            };
+        };
 
-      msDelete(food, foods, 10000);
+        msDelete(food, foods, 10000);
 
-         }
+    }
 
     if (!socket.robot) {
-            socket.nameChoose = false;
-            var index = players.indexOf(socket);
-            players.splice(index, 1);
-            io.emit('playerLeave', {
-                playerName: socket.playerName,
-                i: index
-            });
+        socket.nameChoose = false;
+        var index = players.indexOf(socket);
+        players.splice(index, 1);
+        io.emit('playerLeave', {
+            playerName: socket.playerName,
+            i: index
+        });
 
-    socket.emit('discon', "hmm");
-    }
-else {
-   socket.bomb = false;
+        socket.emit('discon', "hmm");
+    } else {
+        socket.bomb = false;
         socket.playerSize = 20;
         socket.speedUp = 1;
         socket.speed = 5;
-       socket.shoot = true;
+        socket.shoot = true;
         socket.mines = 0;
         socket.r = 0;
-        socket.flairs = [];
+
         socket.direction = {
             x: 0,
             y: 0,
             r: 0
         }
 
-    respawn(socket);
+        respawn(socket);
 
 
-}
-
-
+    }
 
 }
 
@@ -517,31 +471,15 @@ function intersectAny(player) {
             continue;
         }
         if (intersect(player, p)) {
-        p.bumpX = player.velX * (player.playerSize/100 + 1);
-     p.bumpY = player.velY * (player.playerSize/100 + 1);
-               player.bumpX = p.velX * (p.playerSize/100 + 1);
-     player.bumpY = p.velY * (p.playerSize/100 + 1);
+            p.bumpX = 1.5 * player.velX * ((player.playerSize / 100 + 1) * (p.playerSize / 100 + 1));
+            p.bumpY = 1.5 * player.velY * ((player.playerSize / 100 + 1) * (p.playerSize / 100 + 1));
 
-    /*
-            if (player.playerSize > p.playerSize && p.bomb == false|| player.bomb == true && p.bomb == false || player.bomb == true && p.bomb == true && player.playerSiz > p.playerSize) {
-                player.playerSize += 0.5 * p.playerSize;
-                resetPlayer(p);
-                emitPlayer(player);
-            } else{
-                p.playerSize += 0.5 * player.playerSize;
-                resetPlayer(player)
-                emitPlayer(p);
-            }*/
-
-            intersections += 1;
-        }
-    }
-
-    for (var i = 0; i < walls.length; i++) {
-        if (intersect(player, walls[i])) {
+            player.bumpX = 1.5 * p.velX * ((p.playerSize / 100 + 1) * (player.playerSize / 100 + 1));
+            player.bumpY = 1.5 * p.velY * ((p.playerSize / 100 + 1) * (player.playerSize / 100 + 1));
 
         }
     }
+
     for (var i = 0; i < foods.length; i++) {
         var food = foods[i];
         if (intersect(player, food)) {
@@ -552,89 +490,76 @@ function intersectAny(player) {
             io.emit('removeMass', i);
         }
     }
-   for (var i = 0; i < mines.length; i++) {
+
+    for (var i = 0; i < mines.length; i++) {
         var mine = mines[i];
         if (intersect(player, mine)) {
-            if (mine.owner != player.playerName){
-            var exSize = player.playerSize / 2;
-            player.playerSize -= exSize;
-             for (var p = 0; p < players.length; p++){
-                if (players[p].playerName === mine.owner){
-                    players[p].playerSize += 0.5 * exSize;
-                    emitPlayer(players[p]);
+            if (mine.owner != player.playerName) {
+                var exSize = player.playerSize / 2;
+                player.playerSize -= exSize;
+                for (var p = 0; p < players.length; p++) {
+                    if (players[p].playerName === mine.owner) {
+                        players[p].playerSize += 0.5 * exSize;
+                        emitPlayer(players[p]);
+                    }
                 }
+                if (player.playerSize < 20) {
+                    resetPlayer(player);
                 }
-                 if (player.playerSize < 20) {
-                resetPlayer(player);
-            }
 
-            mines.splice(i, 1);
-            emitPlayer(player);
-            io.emit('removeMine', i);
+                mines.splice(i, 1);
+                emitPlayer(player);
+                io.emit('removeMine', i);
             }
         }
-   }
+    }
 
 
     for (var i = 0; i < powers.length; i++) {
         var power = powers[i];
         if (intersect(player, power)) {
-        if(power.kind == "speed"){
-            player.speedUp += 1;
-
-            player.flairs.push(3);
-             emitFlairs(player);
-             var speedy = setTimeout(function(){
-                 for (i = 0; i < player.flairs.length; i++){
-                       if (player.flairs[i] == 3){
-                           player.flairs.splice(i, 1);
-                           emitFlairs(player);
-                           break;
-                       }
-                   }
-
-                 emitFlairs(player);
-                 if (player.speedUp > 1) {
-                     player.speedUp -= 1; }
-                     }, 3000);
-        }
-            else if (power.kind == "bomb"){
-                player.bomb = true;
-            player.flairs.push(4);
-                 emitFlairs(player);
-               var bomby = setTimeout(function(){
-                   for (i = 0; i < player.flairs.length; i++){
-                       if (player.flairs[i] == 4){
-                           player.flairs.splice(i, 1);
-                           emitFlairs(player);
-                           break;
-                       }
-                   }
-                   player.bomb = false}, 3000);
+            if (power.kind == "speed") {
+             /*   player.speedUp += 1;
+                 powerE(player,3);
+                var speedy = setTimeout(function() {
+                    if (player.speedUp > 1) {
+                        player.speedUp -= 1;
+                    }
+                 powerE(player,0);
+                }, 3000); */
+               powerE(player, 3);
+            } else if (power.kind == "bomb") {
+                powerE(player, 4);
             }
-            else if (power.kind == "mines"){
-                player.flairs.push(5);
-                 emitFlairs(player);
+            else if (power.kind == "mines") {
+              powerE(player,5);
                 player.mines += 1;
             }
-            powers.splice(i, 1);
-             emitFlairs(player);
-            io.emit('removePower', i);
+           powers.splice(i,1);
+        io.emit('removePower', i);
         }
 
     }
 }
 
 function emitPlayer(player) {
-    var play = {x: player.x, y: player.y, playerSize: player.playerSize, playerName: player.playerName, fric: player.fric, r: player.r, speedUp: player.speedUp};
+
+    var play = {
+        x: player.x,
+        y: player.y,
+        playerSize: player.playerSize,
+        playerName: player.playerName,
+        fric: player.fric,
+        r: player.r,
+        speedUp: player.speedUp
+    };
 
     io.emit('playerMove', play);
 }
 
 function intersect(player1, player2) {
-    //var biggestSize = Math.max(player1.playerSize, player2.playerSize);
-    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2); //diameter of the size of
-    //    return false;
+
+    return Math.pow(Math.abs(player1.x - player2.x), 2) + Math.pow(Math.abs(player1.y - player2.y), 2) < Math.pow(player1.playerSize + player2.playerSize, 2);
 
 }
 
@@ -644,219 +569,181 @@ function respawn(player) {
 }
 
 function addBot() {
-     var socket = [];
-        playerIndex++;
-        var ran = Math.round(Math.random() * (names.length));
+    var socket = [];
+    playerIndex++;
+    var ran = Math.round(Math.random() * (names.length));
 
-        socket.playerName = names[ran];
+    socket.playerName = names[ran];
     //socket.playerName = playerIndex;
-    if(socket.playerName == undefined){
+    if (socket.playerName == undefined) {
         socket.playerName = "Bot " + playerIndex;
     }
-      names.splice(ran,1);
-        socket.bumpX = 0;
-        socket.bumpY = 0;
-        socket.bomb = false;
-        socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
-        socket.playerSize = 20.00;
-        socket.shoot = true;
-        socket.speedUp = 1;
-        socket.speed = 5;
-        socket.mines = 0;
-        socket.r = 0;
-     socket.fric = 0;
-        socket.robot = true;
-        socket.flairs = [];
-        socket.direction = {
-            x: 0,
-            r: 0
-        }
-         respawn(socket);
+    names.splice(ran, 1);
+    socket.bumpX = 0;
+    socket.bumpY = 0;
+    socket.bomb = false;
+    socket.skin = '#' + Math.floor(Math.random() * 16777215).toString(16);
+    socket.playerSize = 20.00;
+    socket.shoot = true;
+    socket.speedUp = 1;
+    socket.speed = 5;
+    socket.mines = 0;
+    socket.pu = 0;
+    socket.r = 0;
+    socket.fric = 0;
+    socket.robot = true;
 
-        players.push(socket);
-       io.emit('playerJoin', [{
-            playerSize: socket.playerSize,
-            playerName: socket.playerName,
-            x: socket.x,
-            y: socket.y,
-            r: socket.r,
-            skin: socket.skin,
-            flairs: socket.flairs
-        }]);
+    socket.direction = {
+        x: 0,
+        r: 0
+    }
+    respawn(socket);
+
+    players.push(socket);
+    io.emit('playerJoin', [{
+        playerSize: socket.playerSize,
+        playerName: socket.playerName,
+        x: socket.x,
+        y: socket.y,
+        r: socket.r,
+        skin: socket.skin,
+
+        pu: socket.pu
+    }]);
 
 }
 
-function addWall(){
-   var x = Math.round(Math.random() * (width - 100));
+function addWall() {
+    var x = Math.round(Math.random() * (width - 100));
     var y = Math.round(Math.random() * (height - 100));
-        var well = {x: x,y: y, playerSize: 100};
-        walls.push(well);
+    var well = {
+        x: x,
+        y: y,
+        playerSize: 100
+    };
+    walls.push(well);
 }
+
 function bullet(socket) {
-              if (socket.playerSize >= 22.5 && socket.shoot){
-                 var cos = Math.cos(Math.PI / 180 * socket.r);
-                 var sin = Math.sin(Math.PI / 180 * socket.r);
-            socket.playerSize -= 2.5;
-                    emitPlayer(socket);
-                       var min = {
-                    x: socket.x - (cos * socket.playerSize),
-                    y: socket.y - (sin * socket.playerSize),
-                    playerSize: 10,
-                    colour: socket.skin,
-                    velX: 10 * cos,
-                 velY: 10 * sin
-                 };
+    if (socket.playerSize >= 22.5 && socket.shoot) {
+        var cos = Math.cos(Math.PI / 180 * socket.r);
+        var sin = Math.sin(Math.PI / 180 * socket.r);
+        socket.playerSize -= 2.5;
+        emitPlayer(socket);
+        var min = {
+            x: socket.x - (cos * socket.playerSize),
+            y: socket.y - (sin * socket.playerSize),
+            playerSize: 10,
+            colour: socket.skin,
+            velX: 10 * cos,
+            velY: 10 * sin
+        };
 
-                 io.emit('addBull', {
-                    x: socket.x - (cos * socket.playerSize),
-                    y: socket.y - (sin * socket.playerSize),
-                    playerSize: 10,
-                    colour: socket.skin,
-                     velX: cos,
-                     velY: sin
-                 });
-                 min.owner = socket.playerName;
+        io.emit('addBull', {
+            x: socket.x - (cos * socket.playerSize),
+            y: socket.y - (sin * socket.playerSize),
+            playerSize: 10,
+            colour: socket.skin,
+            velX: cos,
+            velY: sin
+        });
+        min.owner = socket.playerName;
 
-                 min.lifes = 100;
+        min.lifes = 100;
 
-                bullets.push(min);
-                socket.shoot = false;
-                setTimeout(function(){socket.shoot = true;}, 300);
+        bullets.push(min);
+        socket.shoot = false;
+        setTimeout(function() {
+            socket.shoot = true;
+        }, 300);
 
-             }
+    }
 }
 
 function moveBots() {
     for (var i = 0; i < players.length; i++) {
-    if (players[i].robot) {
-        if (players[i].playerSize > 100){
-            if (Math.random() < 0.0008){
-               bullet(players[i]);
+        if (players[i].robot) {
+            if (players[i].playerSize > 100) {
+                if (Math.random() < 0.0008) {
+                    bullet(players[i]);
+                }
             }
-        }
-          if (players[i].mines > 0){
-            if (Math.random() < 0.001){
-               miner(players[i]);
+            if (players[i].mines > 0) {
+                if (Math.random() < 0.001) {
+                    miner(players[i]);
+                }
             }
-        }
 
-        if (players[i].direction.x == -1){
-            if (Math.random() < 0.01){
-                x = 0;
-            }
-                else {
+            if (players[i].direction.x == -1) {
+                if (Math.random() < 0.01) {
+                    x = 0;
+                } else {
                     x = -1;
                 }
-        }
-        if (players[i].direction.x == 0){
-            if (Math.random() < 0.05){
-                x = -1;
             }
-                else {
+            if (players[i].direction.x == 0) {
+                if (Math.random() < 0.05) {
+                    x = -1;
+                } else {
                     x = 0;
                 }
-        }
+            }
 
-        if (players[i].direction.r == 1){
-            if (Math.random() < (0.2 / players[i].playerSize)){
-                r = -1;
-            }
-                else if (Math.random() < (4 / players[i].playerSize)){
-                r = 0;
-            }
-                else {
+            if (players[i].direction.r == 1) {
+                if (Math.random() < (0.2 / players[i].playerSize)) {
+                    r = -1;
+                } else if (Math.random() < (4 / players[i].playerSize)) {
+                    r = 0;
+                } else {
                     r = 1;
                 }
-        }
-       else if (players[i].direction.r == -1){
-            if (Math.random() <  (0.2 / players[i].playerSize)){
-                r = 1;
-            }
-             else if (Math.random() < (4 / players[i].playerSize)){
-                r = 0;
-            }
-                else {
+            } else if (players[i].direction.r == -1) {
+                if (Math.random() < (0.2 / players[i].playerSize)) {
+                    r = 1;
+                } else if (Math.random() < (4 / players[i].playerSize)) {
+                    r = 0;
+                } else {
                     r = -1;
                 }
-        }
-         else {
-            if (Math.random() < (1 / players[i].playerSize)){
-                r = 1;
-            }
-              else if (Math.random() < (1 / players[i].playerSize)){
-                r = -1;
-            }
-                else {
+            } else {
+                if (Math.random() < (1 / players[i].playerSize)) {
+                    r = 1;
+                } else if (Math.random() < (1 / players[i].playerSize)) {
+                    r = -1;
+                } else {
                     r = 0;
                 }
-        }
+            }
 
-        players[i].direction = {
-            x: x,
-            r: r
-        };
+            players[i].direction = {
+                x: x,
+                r: r
+            };
+        }
     }
-}
 
 }
 
 function miner(socket) {
-         if (socket.mines > 0){
-            socket.mines -= 1;
-                 for (var i = 0; i < socket.flairs.length; i++){
-                     if (socket.flairs[i] == 5){
-                         socket.flairs.splice(i, 1);
-                     }
-                 }
-                    emitFlairs(socket);
-                    //emitPlayer(socket);
-                      var min = {
-                    x: socket.x,
-                    y: socket.y,
-                    playerSize: 15,
-                    owner: socket.playerName
-                 };
-                mines.push(min);
-                 io.emit('addMine', min);
+    if (socket.pu == 5) {
+        socket.pu = 0;
+       powerE(socket, socket.pu);
 
-             }
+        var min = {x: socket.x, y: socket.y, playerSize: 15, owner: socket.playerName};
+
+        mines.push(min);
+        io.emit('addMine', min);
+
+    }
 }
 
-function emitFlairs(socket) {
-    if (socket){
+function powerE(socket, num) {
+if (socket.nameChoose){
     var index = players.indexOf(socket);
-    io.emit('flairUpdate', players[index].flairs, index);
-    }
+    players[index].pu = num;
+    io.emit('poup', index, num);
 }
-function bump(player){
-
-     player.bumpX = player.velX * 1.2;
-     player.bumpY = -player.velY * 1.2;
-
 }
-function intersectWall(player, block){
-   var distX = Math.abs(player.x - block.x - block.w / 2);
-    var distY = Math.abs(player.y - block.y - block.h / 2);
-
-    if (distX > (block.w / 2 + player.playerSize)) {
-        return false;
-    }
-    if (distY > (block.h / 2 + player.playerSize)) {
-        return false;
-    }
-
-    if (distX <= (block.w / 2)) { //boven / beneden
-     return 1;
-    }
-    if (distY <= (block.h / 2)) { //link / rechts
-        return 2;
-    }
-
-    var dx = distX - block.w / 2;
-    var dy = distY - block.h / 2;
-    return (dx * dx + dy * dy <= (player.playerSize * player.playerSize));
-}
-
 http.listen(port, function() {
     console.log('listening on *:3000');
 });

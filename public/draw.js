@@ -100,7 +100,7 @@ ctx.fillStyle = "white";
          ctx.fill();
          ctx.closePath();
     ctx.save();
-    walls[i].ang += walls[i].si;
+    walls[i].ang += walls[i].si * (60/fps);
     if (walls[i].ang > 360 || walls[i].ang < -360){
         walls[i].ang = 0;
     }
@@ -137,14 +137,16 @@ if (images[player.skin]){
       ctx.fillStyle = "#000000";
         var koala = player.playerName.length;
         ctx.fillText(player.playerName, player.x - (koala * 3.5) / camera.zoom, player.y - (player.playerSize * 1.2));
-        for(i = 0; i < player.flairs.length; i++){
-            ctx.drawImage(images[player.flairs[i]], player.x - (3.5 * koala) - (11 * i) - 15, player.y - 10 - (player.playerSize * 1.2), 10, 10);
-        }
+       // for(i = 0; i < player.flairs.length; i++){
+        //    ctx.drawImage(images[player.flairs[i]], player.x - (3.5 * koala) - (11 * i) - 15, player.y - 10 - (player.playerSize * 1.2), 10, 10);
+       // }
 
     }
     ctx.setTransform(1,0,0,1,0,1);
 
      if(playerme.me){
+
+
 
 var mapw = width / 50 + 1.5;
 var maph = height / 50 + 1.5;
@@ -156,6 +158,16 @@ ctx.fillRect(x, y, mapw, maph);
 ctx.globalAlpha = 1;
 
 footLines(mapw,maph, x, y, 2);
+         ctx.fillStyle = "rgba(200,100,100,0.7)";
+       ctx.roundRect(5, canvas.height - 185, 70,70,10);
+         ctx.fill();
+         ctx.stroke();
+         if (playerme.pu != 0){
+ctx.drawImage(images[playerme.pu], 10, canvas.height - 180, 60, 60);
+         }
+         else {
+             //ctx.drawImage(images[14], 10, canvas.height - 180, 60, 60);
+         }
 for (var i = 0; i < players.length; i++){
     ctx.fillStyle = "#8899FF";
     play = players[i];

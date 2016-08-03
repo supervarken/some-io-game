@@ -37,17 +37,18 @@ preload(
 "http://pbs.twimg.com/profile_images/693492259791200256/z0oxKdVO.png",
 "http://www.lunapic.com/editor/premade/transparent.gif",
 "http://i.imgur.com/9gWLFFH.png",
-"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-2.png",
-"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",
-"http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",
-"http://findicons.com/files/icons/2799/flat_icons/256/trophy.png",
+"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-2.png",//3 speed
+"http://www.merixstudio.com/case-studies/skytte/images/power_up_shield.png",//4 shield
+"http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",//5 mine
+"http://findicons.com/files/icons/2799/flat_icons/256/trophy.png", //6 trophy
 "http://i.imgur.com/hqdj1jl.png",
-"http://orig01.deviantart.net/6cc2/f/2011/361/e/0/seamless_ground_texture_by_lauris71-d4kd616.png",
+" http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-4.png",//8 bom
 "http://simpleicon.com/wp-content/uploads/football.png",
 "", //http://downloadicons.net/sites/default/files/crown-symbol-64788.png
 "http://i4.istockimg.com/file_thumbview_approve/77377365/5/stock-photo-77377365-seamless-dark-green-grass-digital-texture.jpg",
 "http://cdn1.iconfinder.com/data/icons/round-arrows/256/up158-128.png",
-"https://openclipart.org/image/2400px/svg_to_png/124303/1298928176.png");
+"https://openclipart.org/image/2400px/svg_to_png/124303/1298928176.png",
+"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Saint_Andrew's_cross_black.svg/2000px-Saint_Andrew's_cross_black.svg.png"); //14
 //backColour = "#FFFFFF";
 
 
