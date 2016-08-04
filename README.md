@@ -13,7 +13,6 @@ add bumpers
 relative size change
 make corners same for size
 
-
 chat redesign
 start screen redesign
 zoom out when max size

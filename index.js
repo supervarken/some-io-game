@@ -220,17 +220,28 @@ var id = gameloop.setGameLoop(function(delta) {
 
     //food creating
     var foodNow = foods.splice();
-    if (Math.random() < 0.05 && foods.length < 1000) {
-        food = {
+    if (Math.random() < 0.05 && foods.length < 10000) {
+
+
+      foodmake();
+    }
+function foodmake(){
+      food = {
             x: Math.random() * width,
             y: Math.random() * height,
             playerSize: 6,
             foodcolor: '#' + Math.floor(Math.random() * 16777215).toString(16)
         };
-        foods.push(food);
-        io.emit('addMass', food);
-    }
 
+
+    for (i = 0; i < walls.length; i++){
+    if (intersect(food, walls[i])){
+        foodmake();
+    }
+        }
+     foods.push(food);
+    io.emit('addMass', food);
+}
 
     //powerup creating
     if (Math.random() < 0.002 && powers.length < 50) {
@@ -331,14 +342,25 @@ function movePlayer(player) {
         return;
     }
 
-    player.bumpX -= 0.02 * player.bumpX;
-    if (player.bumpX < 0.01 && player.bumpX > 0 || player.bumpX > -0.01 && player.bumpX < 0) {
-        player.bumpX = 0;
+      if (player.bump > 0.01){
+          player.bump -= 0.01;
+          player.bumpX = player.bump * player.bumpX;
+          player.bumpY = player.bump * player.bumpY;
+      }
+        else {
+            player.bump = 0;player.bumpX = 0; player.bumpY = 0;
+        }
+   // player.bumpX -= 0.02 * player.bumpX;
+
+    /* if (player.bumpX < 0.01 && player.bumpX > 0 || player.bumpX > -0.01 && player.bumpX < 0) {
+player.bumpX = 0;
     }
     player.bumpY -= 0.05 * player.bumpY;
     if (player.bumpY < 0.01 && player.bumpY > 0 || player.bumpY > -0.01 && player.bumpY < 0) {
         player.bumpY = 0;
     }
+        */
+
     if (Math.abs(player.fric) > 0.01) {
         player.fric -= 0.1 * player.fric;
     } else {
@@ -357,11 +379,13 @@ function movePlayer(player) {
     if (player.direction.x < 0 && player.fric > -1.5) {
         player.fric += -0.1;
     }
+
+
     player.speed = player.fric * 5 * player.speedUp;
 
     var newX = player.speed * Math.cos(Math.PI / 180 * player.r);
     var newY = player.speed * Math.sin(Math.PI / 180 * player.r);
-    player.velX = newX; //laatste moment die kant op
+    player.velX =  newX; //laatste moment die kant op
     player.velY = newY;
     intersectAny(player);
 
@@ -369,6 +393,8 @@ function movePlayer(player) {
     player.y += player.bumpY + player.velY;
 
         }
+
+
     for (var i = 0; i < walls.length; i++) {
         if (intersect(player, walls[i])) {
 
@@ -408,6 +434,7 @@ function msDelete(object, array, removeAfterMs) {
         }
     }, removeAfterMs)
 }
+
 
 function resetPlayer(socket) {
 
@@ -473,7 +500,7 @@ function intersectAny(player) {
         if (intersect(player, p)) {
             p.bumpX = 1.5 * player.velX * ((player.playerSize / 100 + 1) / (p.playerSize / 100 + 1));
             p.bumpY = 1.5 * player.velY * ((player.playerSize / 100 + 1) / (p.playerSize / 100 + 1));
-
+             player.bump = 1;
             player.bumpX = 1.5 * p.velX * ((p.playerSize / 100 + 1) / (player.playerSize / 100 + 1));
             player.bumpY = 1.5 * p.velY * ((p.playerSize / 100 + 1) / (player.playerSize / 100 + 1));
 
@@ -518,15 +545,11 @@ function intersectAny(player) {
     for (var i = 0; i < powers.length; i++) {
         var power = powers[i];
         if (intersect(player, power)) {
+                powers.splice(i,1);
+        io.emit('removePower', i);
+            if (player.pu == 0){
+
             if (power.kind == "speed") {
-             /*   player.speedUp += 1;
-                 powerE(player,3);
-                var speedy = setTimeout(function() {
-                    if (player.speedUp > 1) {
-                        player.speedUp -= 1;
-                    }
-                 powerE(player,0);
-                }, 3000); */
                powerE(player, 3);
             } else if (power.kind == "bomb") {
                 powerE(player, 4);
@@ -535,10 +558,9 @@ function intersectAny(player) {
               powerE(player,5);
                 player.mines += 1;
             }
-           powers.splice(i,1);
-        io.emit('removePower', i);
-        }
 
+        }
+        }
     }
 }
 
