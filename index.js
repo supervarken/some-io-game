@@ -168,14 +168,14 @@ io.on('connection', function(socket) {
 
         if (socket.pu == 3) {
 
-                socket.speedUp = 2;
+                socket.speedUp = 1.5;
 
         var speedy = setTimeout(function() {
 
                         socket.speedUp = 1;
 
                  powerE(socket,0);
-                }, 3000);
+                }, 5000);
         }
 
         if (socket.pu == 4) {
@@ -343,23 +343,14 @@ function movePlayer(player) {
     }
 
       if (player.bump > 0.01){
-          player.bump -= 0.01;
+          player.bump -= 0.005;
           player.bumpX = player.bump * player.bumpX;
           player.bumpY = player.bump * player.bumpY;
       }
         else {
             player.bump = 0;player.bumpX = 0; player.bumpY = 0;
         }
-   // player.bumpX -= 0.02 * player.bumpX;
 
-    /* if (player.bumpX < 0.01 && player.bumpX > 0 || player.bumpX > -0.01 && player.bumpX < 0) {
-player.bumpX = 0;
-    }
-    player.bumpY -= 0.05 * player.bumpY;
-    if (player.bumpY < 0.01 && player.bumpY > 0 || player.bumpY > -0.01 && player.bumpY < 0) {
-        player.bumpY = 0;
-    }
-        */
 
     if (Math.abs(player.fric) > 0.01) {
         player.fric -= 0.1 * player.fric;
@@ -571,9 +562,8 @@ function emitPlayer(player) {
         y: player.y,
         playerSize: player.playerSize,
         playerName: player.playerName,
-        fric: player.fric,
-        r: player.r,
-        speedUp: player.speedUp
+        r: player.r
+
     };
 
     io.emit('playerMove', play);
