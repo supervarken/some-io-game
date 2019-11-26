@@ -37,7 +37,7 @@ preload(
 "http://pbs.twimg.com/profile_images/693492259791200256/z0oxKdVO.png",
 "http://www.lunapic.com/editor/premade/transparent.gif",
 "http://i.imgur.com/9gWLFFH.png",
-"http://www.nssmag.com/assets/extensions/labs/sites/bbhmm/images/powerup-2.png",//3 speed
+"http://www.merixstudio.com/case-studies/skytte/images/power_up_shield.png",//3 speed
 "http://www.merixstudio.com/case-studies/skytte/images/power_up_shield.png",//4 shield
 "http://www.sireasgallery.com/iconset/minesweeper/Mine_256x256_32.png",//5 mine
 "http://findicons.com/files/icons/2799/flat_icons/256/trophy.png", //6 trophy
